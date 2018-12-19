@@ -104,6 +104,14 @@ define([
                                 propertyContainer = $(this).closest(".row"),
                                 propName;
 
+                            // Hide/Show Request Offering Task Templare Rows
+                            if (_.isUndefined(app.storage.custom)) {
+                                propertyContainer.hide();
+                            } else {
+                                if (!app.storage.custom.get("debug")) {
+                                    propertyContainer.hide();
+                                }
+                            }
                             for (propName in parsedProperties) {
                                 if (parsedProperties.hasOwnProperty(propName)) {
                                     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {

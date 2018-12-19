@@ -27,10 +27,6 @@ require([
     }
 
     function initTasks() {
-        // Hide/Show Request Offering Task Templare Rows
-        if (!!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
-            $("div.page-panel").find("p:contains('{\"'), p:contains('{ \"')").closest("div.row").hide();
-        }
         // Build out custom request offering tasks
         roTaskBuilder.build($("div.page-panel"), roTaskBuilder.node, function () {
             app.events.publish("roTasksReady");
