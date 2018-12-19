@@ -40,7 +40,7 @@ PSPath                                                                       | L
 MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/                         | formBuilder.js        | 23   |
 
 ```javascript
-"CustomSpace/Scripts/forms/predefined/history/controller", // "forms/predefined/history/controller",
+    "CustomSpace/Scripts/forms/predefined/history/controller", // "forms/predefined/history/controller",
 ```
 
 ### File Replacement (Unrecommended)
@@ -56,9 +56,9 @@ MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | c
 
 PSPath                                                                       | Location              | Line |
 ---------------------------------------------------------------------------- | --------------------- | ---- |
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | controller.js         | 6    |
+MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | controller.js         | 10   |
 
 ```javascript
-var tpl = require("text!forms/predefined/history/view.html");
+    "text!CustomSpace/Scripts/forms/predefined/history/view.html"
 ```
  
