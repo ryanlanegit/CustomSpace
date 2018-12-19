@@ -40,7 +40,12 @@ define([
                 /* BEGIN Functions */
                 function buildAndRender(taskName, promptElm, options) {
                     var roTask = _.filter(roTaskModules, function (roTask) {
-                        return (roTask.task.Task.toLowerCase() === taskName.toLowerCase());
+                        if (_.isUndefined(roTask.task)) {
+                            return false;
+                        }
+                        else {
+                            return (roTask.task.Task.toLowerCase() === taskName.toLowerCase());
+                        }
                     })[0];
 
                     if (!_.isUndefined(roTask)) {

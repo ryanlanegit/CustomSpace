@@ -203,17 +203,17 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
                 var template = " \
                     # var url = app.gridUtils.getLinkUrl(data, \"***\"); \
                     if (!_.isUndefined(WorkItemType) && (WorkItemType==='System.WorkItem.Incident' || WorkItemType==='System.WorkItem.ServiceRequest')) { #" +
-                        app.custom.gridTasks.template.listItem.link(column.field, task.name, {
+                        app.custom.gridTasks.buildTemplate("link", column.field, task.name, {
                             href: "#=url#"
                         }) +
                         "# } else if ((!_.isUndefined(WorkItemType)&& WorkItemType.indexOf('Activity') != -1)) { \
                         var approvalUrl = app.gridUtils.getApprovalLinkUrl(data); # " +
-                        app.custom.gridTasks.template.listItem.link(column.field, task.name, {
+                        app.custom.gridTasks.buildTemplate("link", column.field, task.name, {
                             icon: "fa-check",
                             href: "#=approvalUrl#"
                         }) + " \
                     # } # " +
-                        app.custom.gridTasks.template.listItem.link(column.field, task.name, {
+                        app.custom.gridTasks.buildTemplate("link", column.field, task.name, {
                             icon: "fa-arrow-right",
                             bClickPropagation: true,
                             className: "ra-highlight-default-icon",
@@ -229,7 +229,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
                     // Custom AssignToAnalystByGroup Task Template
                     var template = " \
                         # if (!_.isUndefined(WorkItemType) && (WorkItemType==='System.WorkItem.Incident' || WorkItemType==='System.WorkItem.ServiceRequest')) { #" +
-                            app.custom.gridTasks.template.listItem.task(column.field, task.name, {
+                            app.custom.gridTasks.buildTemplate("task", column.field, task.name, {
                                 icon: "fa-pencil",
                                 bClickPropagation: false
                             }) + " \
