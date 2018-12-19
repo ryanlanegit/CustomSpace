@@ -23,7 +23,7 @@ if (app.storage.custom.get("debug")) {
                 "event": e
             });
         }
-        
+
         var debugEvents = [
             "viewModelReady",
             "boundReadyReady",
@@ -43,6 +43,12 @@ if (app.storage.custom.get("debug")) {
     Custom Utilities
 */
 app.custom.utils = {
+    "setDebugMode" : function setDebugMode(enabled) {
+        "use strict";
+        console.log("setDebugMode", enabled);
+        app.storage.custom.set("debug", enabled);
+    },
+
     "getCachedScript" : function getCachedScript(url, options) {
         "use strict";
         if (app.storage.custom.get("debug")) {
@@ -153,7 +159,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:Other", performance.now());
     }
-    
+
     app.events.subscribe("requirejsReady", function () {
         "use strict";
         app.custom.utils.getCachedScript("/CustomSpace/Scripts/grids/gridTaskMain-built.min.js");
