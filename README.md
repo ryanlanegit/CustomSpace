@@ -24,3 +24,12 @@ MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | c
 MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/relateditems  | controller.js         | /CustomSpace/Scripts/forms/predefined/relatedItems/controller.js  | False            | Permanent         
 MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/tasks/sendemail          | controller.js         | /CustomSpace/Scripts/forms/tasks/sendEmail/controller.js          | False            | Permanent         
 
+## Custom Plugins
+
+### [History](Scripts/forms/predefined/history)
+
+### [Grid Task Builder](Scripts/grids)
+
+### [Request Offering Task Builder](Scripts/serviceCatalog)
+
+### [Work Item Task Builder](Scripts/forms)
