@@ -22,12 +22,12 @@ require([
     gridTaskBuilder
 ) {
     "use strict";
-    if (app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
         console.log("gridTaskMain:define", performance.now());
     }
 
     function initGridTasks() {
-        if (app.storage.custom.get("debug")) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
             console.log("gridTaskMain:initGridTasks", performance.now());
         }
         

@@ -5,8 +5,11 @@
         "CustomSpace": "../CustomSpace"
     },
     include: [
-        "../CustomSpace/Scripts/widgets/historyDropDownTree.js",
         "forms/wiMain"
+    ],
+    excludeShallow: [
+        "CustomSpace/Scripts/forms/predefined/history/controller",
+        "text!CustomSpace/Scripts/forms/predefined/history/view.html"
     ],
     out: "../Scripts/forms/wiMain-built.min.js",
     findNestedDependencies: true,

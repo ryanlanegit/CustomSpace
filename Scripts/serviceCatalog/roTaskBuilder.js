@@ -30,7 +30,7 @@ define([
         definition = {
             node: nodeConfig,
             build: function build(vm, node, callback) {
-                if (app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                     console.log("roTaskBuilder:build", {
                         "vm": vm,
                         "node": node,
@@ -46,7 +46,7 @@ define([
                     if (!_.isUndefined(roTask)) {
                         roTask.build(promptElm, options);
                     } else {
-                        if (app.storage.custom.get("debug")) {
+                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                             console.log("Property Not Found For Rendering:", taskName);
                         }
                     }
@@ -59,7 +59,7 @@ define([
                         var roPage = $(this),
                             roTaskElms = roPage.find("p:contains('{\"'), p:contains('{ \"')"),
                             roQuestionElms = roPage.find("div.question-container");
-                        if (app.storage.custom.get("debug")) {
+                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                             console.log("roTaskBuilder:initTask", {
                                 "roPage": roPage,
                                 "roTaskElms": roTaskElms,
@@ -101,7 +101,7 @@ define([
 
                             for (propName in parsedProperties) {
                                 if (parsedProperties.hasOwnProperty(propName)) {
-                                    if (app.storage.custom.get("debug")) {
+                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                                         console.log("roTaskElm.property", {
                                             "name": propName,
                                             "value": parsedProperties[propName]

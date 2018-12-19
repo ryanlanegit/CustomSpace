@@ -24,7 +24,7 @@ define([
             template: summaryTemplate,
             task: roTask,
             build: function build(promptElm, options) {
-                if (app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                     console.log("roTask:build", {
                         "task": roTask,
                         "promptElm": promptElm,
@@ -43,7 +43,7 @@ define([
                                 getUserInput: function getUserInput() {
                                     var roQuestionElms = $("div.question-container").filter(":not(.ng-hide)"),
                                         userInput = [];
-                                    if (app.storage.custom.get("debug")) {
+                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                                         console.log("roTaskBuilder:createSummary.getUserInput", {
                                             "roQuestionElms": roQuestionElms
                                         });

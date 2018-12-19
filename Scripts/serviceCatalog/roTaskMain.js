@@ -22,13 +22,13 @@ require([
     roTaskBuilder
 ) {
     "use strict";
-    if (app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
         console.log("roTaskBuilder", performance.now());
     }
 
     function initTasks() {
         // Hide/Show Request Offering Task Templare Rows
-        if (!app.storage.custom.get("debug")) {
+        if (!!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
             $("div.page-panel").find("p:contains('{\"'), p:contains('{ \"')").closest("div.row").hide();
         }
         // Build out custom request offering tasks

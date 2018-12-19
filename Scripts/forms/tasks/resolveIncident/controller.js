@@ -46,7 +46,7 @@ define([
             template: resolveIncidentTemplate,
             task: resolveIncidentTask,
             build: function build(vm, node, callback) {
-                if (app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
                     console.log("resolveIncidentTask:build");
                 }
                 /* BEGIN Functions */

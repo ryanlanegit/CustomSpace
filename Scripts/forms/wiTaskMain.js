@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global app, console, pageForm, performance, require */
+/*global _, app, console, pageForm, performance, require */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -22,13 +22,13 @@ require([
     wiTaskBuilder
 ) {
     "use strict";
-    if (app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
         console.log("wiTaskMain", performance.now());
     }
     var built = false;
 
     function initTasks() {
-        if (app.storage.custom.get("debug")) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
             console.log("wiTaskMain:initTasks", performance.now());
         }
         
@@ -65,7 +65,7 @@ require([
 
     app.events.subscribe("boundReadyReady", function () {
         "use strict";
-        if (app.storage.custom.get("debug")) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
             console.log("wiTaskMain:boundReady", performance.now());
         }
         if (built) {

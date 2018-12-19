@@ -15,7 +15,7 @@ define([
 	listItemTaskTemplate,
 	listItemLinkTemplate
 ) {
-    if (app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
         console.log("gridTaskBuilder:define", {
             "cellTemplate": cellTemplate,
             "listItemTaskTemplate": listItemTaskTemplate,
@@ -26,7 +26,7 @@ define([
 	var definition = {
 		"built": false,
 		"build": function build(callback){
-			if (app.storage.custom.get("debug")) {
+			if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
 				console.log("gridTaskBuilder:build");
 			}
 			/* BEGIN Functions */
