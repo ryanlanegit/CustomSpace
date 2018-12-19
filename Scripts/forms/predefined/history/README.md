@@ -1,6 +1,8 @@
 # History
 
-A Replacement for the History button with a dropdown for all related activities.
+A replacement for the History button with a dropdown for all related activities.
+
+![](name-of-giphy.gif)
 
 ## Installing
 
