@@ -1,0 +1,346 @@
+<div id="service-catalog"></div>
+
+<div class="service-catalog-content">
+    <div class="row">
+        <div id="servicecat-content" class="col-lg-10 col-md-9 service-request-body">
+        </div>
+    </div>
+</div>
+
+<!-- BASE STRUCTURE TEMPLATE -->
+<script type="text/x-kendo-template" id="servicecatalog-template">
+    <div class="service-catalog-content">
+        <div class="row">
+            <div id="servicecat-nav" data-bind="affix:{top: 200}, yScrollOnResize:{top: auto, bottom: 50}" class="col-lg-2 col-md-3 service-request-nav hidden-xs hidden-sm">
+                
+            </div>
+            <div class="col-lg-10 col-md-9 service-request-body">
+                <div id="servicecat-content"></div>
+                <!-- OVERLAY TEMPLATE -->
+                <div class="overlay">
+                    <div class="row search-results-container">
+                        <div class="col-md-12" id="breadcrumb-results-wrapper"></div>
+                        <div class="col-md-12" id="ka-results-wrapper"></div>
+                        <div class="col-md-12" id="fav-results-wrapper"></div>
+                        <div class="col-md-12" id="ro-results-wrapper"></div>
+                        <div class="col-md-12" id="footer-results-wrapper"></div>
+                        <div class="col-md-12" id="catalog-area-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- NAV TEMPLATES-->
+<script type="text/x-kendo-template" id="base-nav-template">
+    <div data-bind ="visible: taxonomyVisible">
+        <h4 data-bind="localize: BrowseByCategory, visible: taxonomyVisible"></h4>
+        <ul class="list-unstyled sc-nav-list" data-template="category-nav-template" data-bind="source: navs"></ul>
+    </div>
+</script>
+
+<script type="text/x-kendo-template" id="category-nav-template">
+    <li class="nav-header">
+        <a class="link cat-link" data-toggle="collapse" data-target="\\##:CategoryId#" data-category="#:CategoryId#" data-bind="text: Category, click: showSingleCategory"></a>
+        <ul class="list-unstyled collapse" id="#:CategoryId#" data-template="service-nav-template" data-bind="source: services"></ul>
+    </li>
+</script>
+
+<script type="text/x-kendo-template" id="service-nav-template">
+    <li><a class="link so-link" data-service="#:ServiceOfferingId#" data-bind="text: Service, click: showSingleService"></a></li>
+</script>
+
+<!-- MAIN CATALOG TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="catalog-template">
+    <h4 data-bind="visible: loadingVisible, localize: Loading"></h4>
+    <div class="catalog-content">
+        <!-- FAVORITES/TOP LISTS-->
+        <div class="clearfix" data-bind="visible:topsVisible">
+            <div class="topfav-row" data-bind="visible: favRO">
+                <h4 data-bind="localize: FavoriteRequests"></h4>
+
+                <div class="list-wrapper" data-template="topfav-request-offerings" data-bind="source: favROs"></div>
+            </div>
+            <div class="topfav-row" data-bind="visible: topRO">
+                <h4 data-bind="localize: TopRequests"></h4>
+
+                <div class="list-wrapper" data-template="topfav-request-offerings" data-bind="source: topROs"></div>
+            </div>
+            <div class="topfav-row" data-bind="visible: topKA">
+                <h4 data-bind="localize: TopKnowledgeArticles"></h4>
+
+                <div class="list-wrapper" data-template="top-ka" data-bind="source: topKAs"></div>
+            </div>
+        </div>
+        <!-- MAIN PAGE CATALOG-->
+        <div data-bind="visible: catalogVisible">
+            <h4>
+                <span data-bind="visible: homeBC">
+                    <a class="cursor-pointer fa fa-home" data-bind="click: showHome"></a>
+                    /
+                </span>
+                <span data-bind="text: scLabel"></span>
+
+            </h4>
+            <div id="catalog-area"></div>
+        </div>
+    </div>
+</script>
+
+<!-- TOP/FAV RO TEMPLATES-->
+<script type="text/x-kendo-template" id="topfav-request-offerings">
+    <div class="thumbnail">
+        <div class="mid-thumb top-#:Title.replace(/ /g,'-').toLowerCase() #">
+            <a class="cursor-pointer" href="/SC/ServiceCatalog/RequestOffering/#:Id#,#:ServiceInfo.Id#">
+                <img src="/ServiceCatalog/GetRequestOfferingImg/#:Id#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                <div class=" favorite">
+                    <div class="inner"
+                         data-request-url="#:LinkUrl#"
+                         data-request-target-type="#:LinkTargetType#"
+                         data-request="#:Id#"
+                         data-service="#:ServiceInfo.Id#"
+                         data-bind="click: openRequestOffering">
+                        <i class="fa #= IsFavorite ? 'fa-star' :'fa-star-o' # link" data-request="#:Id#" data-bind="click: toggleFavorite"></i>
+                        <p data-request-url="#:LinkUrl#"
+                           data-request-target-type="#:LinkTargetType#"
+                           data-request="#:Id#"
+                           data-service="#:ServiceInfo.Id#"
+                           data-bind="click: openRequestOffering">#= BriefDescription != null ? BriefDescription :'' #</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="caption">
+            <a class="link" data-request-url="#:LinkUrl#" data-request-target-type="#:LinkTargetType#" data-service="#:ServiceInfo.Id#" data-request="#:Id#" data-bind="text: Title, click: openRequestOffering"></a>
+        </div>
+    </div>
+</script>
+
+<!-- TOP KA TEMPLATES-->
+<script type="text/x-kendo-template" id="top-ka">
+    <div class="thumbnail">
+        <div class="mid-thumb ka-thumb ka-#:Title.replace(/ /g,'-').toLowerCase() #">
+            <a class="cursor-pointer" href="/KnowledgeBase/View/#:ArticleId#">
+                <img alt="image" class="ka-icon" src="/Content/Images/Icons/Drawer/kb-white.svg">
+                <div class="favorite">
+                    <div class="inner">
+                        <p>#= Abstract != null ? Abstract :'' #</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="caption">
+            <a class="link" href="/KnowledgeBase/View/#:ArticleId#" data-bind="text: Title"></a>
+        </div>
+    </div>
+</script>
+
+<!-- CATEGORY WITH CHILD SOs TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="cat-template">
+    <div class="cat #:CategoryId#">
+        <div data-template="so-template" data-bind="source: dataSource"></div>
+    </div>
+</script>
+
+<!-- LIST OF SOs TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="so-template">
+    <div class="service-offerings" data-service="#:ServiceOfferingId#">
+        <h4>
+            <a class="cursor-pointer fa fa-home" data-bind="click: showHome"></a>
+            /
+            <a class="cursor-pointer" data-bind="localize: ServiceCatalog, click: showFullCatalog"></a>
+            /
+            <a class="cursor-pointer" data-category="#:CategoryId#" data-bind="text: Category, click: showSingleCategory"></a>
+            /
+            <span data-bind="text: Service"></span>
+        </h4>
+        <!--<div class="row" data-template="ro-template" data-bind="source: requestofferings"></div>-->
+        <div class="row">
+            # for (var i = 0; i < requestofferings.length; i++) { #
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="thumbnail-lg">
+                    <div class="cursor-pointer lg-thumb ro-#:requestofferings[i].RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #">
+                        <img src="/ServiceCatalog/GetRequestOfferingImg/#:requestofferings[i].RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                        <div class="favorite">
+                            <div class="inner"
+                                 data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#"
+                                 data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#"
+                                 data-request="#:requestofferings[i].RequestOfferingId#"
+                                 data-service="#:requestofferings[i].ServiceOfferingId#"
+                                 data-bind="click: openRequestOffering">
+                                <i class="fa #= requestofferings[i].IsFavorite ? 'fa-star' :'fa-star-o' # link" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: toggleFavorite"></i>
+                                <p data-request="#:requestofferings[i].RequestOfferingId#">#: requestofferings[i].RequestOfferingDescription #</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="caption">
+                        <a class="link" data-service="#:requestofferings[i].ServiceOfferingId#" data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#" data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: openRequestOffering">#:requestofferings[i].RequestOfferingTitle#</a>
+                        <p class="hidden-xs">#: requestofferings[i].RequestOfferingDescription #</p>
+                    </div>
+                </div>
+            </div>
+            # } #
+        </div>
+    </div>
+</script>
+<!-- LIST OF ROs TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="ro-template">
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="thumbnail-lg">
+            <div class="cursor-pointer lg-thumb ro-#:RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #">
+                <img src="/ServiceCatalog/GetRequestOfferingImg/#:RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                <div class="favorite">
+                    <div class="inner"
+                         data-request-url="#:RequestOfferingLinkUrl#"
+                         data-request-target-type="#:RequestOfferingLinkTargetType#"
+                         data-request="#:RequestOfferingId#"
+                         data-service="#:ServiceOfferingId#"
+                         data-bind="click: openRequestOffering">
+                        <i class="fa #= IsFavorite ? 'fa-star' :'fa-star-o' # link" data-request="#:RequestOfferingId#" data-bind="click: toggleFavorite"></i>
+                        <p data-request="#:RequestOfferingId#">#= RequestOfferingDescription != null ? RequestOfferingDescription :'' #</p>
+                    </div>
+                </div>
+            </div>
+            <div class="caption">
+                <a class="link" data-service="#:ServiceOfferingId#" data-request-url="#:RequestOfferingLinkUrl#" data-request-target-type="#:RequestOfferingLinkTargetType#" data-request="#:RequestOfferingId#" data-bind="text: RequestOfferingTitle, click: openRequestOffering"></a>
+                <p class="hidden-xs" data-bind="text: RequestOfferingDescription"></p>
+            </div>
+        </div>
+    </div>
+</script>
+<!-- MINI CAT TEMPLATE - All Categories -->
+<script type="text/x-kendo-tmpl" id="cat-mini-template-all">
+    <div class="cat-#:Category.replace(/ /g,'-').toLowerCase() #">
+        <h4>
+            <span data-bind="text: Category"></span>
+        </h4>
+        <div class="mini-template-body">
+            <!--<div class="row" data-template="so-mini-template" data-bind="source: services"></div>-->
+            <div class="row">
+                # for (var x = 0; x < services.length  ; x++) { #
+                <div class="mini-services col-sm-5 col-md-4 col-lg-3">
+                    <div class="clearfix">
+                        <div class="so-blocks" data-service="#:services[x].ServiceOfferingId#">
+                            # var totalROs = !_.isUndefined(services[x].requestofferings) ? services[x].requestofferings.length : 0 #
+                            # var requestofferings = services[x].requestofferings; #
+                            <section data-service="#:services[x].ServiceOfferingId#">
+                                # for (var i = 0; i < totalROs && i < 4  ; i++) { #
+                                <div class="ro-#:requestofferings[i].RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #" title="#:requestofferings[i].RequestOfferingTitle#"
+                                     data-title="#:requestofferings[i].RequestOfferingTitle#"
+                                     data-role="tooltip"
+                                     data-auto-hide="true"
+                                     data-position="top">
+                                    <img class="cursor-pointer" data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#" data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: openRequestOffering" src="/ServiceCatalog/GetRequestOfferingImg/#:requestofferings[i].RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                                </div>
+                                # } #
+                            </section>
+                            # if(totalROs > 4) { #
+                            <section data-service="#:services[x].ServiceOfferingId#">
+                                # for (var i = 4; i < totalROs && i < 9  ; i++) { #
+                                <div class="ro-#:requestofferings[i].RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #" title="#:requestofferings[i].RequestOfferingTitle#"
+                                     data-title="#:requestofferings[i].RequestOfferingTitle#"
+                                     data-role="tooltip"
+                                     data-auto-hide="true"
+                                     data-position="top">
+                                    <img class="cursor-pointer" data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#" data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: openRequestOffering" src="/ServiceCatalog/GetRequestOfferingImg/#:requestofferings[i].RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                                </div>
+                                # } #
+                            </section>
+                            # } #
+                        </div>
+                    </div>
+                    <span class="link" data-service="#:services[x].ServiceOfferingId#" data-bind="click: showSingleService">#:services[x].Service#</span>
+                </div>
+                # } #
+            </div>
+        </div>
+    </div>
+</script>
+<!-- MINI CAT TEMPLATE - Single Category -->
+<script type="text/x-kendo-tmpl" id="cat-mini-template-single">
+    <div class="cat-#:Category.replace(/ /g,'-').toLowerCase() #">
+        <h4>
+            <a class="cursor-pointer fa fa-home" data-bind="click: showHome"></a>
+            /
+            <a class="cursor-pointer" data-bind="localize: ServiceCatalog, click: showFullCatalog"></a>
+            /
+            <span data-bind="text: Category"></span>
+        </h4>
+        <div class="mini-template-body">
+            <div class="row" data-template="so-mini-template" data-bind="source: services"></div>
+        </div>
+    </div>
+</script>
+<!-- MINI SO TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="so-mini-template">
+    <div class="mini-services col-sm-5 col-md-4 col-lg-3">
+        <div class="clearfix">
+            <div class="so-blocks" data-service="#:ServiceOfferingId#">
+                # var totalROs = !_.isUndefined(data.requestofferings) ? data.requestofferings.length : 0 #
+                <section data-service="#:ServiceOfferingId#">
+                    # for (var i = 0; i < totalROs && i < 4  ; i++) { #
+                    <div class="ro-#:requestofferings[i].RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #" title="#:requestofferings[i].RequestOfferingTitle#"
+                         data-title="#:requestofferings[i].RequestOfferingTitle#"
+                         data-role="tooltip"
+                         data-auto-hide="true"
+                         data-position="top">
+                        <img class="cursor-pointer" data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#" data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: openRequestOffering" src="/ServiceCatalog/GetRequestOfferingImg/#:requestofferings[i].RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                    </div>
+                    # } #
+                </section>
+                # if(totalROs > 4) { #
+                <section data-service="#:ServiceOfferingId#">
+                    # for (var i = 4; i < totalROs && i < 9  ; i++) { #
+                    <div class="ro-#:requestofferings[i].RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #" title="#:requestofferings[i].RequestOfferingTitle#"
+                         data-title="#:requestofferings[i].RequestOfferingTitle#"
+                         data-role="tooltip"
+                         data-auto-hide="true"
+                         data-position="top">
+                        <img class="cursor-pointer" data-request-url="#:requestofferings[i].RequestOfferingLinkUrl#" data-request-target-type="#:requestofferings[i].RequestOfferingLinkTargetType#" data-request="#:requestofferings[i].RequestOfferingId#" data-bind="click: openRequestOffering" src="/ServiceCatalog/GetRequestOfferingImg/#:requestofferings[i].RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+                    </div>
+                    # } #
+                </section>
+                # } #
+            </div>
+            <!--<ul class="so-blocks">
+                <li class="more-ros fa fa-ellipsis-h" title="View All #:Service#"
+                    data-role="tooltip"
+                    data-auto-hide="true"
+                    data-position="top"
+                    data-bind="click: showSingleService">
+                </li>
+            </ul>-->
+        </div>
+        <span class="link" data-service="#:ServiceOfferingId#" data-bind="click: showSingleService, text: Service"></span>
+    </div>
+</script>
+<!-- MINI RO TEMPLATE-->
+<script type="text/x-kendo-tmpl" id="ro-mini-template">
+    <div class="ro-#:RequestOfferingTitle.replace(/ /g,'-').toLowerCase() #" title="#:RequestOfferingTitle#"
+         data-title="#:RequestOfferingTitle#"
+         data-role="tooltip"
+         data-auto-hide="true"
+         data-position="top">
+        <img class="cursor-pointer" data-request-url="#:RequestOfferingLinkUrl#" data-request="#:RequestOfferingId#" data-request-target-type="#:RequestOfferingLinkTargetType#" data-bind="click: openRequestOffering" src="/ServiceCatalog/GetRequestOfferingImg/#:RequestOfferingId#" onerror="this.onerror=null; this.src='/Content/Images/Icons/RequestOffering/RO_Default.png';">
+    </div>
+</script>
+
+
+<!-- OVERLAY TEMPLATES -->
+<!-- KA OVERLAY TEMPLATE -->
+<script type="text/x-kendo-tmpl" id="ka-results-template">
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="thumbnail-lg">
+            <div class="lg-thumb ka-result-thumb">
+                <a href="/KnowledgeBase/View/#:Id#" class="link">
+                    <img alt="image" class="ka-icon" src="/Content/Images/Icons/Drawer/kb-white.svg">
+                </a>
+            </div>
+            <div class="caption">
+                <a class="link" href="/KnowledgeBase/View/#:Id#">#: Title #</a>
+                <p class="hidden-xs">#: Description #</p>
+            </div>
+        </div>
+    </div>
+</script>

@@ -1,0 +1,22 @@
+﻿<div id="ResolveIncidentWindow" class="cireson-window defined-form hide" style="padding-bottom:15px;">
+    <div class="cireson-window--wrapper">
+        <div class="cireson-window--body">
+            <div id="resolutionPicker" data-bind="" />
+            <div id="resolutionDescription" data-bind="" />
+            <div id="resolutionAssignToMe" data-bind="visible: showResolutionAssignToMe" />
+        </div>
+        <div class="cireson-window--footer window-buttons">
+            <div id="resolveIncidentErrorWin" class="error"></div>
+            <button data-role="button"
+                    class="btn btn-primary"
+                    data-bind="enabled: okEnabled, events: { click: okClick }">
+                <%= localization.OK %>
+            </button>
+            <button data-role="button"
+                    class="btn btn-default"
+                    data-bind="events: { click: cancelClick }">
+                <%= localization.Cancel %>
+            </button>
+        </div>
+    </div>
+</div>

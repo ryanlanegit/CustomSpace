@@ -1,0 +1,93 @@
+﻿<div class="activity-item">
+    <div class="activity-item-header">
+        <span data-click="toggle">
+            <span><a href="#" class="k-icon k-plus"></a></span>
+            <span data-bind="visible: ShowSkipIcon"><i class="ci ci-manual-activity fa-lg"></i></span>
+            <span data-bind="visible: ShowUnskipIcon"><i class="fa fa-share fa-lg text-warning"></i></span>
+            <span data-bind="attr: {class: HeaderCss}"><span data-bind="text: Id" style="font-weight:bold;"></span> - <span data-bind="text: Title"></span></span>
+        </span>
+        <a id="activityStatus" data-readonly="true" />
+        <span data-bind="visible: ShowSkipIcon, attr: { title: IconTitle }" data-click="setSkip" class="padleft10"><i class="fa fa-share-square-o fa-lg"></i></span>
+        <span data-bind="visible: ShowUnskipIcon, attr: { title: IconTitle }" data-click="setSkip" class="padleft10"><i class="fa fa-share-square-o fa-lg fa-flip-horizontal"></i></span>
+        <span data-bind="visible: ShowReturnIcon, attr: { title: IconReturnTitle }" data-click="returnActivity" class="padleft10"><i class="fa fa-reply-all fa-lg"></i></span>
+    </div>
+    <div class="activity-item-body form-group" data-secured='hasEdit' data-for-action="toggle">
+        <table style="border-collapse:collapse">
+            <tr>
+                <td>
+                    <div class="activity-item-form" style="padding: 25px;">
+                        <!-- title -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Title"></label> <span style="display:none" class="error">*</span>
+                                </div>
+                                <div class="editor-field">
+                                    <input class="k-textbox" data-bind="value: Title" type="text" name="Title">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- description -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Description"></label>
+                                </div>
+                                <div class="editor-field">
+                                    <textarea data-bind="value: Description" class="k-textbox" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- actual start date | actual end date -->
+                        <div class="col-group">
+                            <div class="c2">
+                                <div>
+                                    <div class="editor-label">
+                                        <label data-localize="Actualstartdate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ActualStartDate" data-control-to="ScheduledEndDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c2">
+                                <div class="padleft10">
+                                    <div class="editor-label">
+                                        <label data-localize="Actualenddate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ActualEndDate" data-control-from="ActualEndDate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- notes -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Notes"></label>
+                                </div>
+                                <div class="editor-field">
+                                    <textarea data-bind="value: Notes" class="k-textbox" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td valign="top" class="activity-item-sidebar hide">
+                    <ul>
+                        <!--<li><a href="" data-localize="MarkasCompleted"></a></li>
+                        <li><a href="" data-localize="MarkasFailed"></a></li>
+                        <li><a href="javascript:void(0);" data-localize="Edit"></a></li>-->
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <div class="activity-item-children"></div>
+</div>

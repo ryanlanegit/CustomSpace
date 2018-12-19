@@ -1,0 +1,194 @@
+﻿<div class="activity-item">
+    <div class="activity-item-header">
+        <span data-click="toggle">
+            <span><a href="#" class="k-icon k-plus"></a></span>
+            <span data-bind="visible: ShowSkipIcon"><i class="ci ci-manual-activity fa-lg"></i></span>
+            <span data-bind="visible: ShowUnskipIcon"><i class="fa fa-share fa-lg text-warning"></i></span>
+            <span data-bind="attr: {class: HeaderCss}"><span data-bind="text: Id" style="font-weight:bold;"></span> - <span data-bind="text: Title"></span></span>
+        </span>
+        <a id="activityStatus" />
+        <span data-bind="visible: ShowSkipIcon, attr: { title: IconTitle }" data-click="setSkip" class="padleft10"><i class="fa fa-share-square-o fa-lg"></i></span>
+        <span data-bind="visible: ShowUnskipIcon, attr: { title: IconTitle }" data-click="setSkip" class="padleft10"><i class="fa fa-share-square-o fa-lg fa-flip-horizontal"></i></span>
+        <span data-bind="visible: ShowReturnIcon, attr: { title: IconReturnTitle }" data-click="returnActivity" class="padleft10"><i class="fa fa-reply-all fa-lg"></i></span>
+    </div>
+    <div class="activity-item-body form-group" data-secured='hasEdit' data-for-action="toggle">
+        <table style="border-collapse:collapse">
+            <tr>
+                <td>
+                    <div class="activity-item-form">
+                        <!-- title -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Title"></label> <span style="display:none" class="error">*</span>
+                                </div>
+                                <div class="editor-field">
+                                    <input class="k-textbox" data-bind="value: Title" type="text" name="Title">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- description -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Description"></label>
+                                </div>
+                                <div class="editor-field">
+                                    <textarea data-bind="value: Description" class="k-textbox" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- activity implementer | area -->
+                        <div class="col-group">
+                            <div class="c2">
+                                <div>
+                                    <div class="editor-label">
+                                        <label data-localize="ActivityImplementer"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="userPicker" data-control-bind="AssignedWorkItem" data-control-itemtype="ManualActivity" data-control-relationshipid="15e577a3-6bf9-6713-4eac-ba5a5b7c4722">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c2">
+                                <div class="padleft10">
+                                    <div class="editor-label">
+                                        <label data-localize="Area"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <div data-control="enumPicker" data-control-bind="Area" data-control-enumid="0d1c5836-644E-bfe4-5adf-cfe40fc08dfa"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- priority | stage -->
+                        <div class="col-group">
+                            <div class="c2">
+                                <div>
+                                    <div class="editor-label">
+                                        <label data-localize="Priority"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <div data-control="enumPicker" data-control-bind="Priority" data-control-enumid="65a34474-f43d-d880-7Eb0-bad49efa7cf1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c2">
+                                <div class="padleft10">
+                                    <div class="editor-label">
+                                        <label data-localize="Stage"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <div data-control="enumPicker" data-control-bind="Stage" data-control-enumid="f05ea0f0-bd02-143e-2b74-303609750328"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- scheduled start date | scheduled end date -->
+                        <div class="col-group">
+                            <div class="c2">
+                                <div>
+                                    <div class="editor-label">
+                                        <label data-localize="ScheduledStartDate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ScheduledStartDate" data-control-to="ScheduledEndDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c2">
+                                <div class="padleft10">
+                                    <div class="editor-label">
+                                        <label data-localize="ScheduledEndDate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ScheduledEndDate" data-control-from="ScheduledStartDate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- actual start date | actual end date -->
+                        <div class="col-group">
+                            <div class="c2">
+                                <div>
+                                    <div class="editor-label">
+                                        <label data-localize="Actualstartdate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ActualStartDate" data-control-to="ActualEndDate">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c2">
+                                <div class="padleft10">
+                                    <div class="editor-label">
+                                        <label data-localize="Actualenddate"></label>
+                                    </div>
+                                    <div class="editor-field">
+                                        <input data-control="dateTimePicker" data-control-bind="ActualEndDate" data-control-from="ActualStartDate">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- impacted configuration items -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="ImpactedConfigurationIte"></label>
+                                </div>
+                                <div class="editor-field">
+                                    <div data-control="affectedItemsGrid" data-control-bind="HasRelatedWorkItems"></div>
+                                    <span class="manual-currentitems visible-xs" data-localize="CurrentItems"></span>
+                                    <div class="visible-xs" data-kendo-control="gridManualMobile"></div>
+                                </div>
+                            </div>
+                            <div data-bind="templateResources:'resources'" class="hide">
+                                <div data-template-name="mobileManualGridTemplate" class="mobilegrid manual-activity-template">
+                                    <div class="gridcard gridcard--activity manaul-grid">
+                                        <div class='open-modal fa fa-info-circle'></div>
+                                        <div class="grid--reviewer">#:DisplayName #</div>
+                                        <div class="gridcard__detailblock">
+                                            <a>#: (Status!=null) ? Status : "" #</a>
+                                            <a># if (Status!=null && Status!="") { # &middot # } # </a>
+                                            <a>#: (Path!=null ) ? Path : "" # </a>
+                                            <a># if (Path!=null && Path!="") { # &middot # } # </a>
+                                            <a class="k-delete-button">#: localization.Remove #</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- notes -->
+                        <div class="col-group">
+                            <div>
+                                <div class="editor-label">
+                                    <label data-localize="Notes"></label>
+                                </div>
+                                <div class="editor-field">
+                                    <textarea data-bind="value: Notes" class="k-textbox" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td valign="top" class="activity-item-sidebar">
+                    <ul>
+                        <!--<li><a href="" data-localize="MarkasCompleted"></a></li>
+                        <li><a href="" data-localize="MarkasFailed"></a></li>
+                        <li><a href="javascript:void(0);" data-localize="Edit"></a></li>-->
+                    </ul>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+    <div class="activity-item-children"></div>
+</div>

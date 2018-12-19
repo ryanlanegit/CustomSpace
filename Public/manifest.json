@@ -1,0 +1,16 @@
+{
+  "name": "IT Service Portal",
+  "short_name": "serviceprtl",
+  "icons": [
+      {
+        "src": "/favicon.ico",
+        "type": "image/ico",
+        "sizes": "64x64"
+      }
+      ],
+  "start_url": "/View/94ecd540-714b-49dc-82d1-0b34bf11888f",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#6EB8E1",
+  "theme_color": "#6EB8E1"
+}

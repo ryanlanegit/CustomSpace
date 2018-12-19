@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- ------------------------------ Custom Work Item Url ---------------------------------------------- -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!-- Tested with portal v7.1.2016.1 & v7.2.2016.1                                                       -->
+<!-- Tested with IE11, Chrome 55, Firefox 45 & Edge                                                     -->
+<!-- Author: Martin Blomgren                                                                            -->
+<!-- Description: One edit URL for all work item types                                                  -->
+<!-- Usage: Drop into CustomSpace and use http(s)://portal/CustomSpace/EditWorkItem.html?id=WORKITEMID  -->
+<!-- v0.1 initial release                                                                               -->
+<!-- -------------------------------------------------------------------------------------------------- -->
+<html>
+<head>
+    <script>
+
+    // Get work item id from query parameter
+    var getParameterByName = function(name, url) {
+        if (!url) {
+        url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+    var id = getParameterByName('id');
+
+    // Check if there is a query param
+    if (id) {
+
+        // Get correct URL and redirect!
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+
+            if (this.readyState == 4 && this.status == 200) {
+                //check if response is for work item edit otherwise redirect to homepage
+                if (this.responseText.indexOf("View") === -1) {
+                    window.location.href = window.location.protocol + "//" + window.location.hostname + this.responseText;        
+                } else {
+                    window.location.href = window.location.protocol + "//" + window.location.hostname;
+        
+                }
+            }
+        };
+        xhttp.open('GET', '/Search/GetSearchObjectByWorkItemID?searchText=' + id, true);
+        xhttp.send();
+
+    } else {
+        console.log("url query param id is missing");
+        window.location.href = window.location.protocol + "//" + window.location.hostname;
+    }
+    </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,14 @@
+/*
+    Login Page
+*/
+
+.login-icon {
+	text-align: center;
+}
+
+.login_heading {
+    border-bottom: 1px solid #E2E9EC;
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}

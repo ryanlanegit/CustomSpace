@@ -1,0 +1,29 @@
+************************************************ 
+RequireJS Build Script started.  
+************************************************ 
+Building \CustomSpace\Scripts\serviceCatalog\roTaskMain.js  
+
+Tracing dependencies for: C:/inetpub/CiresonPortal/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js
+Uglify file: C:/inetpub/CiresonPortal/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js
+
+C:/inetpub/CiresonPortal/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js
+----------------
+C:/inetpub/CiresonPortal/Scripts/require.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/addClass/controller.js
+C:/inetpub/CiresonPortal/Scripts/require/text.js
+text!CustomSpace/Scripts/serviceCatalog/tasks/addInformation/view.html
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/addInformation/controller.js
+C:/inetpub/CiresonPortal/CustomSpace/Scripts/jquery/jquery.autosize.min.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/autoSize/controller.js
+text!CustomSpace/Scripts/serviceCatalog/tasks/charCount/view.html
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/charCount/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/indent/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/layoutTemplate/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/setAttribute/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/setOptions/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/tasks/singleLineEntry/controller.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/roTaskBuilder.js
+C:/inetpub/CiresonPortal/CustomSpace//Scripts/serviceCatalog/roTaskMain.js
+
+************************************************ 
+RequireJS Build Script completed.  

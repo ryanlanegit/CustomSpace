@@ -1,0 +1,22 @@
+/*
+    Affix Panels
+*/
+
+.service-request-nav.affix {
+    position: fixed;
+	top: 44px !important;
+}
+
+.task-panel-narrow:not(.task_slide_transition) {
+    position: fixed;
+    top: 42px;
+}
+
+.task-panel-narrow.affix:not(.task_slide_transition) {
+    position: fixed;
+    top: 42px;
+}
+
+#servicePanel.task-panel-wide {
+    overflow: visible;
+}
