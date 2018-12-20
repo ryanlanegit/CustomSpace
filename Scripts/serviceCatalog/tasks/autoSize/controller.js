@@ -7,8 +7,10 @@ Autosize Textarea
 **/
 
 define([
-    "jquery/jquery.autosize.min.js"
-], function () {
+    "jquery/autosize.min.js"
+], function (
+    autosize
+) {
     "use strict";
     var roTask = {
             "Task": "autoSize",
@@ -43,10 +45,7 @@ define([
                         if (target.find("p:contains('{\"'), p:contains('{ \"')").length) {
                             target = target.next();
                         }
-
-                        targetContainer = target.find("textarea");
-
-                        targetContainer.autosize();
+                        autosize(target.find("textarea"));
                     }
                 }
 
