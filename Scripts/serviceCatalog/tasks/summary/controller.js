@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global _, $, app, console, define, kendo */
+/*global $, _, app, console, define, kendo */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -30,6 +30,11 @@ define([
                         "promptElm": promptElm,
                         "options": options
                     });
+                }
+                
+                function processNext(targetElm, next, func) {
+                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    _.each(targetElms, func);
                 }
 
                 function createSummary(targetEle) {
@@ -156,11 +161,13 @@ define([
                 /* Initialization code */
                 function initROTask() {
                     var target = promptElm.next().find("div.col-xs-12"),
-                        builtSummary = _.template(summaryTemplate),
-                        summaryResult = builtSummary();
-                    target.removeClass("col-md-8").addClass("col-md-12");
-                    target.html(summaryResult);
-                    createSummary(target.find("div[data-control-bind]"));
+                        builtSummary = _.template(summaryTemplate);
+
+                    processNext(promptElm, options.next, function (targetElm) {
+                        $(targetElm).removeClass("col-md-8").addClass("col-md-12");
+                        $(targetElm).html(builtSummary());
+                        createSummary($(targetElm).find("div[data-control-bind]"));
+                    });
                 }
 
                 initROTask();

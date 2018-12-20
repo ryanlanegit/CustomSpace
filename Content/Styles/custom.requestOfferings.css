@@ -74,11 +74,10 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding: 5px 10px;
     line-height: 30px;
-    height: 30px;
     min-height: 32px !important;
+    max-height: 122px;
 }
 
 .question-container panel {

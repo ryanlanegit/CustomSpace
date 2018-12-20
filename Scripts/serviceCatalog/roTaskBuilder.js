@@ -100,11 +100,17 @@ define([
                         });
 
                         roTaskElms.each(function () {
+                            var propertyContainer = $(this).closest(".row");
+                            // Add "task-container" class to container row
+                            propertyContainer.addClass("task-container");
+                        });
+
+                        roTaskElms.each(function () {
                             var parsedProperties = JSON.parse($(this).text()),
                                 propertyContainer = $(this).closest(".row"),
                                 propName;
 
-                            // Hide/Show Request Offering Task Templare Rows
+                            // Hide/Show Request Offering Task Template Rows
                             if (_.isUndefined(app.storage.custom)) {
                                 propertyContainer.hide();
                             } else {

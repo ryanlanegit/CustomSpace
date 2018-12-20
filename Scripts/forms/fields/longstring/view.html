@@ -1,7 +1,7 @@
 ﻿<div class="form-group <%= visible %>" style="">
 
     <label class="control-label" for="<%= PropertyName %>">
-        <span><%= PropertyDisplayName %> <% if ( Required ){ %> <%= '(' + localization.Required + ')' %><% } %></span>
+        <span><%= PropertyDisplayName %> <% if (Required) { %> (<%= localization.Required %>)<% } %></span>
         <span style="font-weight: normal; float:right;">
             <span name="<%= PropertyName %>CharactersRemaining" data-bind="html: CharactersRemaining"></span>
             <span>characters remaining</span>
@@ -13,24 +13,21 @@
               placeholder="<%= PlaceHolder %>"
               data-bind="value: <%= PropertyName %>, events : { <% if ( LimitLength ){ %>blur: CheckLength<% } %>, keyup: TextCounter }"
               data-value-update="keyup"
-        <% if ( LimitLength ){ %>
-        maxlength="<%= MaxLength %>"
-        <% } %>
-
-        <% if ( Disabled ){ %>
-        disabled
-        <% } %>
-
-        <% if ( Required ){ %>
-        required
-        <% } %>
-
-        >
+            <% if (LimitLength) { %>
+              maxlength="<%= MaxLength %>"
+            <% } %>
+            <% if (Disabled) { %>
+              disabled
+            <% } %>
+            <% if (Required) { %>
+              required
+            <% } %>
+    >
     </textarea>
-    <% if ( LimitLength ){ %>
+    <% if (LimitLength) { %>
     <p class="help-block validation-summary-errors" style="display: none;"><%= localization.MaxLengthError.replace("{0}", MaxLength) %></p>
     <% } %>
 </div>
 <script>
-    $('textarea[name=ResolutionDescription]').removeClass('form-control');
+    $("textarea[name='ResolutionDescription']").removeClass("form-control");
 </script>

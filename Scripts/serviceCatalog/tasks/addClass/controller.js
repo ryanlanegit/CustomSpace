@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global app, console, define */
+/*global $, _, app, console, define */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -28,13 +28,22 @@ define(function () {
                     });
                 }
 
+                function processNext(targetElm, next, func) {
+                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    _.each(targetElms, func);
+                }
+
                 /* Initialization code */
                 function initROTask() {
+                    options.next = options.next || 1;
+
                     if (!options.cssclass) {
                         return;
                     }
-                    var target = promptElm.next();
-                    target.addClass(options.cssclass);
+
+                    processNext(promptElm, options.next, function (targetElm) {
+                        $(targetElm).addClass(options.cssclass);
+                    });
                 }
 
                 initROTask();

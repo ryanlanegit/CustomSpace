@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global $, app, console, define */
+/*global $, _, app, console, define */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -28,10 +28,18 @@ define(function () {
                     });
                 }
 
+                function processNext(targetElm, next, func) {
+                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    _.each(targetElms, func);
+                }
+
                 /* Initialization code */
                 function initROTask() {
-                    var target = promptElm.next();
-                    $(target).find("[data-role]").data().handler.setOptions(options);
+                    options.next = options.next || 1;
+
+                    processNext(promptElm, options.next, function (targetElm) {
+                        $(targetElm).find("[data-role]").data().handler.setOptions(options);
+                    });
                 }
 
                 initROTask();

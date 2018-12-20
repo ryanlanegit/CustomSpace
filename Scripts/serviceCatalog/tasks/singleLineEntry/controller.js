@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global $, app, console, define */
+/*global $, _, app, console, define */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -27,13 +27,15 @@ define(function () {
                         "options": options
                     });
                 }
+                
+                function processNext(targetElm, next, func) {
+                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    _.each(targetElms, func);
+                }
 
                 /* Initialization code */
                 function initROTask() {
                     options.next = options.next || 1;
-
-                    var i = 0,
-                        target = promptElm;
 
                     function preventDefaultOnEnter(event) {
                         if (event.which === 13) {
@@ -46,14 +48,9 @@ define(function () {
                         console.log("Paste Event", data);
                     }
 
-                    for (i = 0; i < options.next; i += 1) {
-                        target = target.next();
-                        if (target.find("p:contains('{\"'), p:contains('{ \"')").length) {
-                            target = target.next();
-                        }
-
-                        $(target).keydown(preventDefaultOnEnter).keyup(preventDefaultOnEnter).bind("paste", logOnPaste);
-                    }
+                    processNext(promptElm, options.next, function (targetElm) {
+                        $(targetElm).keydown(preventDefaultOnEnter).keyup(preventDefaultOnEnter).bind("paste", logOnPaste);
+                    });
                 }
 
                 initROTask();

@@ -31,7 +31,12 @@ define([
                         "options": options
                     });
                 }
-                
+
+                function processNext(targetElm, next, func) {
+                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    _.each(targetElms, func);
+                }
+
                 // Add the Minimum / Maximum required text to the page
                 function createCharacterCount(targetTextArea, options) {
                     $(targetTextArea).parent().find("span.charCount").remove();
@@ -46,25 +51,33 @@ define([
 
                 /* Initialization code */
                 function initROTask() {
-                    var target = promptElm.next(),
-                        targetTextArea = $(target).find("textarea");
-                    options = {
-                        "minText": options.minText || "Minimum Extra Characters Required",
-                        "maxText": options.maxText || "Maximum Characters Remaining",
-                        "showMin": options.showMin || "true",
-                        "showMax": options.showMax || "true",
-                        "showMinMax": options.showMinMax || "false",
-                        "charMin": $(targetTextArea).parent().find("input").attr("minlength") || 0,
-                        "charMax": $(targetTextArea).parent().find("input").attr("maxlength") || 0
-                    };
+                    options.next = options.next || 1;
 
-                    $(targetTextArea).on("paste", function () {
+                    function funcOnPaste () {
                         setTimeout(function () {
-                            createCharacterCount($(this), options);
+                            createCharacterCount($(this), targetOptions);
                         }, 100);
-                    });
-                    $(targetTextArea).on("keyup", function () {
-                        createCharacterCount($(this), options);
+                    }
+                    
+                    function funcOnKeyUp () {
+                        createCharacterCount($(this), targetOptions);
+                    }
+                    
+                    processNext(promptElm, options.next, function (targetElm) {
+                        var targetTextAreaElm = $(targetElm).find("textarea"),
+                            targetOptions = {
+                                "minText": options.minText || "Minimum Extra Characters Required",
+                                "maxText": options.maxText || "Maximum Characters Remaining",
+                                "showMin": options.showMin || "true",
+                                "showMax": options.showMax || "true",
+                                "showMinMax": options.showMinMax || "false",
+                                "charMin": $(targetTextAreaElm).parent().find("input").attr("minlength") || 0,
+                                "charMax": $(targetTextAreaElm).parent().find("input").attr("maxlength") || 0
+                            };
+
+                        $(targetTextAreaElm)
+                            .on("paste", funcOnPaste)
+                            .on("keyup", funcOnKeyUp);
                     });
                 }
 
