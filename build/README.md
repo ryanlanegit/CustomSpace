@@ -1,5 +1,10 @@
 # Build
 
+## build.bat
+
+Batch file to optimize Cireson modules, CustomSpace modules and CustomSpace CSS with r.js using build config files to determine level of RequireJS optimization and output file locations.
+Must be run in an elevated prompt in order to add or override existing files in the CustomSpace directory.
+
 ## r.js
 
 A command line tool for running JavaScript scripts that use the
@@ -24,29 +29,54 @@ Requires Node 0.4 or later.
 r.js allows using Node modules installed via npm. For more info see the
 [Use with Node](http://requirejs.org/docs/node.html) docs.
 
-## build.bat
+### Relative path resolution rules
 
-Batch file to optimize Cireson modules, CustomSpace modules and CustomSpace CSS with r.js using build config files to determine level of optimization and output file location.
-Must be run in an elevated prompt in order to add or override existing files in the CustomSpace directory.
+In general, if it is a path, it is relative to the build.js file used to hold the build options, or if just using command line arguments, relative to the current working directory. Example of properties that are file paths: appDir, dir, mainConfigFile, out, wrap.startFile, wrap.endFile.
 
-## Optimizing Cireson Modules
+For **baseUrl**, it is relative to **appDir**. If no appDir, then baseUrl is relative to the build.js file, or if just using command line arguments, the current working directory.
 
-### build-viewMain.js
+For **paths** and **packages**, they are relative to **baseUrl**, just as they are for require.js.
 
-### build-wiActivityMain.js
+For properties that are module IDs, they should be module IDs, and not file paths. Examples are **name**, **include**, **exclude**, **excludeShallow**, **deps**.
 
-### build-wiMain.js
+### Full Documentation
 
-### build-wiTaskMain.js
+Full documentation for ReqyureJS can be found at [https://requirejs.org/docs/optimization.html](https://requirejs.org/docs/optimization.html).
 
-## Optimizing CustomSpace Modules
+## Template Build Config
 
-### build-gridTaskMain.js
+### build-template.js
 
-### build-profileMain.js
+#### baseUrl
+#### paths
+#### include
+#### excludeShallow
+#### out
+#### findNestedDependencies
+#### optimize
+#### generateSourceMaps
+#### preserveLicenseComments
 
-### build-roTaskMain.js
+## Curent Build Configs
 
-## Optimizing CustomSpace CSS
+### Optimizing Cireson Modules
 
-### build-customCSS.js
+#### build-viewMain.js
+
+#### build-wiActivityMain.js
+
+#### build-wiMain.js
+
+#### build-wiTaskMain.js
+
+### Optimizing CustomSpace Modules
+
+#### build-gridTaskMain.js
+
+#### build-profileMain.js
+
+#### build-roTaskMain.js
+
+### Optimizing CustomSpace CSS
+
+#### build-customCSS.js
