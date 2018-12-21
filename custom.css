@@ -4,6 +4,14 @@
 @import url("Content/Styles/custom.requestOfferings.css");
 @import url("Content/Styles/custom.ROToolbox.css");
 
+
+/*
+	Grid Resize Handle Fix
+*/
+.k-grid-header .k-resize-handle, .k-grid>.k-resize-handle {
+    top: inherit !important;
+}
+
 .editor-field > .searchGroup {
 	display: none;
 }
