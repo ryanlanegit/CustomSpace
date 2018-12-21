@@ -1,8 +1,8 @@
 @ECHO OFF
-ECHO ************************************************ > built.log
 fltmc >nul 2>&1 && (
     cd /D "%~dp0"
 
+    ECHO ************************************************ > built.log
     ECHO RequireJS Build Script started. >> built.log & cls & type built.log
 
     ECHO ************************************************ >> built.log
@@ -40,7 +40,8 @@ fltmc >nul 2>&1 && (
     ECHO ************************************************ >> built.log
     ECHO RequireJS Build Script completed. >> built.log & cls & type built.log
 ) || (
-    ECHO Failure: Current permissions inadequate. Please rerun in elevated prompt. >> built.log & cls & type built.log
+    ECHO ************************************************
+    ECHO Failure: Current permissions inadequate. Please rerun in elevated prompt.
 )
 
 REM PAUSE
