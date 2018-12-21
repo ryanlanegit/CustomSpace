@@ -122,7 +122,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
             app.lib.mask.remove();
         });
     });
-} else if (window.location.href.indexOf("/Edit/") > -1) {
+} else if (window.location.href.indexOf("/Edit/") > -1 || window.location.href.indexOf("/New/") > -1 ) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:WorkItem", performance.now());
     }
