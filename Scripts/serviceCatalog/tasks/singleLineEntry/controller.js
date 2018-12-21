@@ -40,16 +40,17 @@ define(function () {
                     function preventDefaultOnEnter(event) {
                         if (event.which === 13) {
                             event.preventDefault();
+                        } else {
+                            var textAreaData = $(this).find("textarea").val(),
+                                newLineMatch = /\r|\n/.exec(textAreaData);
+                            if (newLineMatch) {
+                                $(this).find("textarea").val(textAreaData.replace(/[\n\r]/g, "")).keyup();
+                            }
                         }
                     }
 
-                    function logOnPaste(event) {
-                        var data = event.originalEvent.clipboardData.getData("Text");
-                        console.log("Paste Event", data);
-                    }
-
                     processNext(promptElm, options.next, function (targetElm) {
-                        $(targetElm).keydown(preventDefaultOnEnter).keyup(preventDefaultOnEnter).bind("paste", logOnPaste);
+                        $(targetElm).keydown(preventDefaultOnEnter).keyup(preventDefaultOnEnter);
                     });
                 }
 
