@@ -1,8 +1,8 @@
 ({
-    baseUrl: "../../Scripts", // => CiresonPortal/Scripts
+    baseUrl: "../Scripts", // => CiresonPortal/CustomSpace/Scripts
     paths: {
         // "requireLib": "../../Scripts/require",
-        "text": "require/text",
+        "text": "../../require/text",
         "CustomSpace": "../CustomSpace"
     },
     include: [
