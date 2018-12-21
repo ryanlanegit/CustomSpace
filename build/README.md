@@ -65,7 +65,7 @@ Full documentation for RequireJS Optimization can be found at [https://requirejs
 
 RequireJS will use **baseUrl** to resolve the paths for any module names. The **baseUrl** should be relative to **appDir**.  No appDir is provided in the template so baseUrl is relative to the build.js file, or if just using command line arguments or [built.bat](#build), the current working directory (see [Relative path resolution rules](#relative-path-resolution-rules)).  
 
-We typically use one of two different relative paths for baseUrl depending on if we are relying on dependencies to CiresonPortal/Scripts or CiresonPortal/CustomSpace/Scripts:
+We use one of two different relative paths for baseUrl depending on if we are relying on dependencies to CiresonPortal/Scripts or CiresonPortal/CustomSpace/Scripts:
 ```javascript
 baseUrl: "../../Scripts", // => CiresonPortal/Scripts
 baseUrl: "../Scripts", // => CiresonPortal/CustomSpace/Scripts
@@ -73,7 +73,9 @@ baseUrl: "../Scripts", // => CiresonPortal/CustomSpace/Scripts
 
 ### paths
 
-RequireJS will adjust any require or define **paths** relative to the [**baseUrl**](#baseurl).  We typically only use two values to load the RequireJS/AMD loader plugin [text](https://github.com/requirejs/text) for loading text resources (e.g. view.html for a module) and to specify where the CustomSpace directory is located.
+RequireJS will adjust any require or define **paths** relative to the [**baseUrl**](#baseurl). 
+
+We typically use two values to specify the RequireJS/AMD loader plugin [text](https://github.com/requirejs/text) for loading text resources (e.g. view.html) and to specify where the CustomSpace directory is located relative to [**baseUrl**](#baseurl).
 ```javascript
 paths: {
     // "requireLib": "../../Scripts/require",
@@ -83,7 +85,7 @@ paths: {
 ```
 **Note** If the module requires a separate instance of the RequireJS library on demand then the "requireLib" value should be uncommented (see [On Demand RequireJS Library Requirements](#on-demand-requirejs-library-requirements))
 ### include
-A list of RequireJS modules to load, relative to [**baseUrl**](#baseurl) or  [**paths**](#paths) if a match is found.
+A list of RequireJS modules to load, relative to [**baseUrl**](#baseurl) or  evaluated via [**paths**](#paths) if a match is found.
 ```javascript
 include: [
     // "requireLib",
