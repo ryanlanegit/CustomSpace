@@ -258,6 +258,7 @@ define([
                                 modalWindowControl = modalWindowEle.kendoCiresonWindow({
                                     title: node.Label,
                                     width: 500,
+                                    minWidth: 250,
                                     height: 400,
                                     close: function close() {},
                                     activate: function activate() {
@@ -297,7 +298,7 @@ define([
                                 
                                 modalWindowEle.removeClass("hide");
                                 modalWindowEle.show();
-                                modalWindowControl.wrapper.css("padding-bottom", "62px");
+                                modalWindowControl.wrapper.css("padding-bottom", "65px");
                                 modalWindowControl.open();
                             }
                         }
