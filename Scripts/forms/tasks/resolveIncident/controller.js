@@ -257,9 +257,6 @@ define([
                                 modalWindowEle = modalEle.element; //.element.clone(),
                                 modalWindowControl = modalWindowEle.kendoCiresonWindow({
                                     title: node.Label,
-                                    resizable: true,
-                                    modal: true,
-                                    viewable: false,
                                     width: 500,
                                     height: 400,
                                     close: function close() {},
@@ -292,8 +289,15 @@ define([
                                 createIncidentResolutionFields(modalWindowViewModel, modalWindowEle);
                                 bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle);
 
+                                console.log("ResolveIncident:resolveIncident", {
+                                    modalWindowEle: modalWindowEle,
+                                    modalWindowControl: modalWindowControl,
+                                    modalWindowViewModel: modalWindowViewModel
+                                });
+                                
                                 modalWindowEle.removeClass("hide");
                                 modalWindowEle.show();
+                                modalWindowControl.wrapper.css("padding-bottom", "62px");
                                 modalWindowControl.open();
                             }
                         }
