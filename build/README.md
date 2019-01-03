@@ -1,5 +1,6 @@
 
 
+
 # Build
 
 ## build.bat
@@ -172,11 +173,15 @@ generateSourceMaps: true,
 
 ### pathToSourceMaps
 
-Allows specifying a specific path for Source Maps to enable separate directories for minified and source map as well as for dynamically loaded minified files to point a source map file.
-The source files will show up in a browser developer tool that supports source maps as ".js.src" files if successful.
+By default, the [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) of source map files generated via the  [**generateSourceMaps**](#generateSourceMaps) option is relative to the loaded optimized file's directory but when loaded dynamically is relative to the current website path.  **pathToSourceMaps** allows specifying an absolute or relative path to source maps for dynamically loaded minified files to reference a source map file.  The source files will show up in a browser developer tool that supports source maps as ".js.src" files if successful.
 ```javascript
-// pathToSourceMaps: "/path/to/sourceMap",
+// pathToSourceMaps: "/path/to/sourceMap/",
 ```
+**Note** Leaving **pathToSourceMaps** out of the build file or setting to an empty string will result in default relative path behavior of [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map):
+| pathToSourceMaps | [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) |
+| ---------------- | ---------------- |
+| "" or Undefined  | `//# sourceMappingURL=template-built.min.js.map` |
+| "/path/to/sourceMap/" | `//# sourceMappingURL=/path/to/sourceMap/template-built.min.js.map` |
 
 ### preserveLicenseComments
 
