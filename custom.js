@@ -126,7 +126,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
         // Unsubscibe from further sessionStorage events
         app.events.unsubscribe("sessionStorageReady", loadROToolbox);
     });
-} else if (window.location.href.indexOf("/Edit/") > -1 || window.location.href.indexOf("/New/") > -1 ) {
+} else if (window.location.href.indexOf("/Edit/") > -1 || window.location.href.indexOf("/New/") > -1) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:WorkItem", performance.now());
     }
@@ -161,6 +161,18 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
             });
         });
     }
+} else if (window.location.href.indexOf("/Page/") > -1) {
+    if (app.storage.custom.get("debug")) {
+        console.log("Custom:Page", performance.now());
+    }
+
+    app.events.subscribe("angularReady", function loadPageTaskMain() {
+        "use strict";
+        console.log("angularReady.loadPageTaskMain", loadPageTaskMain);
+        app.custom.utils.getCachedScript("/CustomSpace/Scripts/page/pageTaskMain-built.min.js");
+        // Unsubscibe from further angular events
+        app.events.unsubscribe("angularReady", loadPageTaskMain);
+    });
 } else {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:Other", performance.now());

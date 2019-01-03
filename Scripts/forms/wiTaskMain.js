@@ -25,7 +25,6 @@ require([
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
         console.log("wiTaskMain", performance.now());
     }
-    var built = false;
 
     function initTasks() {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
@@ -60,19 +59,17 @@ require([
                 app.events.publish("wiTasksReady");
             });
         }
-        built = true;
     }
 
-    app.events.subscribe("boundReadyReady", function () {
+    app.events.subscribe("boundReadyReady", function execInitTasks() {
         "use strict";
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
             console.log("wiTaskMain:boundReady", performance.now());
         }
-        if (built) {
-            return;
-        }
         pageForm.boundReady(function () {
             initTasks();
+            // Unsubscibe from further boundReady events
+            app.events.unsubscribe("boundReadyReady", execInitTasks);
         });
     });
 });
