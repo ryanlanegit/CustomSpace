@@ -14,5 +14,6 @@
     findNestedDependencies: true,
     optimize: "uglify2", // none, uglify, uglify2
     generateSourceMaps: true,
+    pathToSourceMaps: "/CustomSpace/Scripts/forms/",
     preserveLicenseComments: false
 })

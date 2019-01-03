@@ -170,6 +170,14 @@ The source files will show up in a browser developer tool that supports source m
 generateSourceMaps: true,
 ```
 
+### pathToSourceMaps
+
+Allows specifying a specific path for Source Maps to enable separate directories for minified and source map as well as for dynamically loaded minified files to point a source map file.
+The source files will show up in a browser developer tool that supports source maps as ".js.src" files if successful.
+```javascript
+// pathToSourceMaps: "/path/to/sourceMap",
+```
+
 ### preserveLicenseComments
 
 By default, comments that have a license in them are preserved in the output when a minifier is used in the [**optimize**](#optimize) option.
