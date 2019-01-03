@@ -36,8 +36,10 @@ require([
     if (app.isSessionStored()) {
         initTasks();
     } else {
-        app.events.subscribe("sessionStorageReady", function () {
+        app.events.subscribe("sessionStorageReady", function execInitTasks() {
             initTasks();
+            // Unsubscibe from further sessionStorage events
+            app.events.unsubscribe("sessionStorageReady", execInitTasks);
         });
     }
 });
