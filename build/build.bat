@@ -36,6 +36,10 @@ fltmc >nul 2>&1 && (
     ECHO ************************************************ >> built.log
     ECHO Building \CustomSpace\Scripts\grids\gridTaskMain.js >> built.log & cls & type built.log
     node r.js -o build-gridTaskMain.js >> built.log & cls & type built.log
+    
+    ECHO ************************************************ >> built.log
+    ECHO Building \CustomSpace\Scripts\page\pageTaskMain.js >> built.log & cls & type built.log
+    node r.js -o build-pageTaskMain.js >> built.log & cls & type built.log
 
     ECHO ************************************************ >> built.log
     ECHO RequireJS Build Script completed. >> built.log & cls & type built.log
