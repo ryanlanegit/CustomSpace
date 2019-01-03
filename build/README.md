@@ -177,7 +177,9 @@ By default, the [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tool
 ```javascript
 // pathToSourceMaps: "/path/to/sourceMap/",
 ```
+
 **Note** Leaving **pathToSourceMaps** out of the build file or setting to an empty string will result in default relative path behavior of [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map):
+
 | pathToSourceMaps | [sourceMappingURL](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map) |
 | ---------------- | ---------------- |
 | "" or Undefined  | `//# sourceMappingURL=template-built.min.js.map` |
