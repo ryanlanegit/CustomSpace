@@ -85,22 +85,23 @@ define([
                 }
 
                 function createPopupNotification(message) {
-                    var popupNotification = $(".popupNotification").getKendoNotification("kendoNotification");
+                    var popupNotificationElm = $(".popupNotification:first"),
+                        popupNotification = popupNotificationElm.getKendoNotification("kendoNotification");
 
-                    if (popupNotification === null || _.isUndefined(popupNotification)) {
-                        popupNotification = $(".popupNotification").kendoNotification({
+                    if (!_.isUndefined(popupNotification)) {
+                        popupNotification.hide();
+                    } else {
+                        popupNotification = popupNotificationElm.kendoNotification({
                             templates: [{
-                                type: "info",
+                                type: "resolveIncidentNotification",
                                 template: '<div class="success k-ext-dialog-content"><div class="k-ext-dialog-icon fa fa-check"></div><div class="k-ext-dialog-message">#= message #</div></div>'
                             }]
                         }).data("kendoNotification");
-                    } else {
-                        popupNotification.hide();
                     }
 
                     popupNotification.show({
                         message: app.custom.utils.stringFormat(message, vm.viewModel.Id)
-                    }, "info");
+                    }, "resolveIncidentNotification");
                 }
 
                 function createIncidentResolutionFields(modalWindowViewModel, modalWindowEle) {
@@ -290,12 +291,14 @@ define([
                                 createIncidentResolutionFields(modalWindowViewModel, modalWindowEle);
                                 bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle);
 
-                                console.log("ResolveIncident:resolveIncident", {
-                                    modalWindowEle: modalWindowEle,
-                                    modalWindowControl: modalWindowControl,
-                                    modalWindowViewModel: modalWindowViewModel
-                                });
-                                
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                    console.log("resolveIncidentTask:resolveIncident", {
+                                        modalWindowEle: modalWindowEle,
+                                        modalWindowControl: modalWindowControl,
+                                        modalWindowViewModel: modalWindowViewModel
+                                    });
+                                }
+
                                 modalWindowEle.removeClass("hide");
                                 modalWindowEle.show();
                                 modalWindowControl.wrapper.css("padding-bottom", "65px");

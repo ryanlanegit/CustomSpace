@@ -12,7 +12,7 @@ define([
     "use strict";
     var taskModules = arguments,
         definition = {
-            "build": function (vm, callback) {
+            build: function build(vm, callback) {
                 var ulElement = $(".taskmenu"),
                     taskCallback = function (view) {
                         ulElement.append(view);

@@ -30,8 +30,10 @@ if (app.storage.custom.get("debug")) {
             "dynamicPageReady",
             "sessionStorageReady",
             "requirejsReady",
+            "angularReady",
             "gridTasksReady",
-            "roTasksReady"
+            "roTasksReady",
+            "pageTasksReady"
         ];
         _.each(debugEvents, function (debugEvent) {
             app.events.subscribe(debugEvent, debugEventSubscriber);
@@ -114,22 +116,26 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
 
     app.custom.utils.getCachedScript("/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js");
 
-    app.events.subscribe("sessionStorageReady", function () {
+    app.events.subscribe("sessionStorageReady", function loadROToolbox() {
         "use strict";
         app.custom.utils.getCachedScript("/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js").done(function () {
             app.lib.mask.apply("Applying Request Offering Template");
             transformRO();
             app.lib.mask.remove();
         });
+        // Unsubscibe from further sessionStorage events
+        app.events.unsubscribe("sessionStorageReady", loadROToolbox);
     });
 } else if (window.location.href.indexOf("/Edit/") > -1 || window.location.href.indexOf("/New/") > -1 ) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:WorkItem", performance.now());
     }
     if (window.location.href.indexOf("Incident") > -1 || window.location.href.indexOf("ServiceRequest") > -1) {
-        app.events.subscribe("requirejsReady", function () {
+        app.events.subscribe("requirejsReady", function loadWITaskMain() {
             "use strict";
             app.custom.utils.getCachedScript("/CustomSpace/Scripts/forms/wiTaskMain-built.min.js");
+            // Unsubscibe from further requirejs events
+            app.events.unsubscribe("requirejsReady", loadWITaskMain);
         });
         /*
             Check Is Private In Action Log By Default
@@ -160,15 +166,17 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
         console.log("Custom:Other", performance.now());
     }
 
-    app.events.subscribe("requirejsReady", function () {
+    app.events.subscribe("requirejsReady", function loadGridTaskMain() {
         "use strict";
         app.custom.utils.getCachedScript("/CustomSpace/Scripts/grids/gridTaskMain-built.min.js");
+        // Unsubscibe from further requirejs events
+        app.events.unsubscribe("requirejsReady", loadGridTaskMain);
     });
 
     /*
         Custom Grid Tasks
     */
-    app.events.subscribe("gridTasksReady", function () {
+    app.events.subscribe("gridTasksReady", function populateGridTasks() {
         "use strict";
         if (app.storage.custom.get("debug")) {
             console.log("gridTasksReady:event", {
@@ -254,6 +262,9 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
 
             app.custom.gridTasks.updateGrid(gridData);
         }
+        
+        // Unsubscibe from further gridTasks events
+        app.events.unsubscribe("gridTasksReady", populateGridTasks);
     });
 }
 
@@ -275,6 +286,25 @@ if (!_.isUndefined(window.requirejs)) {
             "use strict";
             this._requirejs = val;
             app.events.publish("requirejsReady");
+        }
+    });
+}
+
+if (!_.isUndefined(window.angular)) {
+    app.events.publish("angularReady");
+} else {
+    Object.defineProperty(window, "angular", {
+        configurable: true,
+        enumerable: true,
+        writeable: true,
+        get: function () {
+            "use strict";
+            return this._angular;
+        },
+        set: function (val) {
+            "use strict";
+            this._angular = val;
+            app.events.publish("angularReady");
         }
     });
 }
