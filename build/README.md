@@ -70,7 +70,7 @@ Full documentation for RequireJS Optimization can be found at [https://requirejs
 
 #### Modules
 * [build-gridTaskMain.js](build-gridTaskMain.js)
-* [build-profileMain.js](build-profileMain.js)
+* [build-pageTaskMain.js](build-pageTaskMain.js)
 * [build-roTaskMain.js](build-roTaskMain.js)
 * [build-wiTaskMain.js](build-wiTaskMain.js)
 
