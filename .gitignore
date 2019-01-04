@@ -2,3 +2,6 @@
 build/built.log
 build/built.log
 build/built.log
+SurveyApp/
+views/SurveyApp.js
+views/viewpanels/surveyApp-vp.js
