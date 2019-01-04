@@ -8,7 +8,7 @@ Load Custom Work Item Task Builder
 
 require.config({
     waitSeconds: 0,
-    urlArgs: "v=" + session.staticFileVersion,
+    urlArgs: "v=" + ((typeof session !== "undefined" && typeof session.staticFileVersion !== "undefined") ? session.staticFileVersion : 894),
     baseUrl: "/Scripts/",
     paths: {
         "text": "require/text",

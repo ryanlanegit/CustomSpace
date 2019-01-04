@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global $, app, console, performance, require */
+/*global _, app, console, performance, require, session */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -8,7 +8,7 @@ Load Custom Grid Task Builder
 
 require.config({
     waitSeconds: 0,
-    urlArgs: "v=" + session.staticFileVersion,
+    urlArgs: "v=" + ((typeof session !== "undefined" && typeof session.staticFileVersion !== "undefined") ? session.staticFileVersion : 894),
     baseUrl: "/Scripts/",
     paths: {
         "text": "require/text",
@@ -31,7 +31,7 @@ require([
             console.log("gridTaskMain:initGridTasks", performance.now());
         }
         
-        gridTaskBuilder.build(function (gridTaskViewModel) {
+        gridTaskBuilder.build(function () {
             app.events.subscribe("dynamicPageReady", function publishGridTasksReady() {
                 app.events.publish("gridTasksReady");
                 // Unsubscibe from further dynamicPage events
