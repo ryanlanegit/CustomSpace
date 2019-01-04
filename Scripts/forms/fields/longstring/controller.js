@@ -56,7 +56,9 @@ define([
                         fieldElm = new kendo.View(builtField(properties), { wrap: false, model: fieldViewModel});
 
                     //send hidden window back to caller (appended in the callback)
-                    callback(fieldElm.render());
+                    if (typeof callback === "function") {
+                        callback(fieldElm.render());
+                    }
                     return fieldElm;
                 }
             };

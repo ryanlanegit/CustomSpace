@@ -37,7 +37,9 @@ define([
                 });
 
                 //send back <ul> with <li> of each task
-                callback(ulElement);
+                if (typeof callback === "function") {
+                    callback(ulElement);
+                }
             }
         };
 

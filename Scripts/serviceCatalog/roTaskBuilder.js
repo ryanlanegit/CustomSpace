@@ -42,8 +42,7 @@ define([
                     var roTask = _.filter(roTaskModules, function (roTask) {
                         if (_.isUndefined(roTask.task)) {
                             return false;
-                        }
-                        else {
+                        } else {
                             return (roTask.task.Task.toLowerCase() === taskName.toLowerCase());
                         }
                     })[0];
@@ -131,7 +130,10 @@ define([
                             }
                         });
                     });
-                    callback();
+                    
+                    if (typeof callback === "function") {
+                        callback();
+                    }
                 }
 
                 initTask();

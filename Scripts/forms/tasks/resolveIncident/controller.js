@@ -227,7 +227,9 @@ define([
                                 "wrap": false
                             });
                         //send hidden window back to caller (appended in the callback)
-                        callback(ele.render());
+                        if (typeof callback === "function") {
+                            callback(ele.render());
+                        }
                         return ele;
                     },
                     taskListItem: function taskListItem(properties, anchorViewModel, template) {
@@ -239,7 +241,9 @@ define([
                                 "model": anchorViewModel
                             });
                         //send anchor element back to caller (appended in the callback)
-                        callback(anchorElm.render());
+                        if (typeof callback === "function") {
+                            callback(anchorElm.render());
+                        }
                         return anchorElm;
                     }
                 };

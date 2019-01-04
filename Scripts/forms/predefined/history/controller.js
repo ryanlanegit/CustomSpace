@@ -143,7 +143,9 @@ define([
                     }
                 }).data("kendoDropDownList");
                 
-                callback(historyElm);
+                if (typeof callback === "function") {
+                    callback(historyElm);
+                }
             }
             
             function initHistory() {
