@@ -39,10 +39,8 @@ define([
                     TextCounter: function textCounter() {
                         this.set("CharactersRemaining", this.MaxLength - this.ResolutionDescription.length);
                     }
-                };
-                $.extend(true, fieldProperties, properties);
-
-                var fieldViewModel = kendo.observable(fieldProperties);
+                },
+                    fieldViewModel = kendo.observable($.extend(true, fieldProperties, properties));
 
                 return fieldViewModel;
             }
