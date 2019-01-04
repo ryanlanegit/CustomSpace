@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global _, $, app, console, define, kendo */
+/*global _, $, app, console, define, kendo, performance */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -172,8 +172,7 @@ define([
                             var gridTask = _.filter(gridTaskModules, function (gridTask) {
                                 if (_.isUndefined(gridTask.task)) {
                                     return false;
-                                }
-                                else {
+                                } else {
                                     return (gridTask.task.Task.toLowerCase() === taskName.toLowerCase());
                                 }
                             })[0];

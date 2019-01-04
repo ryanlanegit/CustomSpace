@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global _, $, app, console, define */
+/*global _, $, app, console, define, performance */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
@@ -7,7 +7,7 @@ Custom Page Task Builder
 **/
 
 define([
-    "CustomSpace/Scripts/page/tasks/groupPicker/controller",
+    "CustomSpace/Scripts/page/tasks/groupPicker/controller"
 ], function () {
     "use strict";
     var pageTaskModules = arguments,
@@ -40,8 +40,7 @@ define([
                     var pageTask = _.filter(pageTaskModules, function (pageTask) {
                         if (_.isUndefined(pageTask.task)) {
                             return false;
-                        }
-                        else {
+                        } else {
                             return (pageTask.task.Task.toLowerCase() === taskName.toLowerCase());
                         }
                     })[0];

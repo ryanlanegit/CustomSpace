@@ -1,5 +1,5 @@
 /*jslint nomen: true */
-/*global _, $, app, console, define */
+/*global _, app, console, define */
 /*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
