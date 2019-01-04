@@ -64,6 +64,7 @@ define([
                     var mainWrapperElm = $("#main_wrapper"),
                         htmlWidgetElms = mainWrapperElm.find("div[adf-widget-type='html']");
                     
+                    /*
                     var scopeElm = mainWrapperElm.children("div[ui-view]");
                     var $scope = angular.element(scopeElm).scope();
                     
@@ -72,7 +73,7 @@ define([
                             "$scope": $scope
                         });
                     });
-                    
+                    */
                     if (_.isUndefined(htmlWidgetElms[0])) {
                         console.log("No HTML Widgets On Page", {
                             "mainWrapperElm": mainWrapperElm,
@@ -80,6 +81,7 @@ define([
                         });
                     } else {
                         console.log(htmlWidgetElms.Length + " HTML Widgets On Page");
+                        /*
                         htmlWidgetElms.each(function () {
                             var htmlWidget =  $(this),
                                 htmlContentContainer = htmlWidget.find("adf-widget-content div[ng-bind-html]");
@@ -134,6 +136,7 @@ define([
                                 console.log("htmlContent is NOT valid JSON");
                             }
                         });
+                        */
                     }
                     
 
