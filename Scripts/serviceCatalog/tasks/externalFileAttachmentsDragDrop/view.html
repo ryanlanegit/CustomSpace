@@ -1,0 +1,11 @@
+﻿<%
+if (_.isUndefined(cssclass)) {
+   var cssclass = "col-md-6 col-xs-12";
+}
+if (_.isUndefined(id)) {
+   var id = (Math.floor(Math.random() * 999999999999) + 1);
+}
+%>
+<div class="<%= cssclass %>" id="ExternalFileAttachmentsDragDrop_<%= id %>">
+    ExternalFileAttachmentsDragDrop Placeholder
+</div>

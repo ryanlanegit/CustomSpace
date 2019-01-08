@@ -1,0 +1,58 @@
+﻿<div class="form-group">
+    <div class="drop-zone-element">
+        <div class="text-wrapper">
+            <span class="drag-image-text">
+                <img data-bind="visible:isDesktop" src="/Content/Images/Icons/FileUpload/upload_to_cloud.svg" />
+                <span data-bind="visible:isDesktop"><b><%= localization.DragAndDrop %> </b> <%= localization.YourFilesOr %> <a class="browse-file"><b><%= localization.Browse %></b></a></span>
+                <a  data-bind="visible:isMobile" class="browse-file"><b><%= localization.Browse %></b></a>
+                <div style="display:none"><input name="files" id="files" type="file"/></div>
+            </span>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="fileattachment-list"></div>
+    <div class="fileattachment-img-modal"></div>
+</div>
+
+<script type="text/x-kendo-template" id="fileTemplate">
+    <div class="thumbnail-file">
+        <div class="cursor-pointer thumbnail-img">
+            # if (DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) { #
+            <img src="data:image/png;base64,#= Content.data #" onerror="this.onerror = null; this.src = '/Content/Images/Icons/FileUpload/document.svg';" alt="#: DisplayName # image" />
+            # } else{ #
+            <img class="default-icon" src="/Content/Images/Icons/FileUpload/document.svg" onerror="this.onerror = null; this.src = '/Content/Images/Icons/FileUpload/document.svg'">
+            # } #
+        </div>
+        <div class="thumbnail-caption">
+            <span>#: DisplayName #</span>
+            <div class="overlay">
+                # if (DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) { #
+                <span class="label">
+                    <a class="icon custom-click view" view-image title="View Image">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </span>
+                <span class="label">
+                    <a class="icon custom-click opennewtab" title="Open in New Tab">
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </span>
+                # } #
+                # if (BaseId!=null) { #
+                <span class="label">
+                    <a class="icon custom-click download" title="Download">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </span>
+                # } #
+                <span class="label">
+                    <a class="k-delete-button icon" href="\\#"  title="<%= localization.Remove %>"><i class="fa fa-trash"></i></a>
+                </span>
+            </div>
+        </div>
+    </div>
+</script>
+<style>
+
+</style>
