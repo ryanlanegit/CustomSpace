@@ -109,7 +109,7 @@ app.custom.utils = {
     }
 };
 
-if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
+if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:RequestOffering", performance.now());
     }
@@ -126,11 +126,11 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
         // Unsubscibe from further sessionStorage events
         app.events.unsubscribe("sessionStorageReady", loadROToolbox);
     });
-} else if (window.location.href.indexOf("/Edit/") > -1 || window.location.href.indexOf("/New/") > -1) {
+} else if (window.location.pathname.indexOf("/Edit/") > -1 || window.location.pathname.indexOf("/New/") > -1) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:WorkItem", performance.now());
     }
-    if (window.location.href.indexOf("Incident") > -1 || window.location.href.indexOf("ServiceRequest") > -1) {
+    if (window.location.pathname.indexOf("Incident") > -1 || window.location.pathname.indexOf("ServiceRequest") > -1) {
         app.events.subscribe("requirejsReady", function loadWITaskMain() {
             "use strict";
             app.custom.utils.getCachedScript("/CustomSpace/Scripts/forms/wiTaskMain-built.min.js");
@@ -161,7 +161,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
             });
         });
     }
-} else if (window.location.href.indexOf("/Page/") > -1) {
+} else if (window.location.pathname.indexOf("/Page/") > -1) {
     if (app.storage.custom.get("debug")) {
         console.log("Custom:Page", performance.now());
     }
@@ -173,9 +173,9 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
         // Unsubscibe from further angular events
         app.events.unsubscribe("angularReady", loadPageTaskMain);
     });
-} else {
+} else if (window.location.pathname.indexOf("/View/") > -1) {
     if (app.storage.custom.get("debug")) {
-        console.log("Custom:Other", performance.now());
+        console.log("Custom:View", performance.now());
     }
 
     app.events.subscribe("requirejsReady", function loadGridTaskMain() {
@@ -196,7 +196,7 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
             });
         }
 
-        var gridData = $("div[data-role='grid']").data("kendoGrid");
+        var gridData = $("div[data-role='grid']:first").data("kendoGrid");
         if (!_.isUndefined(gridData)) {
             // Adding background colors to the Priority column based on value.
             app.custom.gridTasks.add(gridData, "Priority", "style", "", function () {
@@ -278,6 +278,10 @@ if (window.location.href.indexOf("ServiceCatalog/RequestOffering") > -1) {
         // Unsubscibe from further gridTasks events
         app.events.unsubscribe("gridTasksReady", populateGridTasks);
     });
+} else {
+    if (app.storage.custom.get("debug")) {
+        console.log("Custom:Other", performance.now());
+    }
 }
 
 /*
