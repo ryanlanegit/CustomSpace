@@ -46,7 +46,7 @@ define([
             template: resolveIncidentTemplate,
             task: resolveIncidentTask,
             build: function build(vm, node, callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("resolveIncidentTask:build");
                 }
                 /* BEGIN Functions */
@@ -295,7 +295,7 @@ define([
                                 createIncidentResolutionFields(modalWindowViewModel, modalWindowEle);
                                 bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle);
 
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                     console.log("resolveIncidentTask:resolveIncident", {
                                         modalWindowEle: modalWindowEle,
                                         modalWindowControl: modalWindowControl,

@@ -13,7 +13,7 @@ app.storage.custom = store.namespace("custom");
 // app.storage.custom.set("debug", true); // Enable DEBUG Mode via Console/Script/Plugin
 // app.storage.custom.set("debug", false); // Disable DEBUG Mode via Console/Script/Plugin
 
-if (app.storage.custom.get("debug")) {
+if (app.storage.custom.get("DEBUG_ENABLED")) {
     console.log("DEBUG Mode Enabled", performance.now());
     (function () {
         "use strict";
@@ -48,12 +48,12 @@ app.custom.utils = {
     "setDebugMode" : function setDebugMode(enabled) {
         "use strict";
         console.log("setDebugMode", enabled);
-        app.storage.custom.set("debug", enabled);
+        app.storage.custom.set("DEBUG_ENABLED", enabled);
     },
 
     "getCachedScript" : function getCachedScript(url, options) {
         "use strict";
-        if (app.storage.custom.get("debug")) {
+        if (app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("getCachedScript", url);
         }
         options = $.extend(options || {}, {
@@ -67,7 +67,7 @@ app.custom.utils = {
 
     "getCSS" : function getCSS(url) {
         "use strict";
-        if (app.storage.custom.get("debug")) {
+        if (app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("getCSS", url);
         }
         return $("<link>", {
@@ -88,7 +88,7 @@ app.custom.utils = {
 
     "sortList" : function sortList(ulElement) {
         "use strict";
-        if (app.storage.custom.get("debug")) {
+        if (app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("sortList", ulElement);
         }
         ulElement = $(ulElement);
@@ -110,7 +110,7 @@ app.custom.utils = {
 };
 
 if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
-    if (app.storage.custom.get("debug")) {
+    if (app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("Custom:RequestOffering", performance.now());
     }
 
@@ -127,7 +127,7 @@ if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
         app.events.unsubscribe("sessionStorageReady", loadROToolbox);
     });
 } else if (window.location.pathname.indexOf("/Edit/") > -1 || window.location.pathname.indexOf("/New/") > -1) {
-    if (app.storage.custom.get("debug")) {
+    if (app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("Custom:WorkItem", performance.now());
     }
     if (window.location.pathname.indexOf("Incident") > -1 || window.location.pathname.indexOf("ServiceRequest") > -1) {
@@ -162,7 +162,7 @@ if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
         });
     }
 } else if (window.location.pathname.indexOf("/Page/") > -1) {
-    if (app.storage.custom.get("debug")) {
+    if (app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("Custom:Page", performance.now());
     }
 
@@ -174,7 +174,7 @@ if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
         app.events.unsubscribe("angularReady", loadPageTaskMain);
     });
 } else if (window.location.pathname.indexOf("/View/") > -1) {
-    if (app.storage.custom.get("debug")) {
+    if (app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("Custom:View", performance.now());
     }
 
@@ -190,7 +190,7 @@ if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
     */
     app.events.subscribe("gridTasksReady", function populateGridTasks() {
         "use strict";
-        if (app.storage.custom.get("debug")) {
+        if (app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("gridTasksReady:event", {
                 "performance": performance.now()
             });
@@ -279,7 +279,7 @@ if (window.location.pathname.indexOf("ServiceCatalog/RequestOffering") > -1) {
         app.events.unsubscribe("gridTasksReady", populateGridTasks);
     });
 } else {
-    if (app.storage.custom.get("debug")) {
+    if (app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("Custom:Other", performance.now());
     }
 }

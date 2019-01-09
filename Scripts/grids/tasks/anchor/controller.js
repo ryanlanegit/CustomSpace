@@ -24,7 +24,7 @@ define([
             template: anchorTemplate,
             task: gridTask,
             build: function build(column) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("gridTask:build", {
                         "gridTask": gridTask,
                         "column": column

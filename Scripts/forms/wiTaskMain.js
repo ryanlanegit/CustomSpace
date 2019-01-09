@@ -22,12 +22,12 @@ require([
     wiTaskBuilder
 ) {
     "use strict";
-    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("wiTaskMain", performance.now());
     }
 
     function initTasks() {
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("wiTaskMain:initTasks", performance.now());
         }
         
@@ -63,7 +63,7 @@ require([
 
     app.events.subscribe("boundReadyReady", function execInitTasks() {
         "use strict";
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
             console.log("wiTaskMain:boundReady", performance.now());
         }
         pageForm.boundReady(function () {

@@ -21,7 +21,7 @@ define([
         definition = {
             node: nodeConfig,
             build: function build(vm, node, callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("pageTaskBuilder:build", {
                         "vm": vm,
                         "node": node,
@@ -30,7 +30,7 @@ define([
                 }
                 /* BEGIN Functions */
                 function buildAndRender(taskName, promptElm, options) {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                         console.log("pageTaskBuilder:buildAndRender", {
                             "taskName": taskName,
                             "promptElm": promptElm,
@@ -48,7 +48,7 @@ define([
                     if (!_.isUndefined(pageTask)) {
                         pageTask.build(promptElm, options);
                     } else {
-                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                             console.log("Property Not Found For Rendering:", taskName);
                         }
                     }
@@ -57,7 +57,7 @@ define([
 
                 /* Initialization code */
                 function initTask() {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                         console.log("pageTaskBuilder:initTask", performance.now());
                     }
                     var mainWrapperElm = $("#main_wrapper"),
@@ -115,13 +115,13 @@ define([
                                 if (_.isUndefined(app.storage.custom)) {
                                     htmlWidget.hide();
                                 } else {
-                                    if (!app.storage.custom.get("debug")) {
+                                    if (!app.storage.custom.get("DEBUG_ENABLED")) {
                                         htmlWidget.hide();
                                     }
                                 }
                                 for (propName in parsedProperties) {
                                     if (parsedProperties.hasOwnProperty(propName)) {
-                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                             console.log("pageTaskElm.property", {
                                                 "name": propName,
                                                 "value": parsedProperties[propName]

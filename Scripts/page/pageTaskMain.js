@@ -22,7 +22,7 @@ require([
     pageTaskBuilder
 ) {
     "use strict";
-    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
         console.log("pageTaskBuilder", performance.now());
     }
 

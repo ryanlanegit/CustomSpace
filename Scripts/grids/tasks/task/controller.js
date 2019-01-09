@@ -24,7 +24,7 @@ define([
             template: listItemTaskTemplate,
             task: gridTask,
             build: function build(field, task, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("gridTask:build", {
                         "gridTask": gridTask,
                         "field": field,

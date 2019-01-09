@@ -15,7 +15,7 @@ define([
     var gridTaskModules = arguments,
         definition = {
             build: function build(callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("gridTaskBuilder:build");
                 }
                 /* BEGIN Functions */
@@ -103,14 +103,14 @@ define([
                                         // Return the specific task in the provided field
                                         return gridTask;
                                     } else {
-                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                             console.log("gridTasks:get", "Warning! Unable to find task '" + name + "' in field '" + field + "'.");
                                         }
                                         return null;
                                     }
                                 }
                             } else {
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                     console.log("gridTasks:get", "Warning! Unable to find field '" + field + "'.");
                                 }
                                 return null;
@@ -180,7 +180,7 @@ define([
                             if (!_.isUndefined(gridTask)) {
                                 return gridTask.build(field, task, options);
                             } else {
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                     console.log("Property Not Found For Rendering:", taskName);
                                 }
                                 return null;
@@ -193,7 +193,7 @@ define([
 
                 /* Initialization Code */
                 function initGridTask() {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                         console.log("gridTaskBuilder:initGridTask", performance.now());
                     }
                     var gridTaskViewModel = getGridTaskViewModel();

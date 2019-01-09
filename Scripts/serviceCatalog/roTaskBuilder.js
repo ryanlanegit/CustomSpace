@@ -31,7 +31,7 @@ define([
         definition = {
             node: nodeConfig,
             build: function build(vm, node, callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                     console.log("roTaskBuilder:build", {
                         "vm": vm,
                         "node": node,
@@ -51,7 +51,7 @@ define([
                     if (!_.isUndefined(roTask)) {
                         roTask.build(promptElm, options);
                     } else {
-                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                             console.log("Property Not Found For Rendering:", taskName);
                         }
                     }
@@ -64,7 +64,7 @@ define([
                         var roPage = $(this),
                             roTaskElms = roPage.find("p:contains('{\"'), p:contains('{ \"')"),
                             roQuestionElms = roPage.find("div.question-container");
-                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                             console.log("roTaskBuilder:initTask", {
                                 "roPage": roPage,
                                 "roTaskElms": roTaskElms,
@@ -114,13 +114,13 @@ define([
                             if (_.isUndefined(app.storage.custom)) {
                                 propertyContainer.hide();
                             } else {
-                                if (!app.storage.custom.get("debug")) {
+                                if (!app.storage.custom.get("DEBUG_ENABLED")) {
                                     propertyContainer.hide();
                                 }
                             }
                             for (propName in parsedProperties) {
                                 if (parsedProperties.hasOwnProperty(propName)) {
-                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
+                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
                                         console.log("roTaskElm.property", {
                                             "name": propName,
                                             "value": parsedProperties[propName]
