@@ -7,11 +7,11 @@ Resolve Incident
 **/
 
 define([
-    "text!forms/tasks/anchor/view.html",
-    "text!CustomSpace/Scripts/forms/tasks/resolveIncident/view.html",
-    "forms/fields/enum/controller",
-    "CustomSpace/Scripts/forms/fields/longstring/controller",
-    "forms/fields/boolean/controller"
+    'text!forms/tasks/anchor/view.html',
+    'text!CustomSpace/Scripts/forms/tasks/resolveIncident/view.html',
+    'forms/fields/enum/controller',
+    'CustomSpace/Scripts/forms/fields/longstring/controller',
+    'forms/fields/boolean/controller'
 ], function (
     anchorTemplate,
     resolveIncidentTemplate,
@@ -19,35 +19,35 @@ define([
     txtAreaControl,
     checkBoxControl
 ) {
-    "use strict";
+    'use strict';
     var resolveIncidentTask = {
-            "Task": "resolveIncident",
-            "Type": "Incident",
-            "Label": "Resolve Incident",
-            "Access": session.user.Analyst === 1,
-            "Configs": {
-                "ResolutionCategory": {
-                    "Id": "c5f6ada9-a0df-01d6-7087-6b8500ca6c2b",
-                    "Name": "Fixed by analyst"
+            'Task': 'resolveIncident',
+            'Type': 'Incident',
+            'Label': 'Resolve Incident',
+            'Access': session.user.Analyst === 1,
+            'Configs': {
+                'ResolutionCategory': {
+                    'Id': 'c5f6ada9-a0df-01d6-7087-6b8500ca6c2b',
+                    'Name': 'Fixed by analyst'
                 },
-                "description": {
-                    "MinLength": 4,
-                    "MaxLength": 4000,
-                    "Rows": 4
+                'description': {
+                    'MinLength': 4,
+                    'MaxLength': 4000,
+                    'Rows': 4
                 }
             }
         },
 
-        incidentResolutionCategoryEnumId = "72674491-02cb-1d90-a48f-1b269eb83602",
-        incidentStatusResolvedEnumId = "2b8830b6-59f0-f574-9c2a-f4b4682f1681",
-        systemDomainUserClassId = "eca3c52a-f273-5cdc-f165-3eb95a2b26cf",
+        incidentResolutionCategoryEnumId = '72674491-02cb-1d90-a48f-1b269eb83602',
+        incidentStatusResolvedEnumId = '2b8830b6-59f0-f574-9c2a-f4b4682f1681',
+        systemDomainUserClassId = 'eca3c52a-f273-5cdc-f165-3eb95a2b26cf',
 
         definition = {
             template: resolveIncidentTemplate,
             task: resolveIncidentTask,
             build: function build(vm, node, callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("resolveIncidentTask:build");
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('resolveIncidentTask:build');
                 }
                 /* BEGIN Functions */
                 //form field helper
@@ -77,63 +77,63 @@ define([
                     checkBoxControl.build(vmModel, props, function (txtCheckboxControl) {
                         container.html(txtCheckboxControl);
                         app.controls.apply(container, {
-                            "localize": true,
-                            "vm": vmModel,
-                            "bind": true
+                            'localize': true,
+                            'vm': vmModel,
+                            'bind': true
                         });
                     });
                 }
 
                 function createPopupNotification(message) {
-                    var popupNotificationElm = $(".popupNotification:first"),
-                        popupNotification = popupNotificationElm.getKendoNotification("kendoNotification");
+                    var popupNotificationElm = $('.popupNotification:first'),
+                        popupNotification = popupNotificationElm.getKendoNotification('kendoNotification');
 
                     if (!_.isUndefined(popupNotification)) {
                         popupNotification.hide();
                     } else {
                         popupNotification = popupNotificationElm.kendoNotification({
                             templates: [{
-                                type: "resolveIncidentNotification",
+                                type: 'resolveIncidentNotification',
                                 template: '<div class="success k-ext-dialog-content"><div class="k-ext-dialog-icon fa fa-check"></div><div class="k-ext-dialog-message">#= message #</div></div>'
                             }]
-                        }).data("kendoNotification");
+                        }).data('kendoNotification');
                     }
 
                     popupNotification.show({
                         message: app.custom.utils.stringFormat(message, vm.viewModel.Id)
-                    }, "resolveIncidentNotification");
+                    }, 'resolveIncidentNotification');
                 }
 
                 function createIncidentResolutionFields(modalWindowViewModel, modalWindowEle) {
                     var resolutionProperties = {
-                        PropertyName: "ResolutionCategory",
-                        PropertyDisplayName: "ResolutionCategory",
+                        PropertyName: 'ResolutionCategory',
+                        PropertyDisplayName: 'ResolutionCategory',
                         Required: true,
                         EnumId: modalWindowViewModel.resolutionCategoryEnumId
                     },
                         resolutionDescriptionProperties = {
-                            PropertyName: "ResolutionDescription",
-                            PropertyDisplayName: "Resolution Notes",
-                            PlaceHolder: "Resolution Notes...",
+                            PropertyName: 'ResolutionDescription',
+                            PropertyDisplayName: 'Resolution Notes',
+                            PlaceHolder: 'Resolution Notes...',
                             Required: false,
                             MaxLength: node.Configs.description.MaxLength,
                             CharactersRemaining: node.Configs.description.MaxLength,
                             Rows: node.Configs.description.Rows
                         },
                         resolutionAssignToMeProperties = {
-                            PropertyName: "ResolutionAssignToMe",
-                            PropertyDisplayName: "Assign To Me",
+                            PropertyName: 'ResolutionAssignToMe',
+                            PropertyDisplayName: 'Assign To Me',
                             Inline: true,
                             Disabled: false,
                             Required: false,
                             Checked: true
                         };
                     //resolution picker
-                    buildEnumPicker(modalWindowEle.find("#resolutionPicker"), resolutionProperties, modalWindowViewModel);
+                    buildEnumPicker(modalWindowEle.find('#resolutionPicker'), resolutionProperties, modalWindowViewModel);
                     //resolution description
-                    buildTextArea(modalWindowEle.find("#resolutionDescription"), resolutionDescriptionProperties, modalWindowViewModel);
+                    buildTextArea(modalWindowEle.find('#resolutionDescription'), resolutionDescriptionProperties, modalWindowViewModel);
 
-                    buildCheckbox(modalWindowEle.find("#resolutionAssignToMe"), resolutionAssignToMeProperties, modalWindowViewModel);
+                    buildCheckbox(modalWindowEle.find('#resolutionAssignToMe'), resolutionAssignToMeProperties, modalWindowViewModel);
                 }
 
                 // Resolve Incident
@@ -141,80 +141,80 @@ define([
                     var actionLogType = app.controls.getWorkItemLogType(vm.viewModel),
                         resolvedDateElement = $('input[name="ResolvedDate"]');
 
-                    vm.viewModel.set("ResolutionDescription", modalWindowViewModel.ResolutionDescription.ResolutionDescription);
-                    vm.viewModel.set("ResolutionCategory", { Id: modalWindowViewModel.ResolutionCategory.Id });
-                    vm.viewModel.set("ResolvedDate", new Date().toISOString());
+                    vm.viewModel.set('ResolutionDescription', modalWindowViewModel.ResolutionDescription.ResolutionDescription);
+                    vm.viewModel.set('ResolutionCategory', { Id: modalWindowViewModel.ResolutionCategory.Id });
+                    vm.viewModel.set('ResolvedDate', new Date().toISOString());
 
                     // Set Resolved By User
-                    vm.viewModel.set("RelatesToTroubleTicket", {
+                    vm.viewModel.set('RelatesToTroubleTicket', {
                         ClassTypeId: systemDomainUserClassId,
                         BaseId: session.user.Id,
                         DisplayName: session.user.Name
                     });
 
-                    // Add "Resolved Record" comment to the Action Log
+                    // Add 'Resolved Record' comment to the Action Log
                     if (actionLogType) {
                         vm.viewModel[actionLogType].unshift(new app.dataModels[actionLogType].recordResolved(modalWindowViewModel.ResolutionDescription.ResolutionDescription));
                     }
 
                     // Update Resolved Date Field
-                    switch (resolvedDateElement.attr("data-control")) {
-                    case "datePicker":
-                        resolvedDateElement.val(kendo.toString(new Date(), "d"));
+                    switch (resolvedDateElement.attr('data-control')) {
+                    case 'datePicker':
+                        resolvedDateElement.val(kendo.toString(new Date(), 'd'));
                         break;
-                    case "dateTimePicker":
-                        resolvedDateElement.val(kendo.toString(new Date(), "g"));
+                    case 'dateTimePicker':
+                        resolvedDateElement.val(kendo.toString(new Date(), 'g'));
                         break;
                     }
 
                     // Update Status Indicator
-                    vm.viewModel.set("Status", {
+                    vm.viewModel.set('Status', {
                         Id: incidentStatusResolvedEnumId,
-                        Name: "Resolved"
+                        Name: 'Resolved'
                     });
 
                     if (modalWindowViewModel.showResolutionAssignToMe && modalWindowViewModel.ResolutionAssignToMe) {
-                        vm.viewModel.AssignedWorkItem.set("BaseId", session.user.Id);
-                        vm.viewModel.AssignedWorkItem.set("DisplayName", session.user.Name);
+                        vm.viewModel.AssignedWorkItem.set('BaseId', session.user.Id);
+                        vm.viewModel.AssignedWorkItem.set('DisplayName', session.user.Name);
                     }
 
                     // Resolved Popup Notification
-                    createPopupNotification("{0} has been resolved.<br/>Click Save or Apply to complete the process.");
+                    createPopupNotification('{0} has been resolved.<br/>Click Save or Apply to complete the process.');
                 }
 
                 // Executes on resolution category dropdown change
                 function onModalUpdate(modalWindowViewModel, modalWindowEle) {
                     if (
-                        modalWindowViewModel.ResolutionCategory.Id !== "" &&
-                            !modalWindowEle.find('div[data-role="ResolutionCategory"] > span > span').hasClass("input-error")
+                        modalWindowViewModel.ResolutionCategory.Id !== '' &&
+                            !modalWindowEle.find('div[data-role="ResolutionCategory"] > span > span').hasClass('input-error')
                     ) {
-                        modalWindowViewModel.set("okEnabled", true);
+                        modalWindowViewModel.set('okEnabled', true);
                     } else {
-                        modalWindowViewModel.set("okEnabled", false);
+                        modalWindowViewModel.set('okEnabled', false);
                     }
                 }
 
                 // Executes when modal dialog is opening
                 function onModalActivate(modalWindowViewModel, modalWindowEle) {
-                    modalWindowEle.find("textarea[name='ResolutionDescription']").focus();
+                    modalWindowEle.find('textarea[name="ResolutionDescription"]').focus();
                     onModalUpdate(modalWindowViewModel, modalWindowEle);
                 }
 
                 function bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle) {
-                    var resolutionCategoryDropDownTreeViewControl = modalWindowEle.find('div[data-role="ResolutionCategory"]').data("kendoExtDropDownTreeViewV3");
+                    var resolutionCategoryDropDownTreeViewControl = modalWindowEle.find('div[data-role="ResolutionCategory"]').data('kendoExtDropDownTreeViewV3');
 
                     function onModalUpdateHandler() {
                         onModalUpdate(modalWindowViewModel, modalWindowEle);
                     }
 
                     resolutionCategoryDropDownTreeViewControl._dropdown.input.keyup(onModalUpdateHandler);
-                    resolutionCategoryDropDownTreeViewControl.bind("change", onModalUpdateHandler);
-                    resolutionCategoryDropDownTreeViewControl._dropdown.bind("change", onModalUpdateHandler);
-                    resolutionCategoryDropDownTreeViewControl._treeview.bind("change", onModalUpdateHandler);
+                    resolutionCategoryDropDownTreeViewControl.bind('change', onModalUpdateHandler);
+                    resolutionCategoryDropDownTreeViewControl._dropdown.bind('change', onModalUpdateHandler);
+                    resolutionCategoryDropDownTreeViewControl._treeview.bind('change', onModalUpdateHandler);
                 }
                 
                 function isAssignedToMe() {
-                    var assignedUserId = vm.viewModel.AssignedWorkItem.get("BaseId");
+                    var assignedUserId = vm.viewModel.AssignedWorkItem.get('BaseId');
                     return (assignedUserId === session.user.Id);
                 }
 
@@ -224,10 +224,10 @@ define([
                         //build the template for the window
                         var builtModal = _.template(windowTemplate),
                             ele = new kendo.View(builtModal(), {
-                                "wrap": false
+                                'wrap': false
                             });
                         //send hidden window back to caller (appended in the callback)
-                        if (typeof callback === "function") {
+                        if (typeof callback === 'function') {
                             callback(ele.render());
                         }
                         return ele;
@@ -237,11 +237,11 @@ define([
                         //build the anchor and bind viewModel to it
                         var builtAnchor = _.template(template),
                             anchorElm = new kendo.View(builtAnchor(properties), {
-                                "wrap": false,
-                                "model": anchorViewModel
+                                'wrap': false,
+                                'model': anchorViewModel
                             });
                         //send anchor element back to caller (appended in the callback)
-                        if (typeof callback === "function") {
+                        if (typeof callback === 'function') {
                             callback(anchorElm.render());
                         }
                         return anchorElm;
@@ -251,13 +251,13 @@ define([
                 function getFormTaskViewModel(modalEle) {
                     var taskVm = new kendo.observable({
                         resolveIncident: function resolveIncident() {
-                            var currentStatus = vm.viewModel.get("Status"),
+                            var currentStatus = vm.viewModel.get('Status'),
                                 modalWindowEle,
                                 modalWindowControl,
                                 modalWindowViewModel;
                             if (currentStatus.Id === incidentStatusResolvedEnumId) {
-                                createPopupNotification("{0} is already resolved.");
-                                $("a[data-toggle][data-cid='Resolution']").click();
+                                createPopupNotification('{0} is already resolved.');
+                                $('a[data-toggle][data-cid="Resolution"]').click();
                             } else {
                                 modalWindowEle = modalEle.element; //.element.clone(),
                                 modalWindowControl = modalWindowEle.kendoCiresonWindow({
@@ -274,7 +274,7 @@ define([
                                         modalWindowControl.destroy();
                                     }*/
 
-                                }).data("kendoWindow");
+                                }).data('kendoWindow');
                                 modalWindowViewModel = kendo.observable({
                                     ResolutionCategory: node.Configs.ResolutionCategory,
                                     resolutionCategoryEnumId: incidentResolutionCategoryEnumId,
@@ -295,17 +295,17 @@ define([
                                 createIncidentResolutionFields(modalWindowViewModel, modalWindowEle);
                                 bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle);
 
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                                    console.log("resolveIncidentTask:resolveIncident", {
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                    console.log('resolveIncidentTask:resolveIncident', {
                                         modalWindowEle: modalWindowEle,
                                         modalWindowControl: modalWindowControl,
                                         modalWindowViewModel: modalWindowViewModel
                                     });
                                 }
 
-                                modalWindowEle.removeClass("hide");
+                                modalWindowEle.removeClass('hide');
                                 modalWindowEle.show();
-                                modalWindowControl.wrapper.css("padding-bottom", "65px");
+                                modalWindowControl.wrapper.css('padding-bottom', '65px');
                                 modalWindowControl.open();
                             }
                         }

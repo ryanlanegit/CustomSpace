@@ -7,9 +7,9 @@ LONGSTRING
 **/
 
 define([
-    "text!CustomSpace/Scripts/forms/fields/longstring/view.html"
+    'text!CustomSpace/Scripts/forms/fields/longstring/view.html'
 ], function (longStringTemplate) {
-    "use strict";
+    'use strict';
     var definition = {
         template: longStringTemplate,
         build: function build(vm, node, callback) {
@@ -24,20 +24,20 @@ define([
                         setTimeout(function () {
                             var elem = $(e.currentTarget),
                                 helpBlock = elem.next(),
-                                maxChars = elem.attr("maxlength"),
+                                maxChars = elem.attr('maxlength'),
                                 count = elem.val().length;
                             if (count > maxChars) {
-                                elem.attr("data-invalid", "");
+                                elem.attr('data-invalid', '');
                                 helpBlock.show();
                             } else {
                                 helpBlock.hide();
-                                elem.removeAttr("data-invalid");
-                                elem.data("prevent", false);
+                                elem.removeAttr('data-invalid');
+                                elem.data('prevent', false);
                             }
                         }, 100);
                     },
                     TextCounter: function textCounter() {
-                        this.set("CharactersRemaining", this.MaxLength - this.ResolutionDescription.length);
+                        this.set('CharactersRemaining', this.MaxLength - this.ResolutionDescription.length);
                     }
                 },
                     fieldViewModel = kendo.observable($.extend(true, fieldProperties, properties));
@@ -54,7 +54,7 @@ define([
                         fieldElm = new kendo.View(builtField(properties), { wrap: false, model: fieldViewModel});
 
                     //send hidden window back to caller (appended in the callback)
-                    if (typeof callback === "function") {
+                    if (typeof callback === 'function') {
                         callback(fieldElm.render());
                     }
                     return fieldElm;
@@ -69,7 +69,7 @@ define([
                     MaxLength: node.MaxLength,
                     LimitLength: (!_.isUndefined(node.MinLength) || !_.isUndefined(node.MaxLength)),
                     Rows: node.Rows || 5,
-                    visible: (!_.isUndefined(node.IsVisible) && node.IsVisible === false ? "hidden" : "")
+                    visible: (!_.isUndefined(node.IsVisible) && node.IsVisible === false ? 'hidden' : '')
                 },
                     fieldViewModel = getFieldViewModel(fieldTemplateProps),
                     fieldEle = buildAndRender.fieldEle(fieldTemplateProps, fieldViewModel, longStringTemplate);
