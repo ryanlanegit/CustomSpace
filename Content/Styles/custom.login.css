@@ -12,3 +12,7 @@
     margin-bottom: 15px;
     padding-bottom: 15px;
 }
+
+.validation-summary-errors {
+    margin-bottom: 20px;
+}
