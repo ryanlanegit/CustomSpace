@@ -1,35 +1,33 @@
-/*jslint nomen: true */
 /*global _, $, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Grid List Item Task
 **/
 
 define([
-    "text!CustomSpace/Scripts/grids/tasks/task/view.html"
+    'text!CustomSpace/Scripts/grids/tasks/task/view.html',
 ], function (
     listItemTaskTemplate
 ) {
-    "use strict";
+    'use strict';
     var gridTask = {
-            "Task": "task",
-            "Type": "Grid",
-            "Label": "Grid Task List Item Task",
-            "Access": true,
-            "Configs": {}
+            Task: 'task',
+            Type: 'Grid',
+            Label: 'Grid Task List Item Task',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: listItemTaskTemplate,
             task: gridTask,
             build: function build(field, task, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("gridTask:build", {
-                        "gridTask": gridTask,
-                        "field": field,
-                        "task": task,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('gridTask:build', {
+                        gridTask: gridTask,
+                        field: field,
+                        task: task,
+                        options: options,
                     });
                 }
 
@@ -38,8 +36,8 @@ define([
 					var properties = {
 						field: field,
 						task: task,
-						icon: "fa-pencil",
-						bClickPropagation: true
+						icon: 'fa-pencil',
+						bClickPropagation: true,
 					},
 						builtTask = _.template(listItemTaskTemplate);
 
@@ -48,7 +46,7 @@ define([
                 }
 
                 return initGridTask();
-            }
+            },
         };
 
     return definition;

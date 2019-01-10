@@ -1,6 +1,4 @@
-/*jslint nomen: true */
 /*global _, app, console, pageForm, performance, require */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Load Custom Work Item Task Builder
@@ -12,12 +10,12 @@ require.config({
     baseUrl: '/Scripts/',
     paths: {
         'text': 'require/text',
-        'CustomSpace': '../CustomSpace'
-    }
+        'CustomSpace': '../CustomSpace',
+    },
 });
 
 require([
-    'CustomSpace/Scripts/forms/wiTaskBuilder'
+    'CustomSpace/Scripts/forms/wiTaskBuilder',
 ], function (
     wiTaskBuilder
 ) {
@@ -30,7 +28,7 @@ require([
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
             console.log('wiTaskMain:initTasks', performance.now());
         }
-        
+
         var isClosed = false,
             ServiceRequestStatus_Closed = 'c7b65747-f99e-c108-1e17-3c1062138fc4',
             ChangeStatus_Closed = 'f228d50b-2b5a-010f-b1a4-5c7d95703a9b',

@@ -1,35 +1,33 @@
-/*jslint nomen: true */
 /*global $, _, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Single Line Entry
 **/
 
 define(function () {
-    "use strict";
+    'use strict';
     var roTask = {
-            "Task": "singleLineEntry",
-            "Type": "RequestOffering",
-            "Label": "Single Line Entry",
-            "Access": true,
-            "Configs": {}
+            Task: 'singleLineEntry',
+            Type: 'RequestOffering',
+            Label: 'Single Line Entry',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: null,
             task: roTask,
             build: function build(promptElm, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("roTask:build", {
-                        "task": roTask,
-                        "promptElm": promptElm,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('roTask:build', {
+                        task: roTask,
+                        promptElm: promptElm,
+                        options: options,
                     });
                 }
-                
+
                 function processNext(targetElm, next, func) {
-                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
                     _.each(targetElms, func);
                 }
 
@@ -41,10 +39,10 @@ define(function () {
                         if (event.which === 13) {
                             event.preventDefault();
                         } else {
-                            var textAreaData = $(this).find("textarea").val(),
+                            var textAreaData = $(this).find('textarea').val(),
                                 newLineMatch = /\r|\n/.exec(textAreaData);
                             if (newLineMatch) {
-                                $(this).find("textarea").val(textAreaData.replace(/[\n\r]/g, "")).keyup();
+                                $(this).find('textarea').val(textAreaData.replace(/[\n\r]/g, '')).keyup();
                             }
                         }
                     }
@@ -55,7 +53,7 @@ define(function () {
                 }
 
                 initROTask();
-            }
+            },
         };
 
     return definition;

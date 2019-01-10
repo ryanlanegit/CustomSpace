@@ -1,6 +1,4 @@
-/*jslint nomen: true, es5: true */
 /*global $, _, app, console, performance, session, store, transformRO, window */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Custom
@@ -19,8 +17,8 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
         'use strict';
         function debugEventSubscriber(e) {
             console.log(e.type, {
-                'performance': performance.now(),
-                'event': e
+                performance: performance.now(),
+                event: e,
             });
         }
 
@@ -33,7 +31,7 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
             'angularReady',
             'gridTasksReady',
             'roTasksReady',
-            'pageTasksReady'
+            'pageTasksReady',
         ];
         _.each(debugEvents, function (debugEvent) {
             app.events.subscribe(debugEvent, debugEventSubscriber);
@@ -45,13 +43,13 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
     Custom Utilities
 */
 app.custom.utils = {
-    'setDebugMode' : function setDebugMode(enabled) {
+    'setDebugMode': function setDebugMode(enabled) {
         'use strict';
         console.log('setDebugMode', enabled);
         app.storage.custom.set('DEBUG_ENABLED', enabled);
     },
 
-    'getCachedScript' : function getCachedScript(url, options) {
+    'getCachedScript': function getCachedScript(url, options) {
         'use strict';
         if (app.storage.custom.get('DEBUG_ENABLED')) {
             console.log('getCachedScript', url);
@@ -59,13 +57,13 @@ app.custom.utils = {
         options = $.extend(options || {}, {
             dataType: 'script',
             cache: true,
-            url: url
+            url: url,
         });
 
         return $.ajax(options);
     },
 
-    'getCSS' : function getCSS(url) {
+    'getCSS': function getCSS(url) {
         'use strict';
         if (app.storage.custom.get('DEBUG_ENABLED')) {
             console.log('getCSS', url);
@@ -73,7 +71,7 @@ app.custom.utils = {
         return $('<link>', {
             type: 'text/css',
             rel: 'stylesheet',
-            href: url
+            href: url,
         }).appendTo('head');
     },
 
@@ -86,7 +84,7 @@ app.custom.utils = {
         return regexGuid.test(string);
     },
 
-    'sortList' : function sortList(ulElement) {
+    'sortList': function sortList(ulElement) {
         'use strict';
         if (app.storage.custom.get('DEBUG_ENABLED')) {
             console.log('sortList', ulElement);
@@ -100,13 +98,13 @@ app.custom.utils = {
         _.each(listitems, function (listItem) { ulElement.append(listItem); });
     },
 
-    'stringFormat' : function stringFormat(format) {
+    'stringFormat': function stringFormat(format) {
         'use strict';
         var args = Array.prototype.slice.call(arguments, 1);
         return format.replace(/\{(\d+)\}/g, function (match, number) {
             return typeof args[number] !== 'undefined' ? args[number] : match;
         });
-    }
+    },
 };
 
 if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
@@ -192,7 +190,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
         'use strict';
         if (app.storage.custom.get('DEBUG_ENABLED')) {
             console.log('gridTasksReady:event', {
-                'performance': performance.now()
+                performance: performance.now(),
             });
         }
 
@@ -230,13 +228,13 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
                     '# var url = app.gridUtils.getLinkUrl(data, "***"); ' +
                     'if (!_.isUndefined(WorkItemType) && (WorkItemType==="System.WorkItem.Incident" || WorkItemType==="System.WorkItem.ServiceRequest")) { # ' +
                         app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
-                            href: '#=url#'
+                            href: '#=url#',
                         }) +
                     '# } else if ((!_.isUndefined(WorkItemType)&& WorkItemType.indexOf("Activity") != -1)) {' +
                         'var approvalUrl = app.gridUtils.getApprovalLinkUrl(data); # ' +
                         app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
                             icon: 'fa-check',
-                            href: '#=approvalUrl#'
+                            href: '#=approvalUrl#',
                         }) +
                     '# } # ' +
                     app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
@@ -244,7 +242,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
                         bClickPropagation: true,
                         className: 'ra-highlight-default-icon',
                         href: '#=url#',
-                        target: ''
+                        target: '',
                     });
                 return template;
             });
@@ -257,7 +255,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
                         '# if (!_.isUndefined(WorkItemType) && (WorkItemType==="System.WorkItem.Incident" || WorkItemType==="System.WorkItem.ServiceRequest")) { #' +
                             app.custom.gridTasks.buildTemplate('task', column.field, task.name, {
                                 icon: 'fa-pencil',
-                                bClickPropagation: false
+                                bClickPropagation: false,
                             }) +
                         '# } #';
                     return template;
@@ -274,7 +272,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
 
             app.custom.gridTasks.updateGrid(gridData);
         }
-        
+
         // Unsubscibe from further gridTasks events
         app.events.unsubscribe('gridTasksReady', populateGridTasks);
     });
@@ -302,7 +300,7 @@ if (!_.isUndefined(window.requirejs)) {
             'use strict';
             this._requirejs = val;
             app.events.publish('requirejsReady');
-        }
+        },
     });
 }
 
@@ -321,7 +319,7 @@ if (!_.isUndefined(window.angular)) {
             'use strict';
             this._angular = val;
             app.events.publish('angularReady');
-        }
+        },
     });
 }
 
@@ -352,9 +350,9 @@ if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady
                     set: function (val) {
                         this._boundReady = val;
                         app.events.publish('boundReadyReady');
-                    }
+                    },
                 });
             }
-        }
+        },
     });
 }

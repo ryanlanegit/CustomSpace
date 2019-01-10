@@ -1,27 +1,25 @@
-/*jslint nomen: true */
 /*global _, $, app, console, define, kendo, performance */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Custom Grid Task Builder
 **/
 
 define([
-	"CustomSpace/Scripts/grids/tasks/anchor/controller",
-	"CustomSpace/Scripts/grids/tasks/link/controller",
-	"CustomSpace/Scripts/grids/tasks/task/controller"
+	'CustomSpace/Scripts/grids/tasks/anchor/controller',
+	'CustomSpace/Scripts/grids/tasks/link/controller',
+	'CustomSpace/Scripts/grids/tasks/task/controller',
 ], function () {
-    "use strict";
+    'use strict';
     var gridTaskModules = arguments,
         definition = {
             build: function build(callback) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("gridTaskBuilder:build");
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('gridTaskBuilder:build');
                 }
                 /* BEGIN Functions */
                 function getGridTaskViewModel() {
                     var gridTaskVm = new kendo.observable({
-                        "add": function add(gridData, field, type, name, template, callback) {
+                        'add': function add(gridData, field, type, name, template, callback) {
                             var that = this,
                                 // Look for provided column in grid by field name
                                 taskColumn = _.filter(gridData.columns, function (colValue) {
@@ -33,11 +31,11 @@ define([
                                     // Add default blank style template function to column template
                                     Object.defineProperty(
                                         taskColumn,
-                                        "_style",
+                                        '_style',
                                         {
                                             enumerable: false,
                                             writable: true,
-                                            value: function defaultStyle() { return ""; }
+                                            value: function defaultStyle() { return ''; },
                                         }
                                     );
                                 }
@@ -46,44 +44,44 @@ define([
                                     // Add empty tasks array to column template
                                     Object.defineProperty(
                                         taskColumn,
-                                        "_tasks",
+                                        '_tasks',
                                         {
                                             enumerable: false,
                                             writable: true,
-                                            value: []
+                                            value: [],
                                         }
                                     );
                                 }
 
                                 switch (type) {
-                                case "style":
+                                case 'style':
                                     // Set style template function to provided template
                                     taskColumn._style = template;
                                     break;
-                                case "task":
+                                case 'task':
                                     var existingTask = that.get(gridData, field, name);
                                     if (existingTask) {
                                         // Merge new task with existing one in the column template
                                         $.extend(existingTask, {
                                             name : name,
                                             template: template,
-                                            callback: callback
+                                            callback: callback,
                                         });
                                     } else {
                                         // Add new task to the column template
                                         taskColumn._tasks.push({
                                             name : name,
                                             template: template,
-                                            callback: callback
+                                            callback: callback,
                                         });
                                     }
                                     break;
                                 }
                             } else {
-                                console.log("gridTasks:add", "Warning! Unable to find field '" + field + "'.");
+                                console.log('gridTasks:add', "Warning! Unable to find field '" + field + "'.");
                             }
                         },
-                        "get": function get(gridData, field, name) {
+                        'get': function get(gridData, field, name) {
                             // Look for provided column in grid by field name
                             var taskColumn = _.filter(gridData.columns, function (colValue) {
                                 return colValue.field === field;
@@ -103,58 +101,58 @@ define([
                                         // Return the specific task in the provided field
                                         return gridTask;
                                     } else {
-                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
+                                        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                                             console.log("gridTasks:get", "Warning! Unable to find task '" + name + "' in field '" + field + "'.");
                                         }
                                         return null;
                                     }
                                 }
                             } else {
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                                    console.log("gridTasks:get", "Warning! Unable to find field '" + field + "'.");
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                    console.log('gridTasks:get', "Warning! Unable to find field '" + field + "'.");
                                 }
                                 return null;
                             }
                         },
                         // item is the task element clicked, bClickPropagation determines if click event should propagate
-                        "callback": function callback(e, itemEle, bClickPropagation) {
+                        'callback': function callback(e, itemEle, bClickPropagation) {
                             var that = this,
                                 item = $(itemEle),
-                                gridData = item.closest("div[data-role='grid']").data("kendoGrid"),
+                                gridData = item.closest('div[data-role="grid"]:first').data('kendoGrid'),
                                 itemData = item.data(),
-                                itemRowEle = item.closest("tr").get(0),
+                                itemRowEle = item.closest('tr').get(0),
                                 dataItem = gridData.dataItem(itemRowEle),
                                 data = {
-                                    "event": e,
-                                    "gridData": gridData,
-                                    "itemRowEle": itemRowEle,
-                                    "dataItem": dataItem,
-                                    "itemData": itemData
+                                    event: e,
+                                    gridData: gridData,
+                                    itemRowEle: itemRowEle,
+                                    dataItem: dataItem,
+                                    itemData: itemData,
                                 },
                                 existingTask = that.get(gridData, itemData.field, itemData.task);
 
-                            console.log("gridTasks:callback", data);
+                            console.log('gridTasks:callback', data);
 
                             if (existingTask) {
                                 // Stop click propagation for jQuery click events if requested
                                 if (!bClickPropagation) {
                                     e.stopPropagation();
                                 }
-                                
-                                if (typeof existingTask.callback === "function") {
+
+                                if (typeof existingTask.callback === 'function') {
                                     existingTask.callback(data);
                                 }
                             } else {
-                                console.log("gridTasks:callback", "Unable to find task for callback.");
+                                console.log('gridTasks:callback', 'Unable to find task for callback.');
                             }
                         },
-                        "updateGrid": function updateGrid(gridData) {
+                        'updateGrid': function updateGrid(gridData) {
                             var that = this,
                                 bUpdateGridTemplate = false;
 
                             $.each(gridData.columns, function (colIndex, column) {
                                 if (!_.isUndefined(column._style)) {
-                                    column.template = that.buildTemplate("anchor", column);
+                                    column.template = that.buildTemplate('anchor', column);
                                     bUpdateGridTemplate = true;
                                 }
                             });
@@ -168,7 +166,7 @@ define([
                                 gridData.refresh();
                             }
                         },
-                        "buildTemplate": function buildTemplate(taskName, field, task, options) {
+                        'buildTemplate': function buildTemplate(taskName, field, task, options) {
                             var gridTask = _.filter(gridTaskModules, function (gridTask) {
                                 if (_.isUndefined(gridTask.task)) {
                                     return false;
@@ -180,12 +178,12 @@ define([
                             if (!_.isUndefined(gridTask)) {
                                 return gridTask.build(field, task, options);
                             } else {
-                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                                    console.log("Property Not Found For Rendering:", taskName);
+                                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                    console.log('Property Not Found For Rendering:', taskName);
                                 }
                                 return null;
                             }
-                        }
+                        },
                     });
 
                     return gridTaskVm;
@@ -193,19 +191,19 @@ define([
 
                 /* Initialization Code */
                 function initGridTask() {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                        console.log("gridTaskBuilder:initGridTask", performance.now());
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                        console.log('gridTaskBuilder:initGridTask', performance.now());
                     }
                     var gridTaskViewModel = getGridTaskViewModel();
                     app.custom.gridTasks = gridTaskViewModel;
 
-                    if (typeof callback === "function") {
+                    if (typeof callback === 'function') {
                         callback(gridTaskViewModel);
                     }
                 }
 
                 initGridTask();
-            }
+            },
         };
 
 	return definition;

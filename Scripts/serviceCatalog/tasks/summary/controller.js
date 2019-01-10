@@ -1,96 +1,94 @@
-/*jslint nomen: true */
 /*global $, _, app, console, define, kendo */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Summary
 **/
 
 define([
-    "text!CustomSpace/Scripts/serviceCatalog/tasks/summary/view.html"
+    'text!CustomSpace/Scripts/serviceCatalog/tasks/summary/view.html',
 ], function (
     summaryTemplate
 ) {
-    "use strict";
+    'use strict';
     var roTask = {
-            "Task": "summary",
-            "Type": "RequestOffering",
-            "Label": "Summary",
-            "Access": true,
-            "Configs": {}
+            Task: 'summary',
+            Type: 'RequestOffering',
+            Label: 'Summary',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: summaryTemplate,
             task: roTask,
             build: function build(promptElm, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
-                    console.log("roTask:build", {
-                        "task": roTask,
-                        "promptElm": promptElm,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('roTask:build', {
+                        task: roTask,
+                        promptElm: promptElm,
+                        options: options,
                     });
                 }
-                
+
                 function processNext(targetElm, next, func) {
-                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
                     _.each(targetElms, func);
                 }
 
                 function createSummary(targetEle) {
                     if (!targetEle) {
-                        app.controls.exception("targetEle missing - roTaskBuilder.createSumary");
+                        app.controls.exception('targetEle missing - roTaskBuilder.createSumary');
                     }
 
-                    var gridEle = targetEle.find("div[data-control-grid]"),
+                    var gridEle = targetEle.find('div[data-control-grid]'),
                         gridDataSource = new kendo.data.DataSource({
                             transport: {
                                 getUserInput: function getUserInput() {
-                                    var roQuestionElms = $("div.question-container").filter(":not(.ng-hide)"),
+                                    var roQuestionElms = $('div.question-container').filter(':not(.ng-hide)'),
                                         userInput = [];
-                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("debug")) {
-                                        console.log("roTaskBuilder:createSummary.getUserInput", {
-                                            "roQuestionElms": roQuestionElms
+                                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                        console.log('roTaskBuilder:createSummary.getUserInput', {
+                                            'roQuestionElms': roQuestionElms,
                                         });
                                     }
                                     roQuestionElms.each(function () {
                                         var questionElm = $(this),
-                                            questionType = questionElm.find("input.question-answer-type").val().toLowerCase(),
-                                            questionLabel = questionElm.find("label.control-label "),
-                                            questionInput = questionElm.find("input[id]"),
+                                            questionType = questionElm.find('input.question-answer-type').val().toLowerCase(),
+                                            questionLabel = questionElm.find('label.control-label'),
+                                            questionInput = questionElm.find('input[id]'),
                                             questionValue = questionInput.val(),
                                             userInputItem;
 
                                         switch (questionType) {
-                                        case "integer":
-                                            questionType = "int";
+                                        case 'integer':
+                                            questionType = 'int';
                                             break;
-                                        case "list":
+                                        case 'list':
                                             if (app.custom.utils.isGuid(questionValue)) {
-                                                questionType = "enum";
+                                                questionType = 'enum';
                                             }
                                             break;
-                                        case "boolean":
-                                            questionType = "bool";
-                                            questionLabel = questionElm.find("label.checkbox-label");
+                                        case 'boolean':
+                                            questionType = 'bool';
+                                            questionLabel = questionElm.find('label.checkbox-label');
                                             switch (questionValue) {
-                                            case "on":
-                                                questionValue = "True";
+                                            case 'on':
+                                                questionValue = 'True';
                                                 break;
-                                            case "off":
-                                                questionValue = "False";
+                                            case 'off':
+                                                questionValue = 'False';
                                                 break;
                                             }
                                             break;
                                         }
 
                                         userInputItem = {
-                                            Question: questionLabel.text().replace("(Required)", "").replace(/\n/g, ""),
+                                            Question: questionLabel.text().replace('(Required)', '').replace(/\n/g, ''),
                                             Answer: questionValue,
-                                            Type: questionType
+                                            Type: questionType,
                                         };
                                         userInput.push(userInputItem);
-                                        //console.log(questionLabel.text().replace("(Required)",""), questionValue);
+                                        //console.log(questionLabel.text().replace('(Required)',''), questionValue);
                                     });
 
                                     return userInput;
@@ -99,29 +97,29 @@ define([
                                     var parsedUserInput = [];
 
                                     function attachmentFilter(attachment) {
-                                        return (attachment !== "null");
+                                        return (attachment !== 'null');
                                     }
 
                                     userInput.forEach(function (item) {
                                         var parsedInputItem = {
                                             Answer: item.Answer,
-                                            Question: item.Question
+                                            Question: item.Question,
                                         };
 
                                         switch (item.Type) {
-                                        case "enum":
+                                        case 'enum':
                                             app.lib.getEnumDisplayName(parsedInputItem.Answer, function (data) {
                                                 parsedInputItem.Answer = data;
                                             });
                                             break;
-                                        case "datetime":
+                                        case 'datetime':
                                             parsedInputItem.Answer = app.lib.getFormattedLocalDateTime(parsedInputItem.Answer);
                                             break;
-                                        case "fileattachment":
-                                            parsedInputItem.Answer = parsedInputItem.Answer.split("(((;)))").join(",").split("(((:)))").join(",").split(",").filter(attachmentFilter).join("<br/>");
+                                        case 'fileattachment':
+                                            parsedInputItem.Answer = parsedInputItem.Answer.split('(((;)))').join(',').split('(((:)))').join(',').split(',').filter(attachmentFilter).join('<br/>');
                                             break;
                                         default:
-                                            if (typeof (parsedInputItem.Answer) === "object") {
+                                            if (typeof (parsedInputItem.Answer) === 'object') {
                                                 parsedInputItem.Answer = app.lib.getQueryResultDisplayText(item);
                                             }
                                         }
@@ -135,24 +133,24 @@ define([
                                 },
                                 read: function (options) {
                                     options.success(this.parseUserInput(this.getUserInput()));
-                                }
-                            }
+                                },
+                            },
                         }),
                         kendoGrid = gridEle.kendoGrid({
                             dataSource: gridDataSource,
                             columns: [{
-                                field: "Question",
-                                encoded: false
+                                field: 'Question',
+                                encoded: false,
                             }, {
-                                field: "Answer",
-                                encoded: false
-                            }]
+                                field: 'Answer',
+                                encoded: false,
+                            }],
                         });
-                    gridEle.find(".k-grid-header").hide();
-                    gridEle.find(".k-grid-toolbar").hide();
+                    gridEle.find('.k-grid-header').hide();
+                    gridEle.find('.k-grid-toolbar').hide();
 
-                    $("#drawer-taskbar").find('button:contains("Next")').on("click", function () {
-                        $('section[ng-show="(currentIndex==1)"]').find("div.page-panel").find("div[data-control-grid]").data().handler.dataSource.read();
+                    $('#drawer-taskbar').find('button:contains("Next")').on('click', function () {
+                        $('section[ng-show="(currentIndex==1)"]').find('div.page-panel').find('div[data-control-grid]').data().handler.dataSource.read();
                     });
 
                     return kendoGrid;
@@ -160,18 +158,18 @@ define([
 
                 /* Initialization code */
                 function initROTask() {
-                    var target = promptElm.next().find("div.col-xs-12"),
+                    var target = promptElm.next().find('div.col-xs-12'),
                         builtSummary = _.template(summaryTemplate);
 
                     processNext(promptElm, options.next, function (targetElm) {
-                        $(targetElm).removeClass("col-md-8").addClass("col-md-12");
+                        $(targetElm).removeClass('col-md-8').addClass('col-md-12');
                         $(targetElm).html(builtSummary());
-                        createSummary($(targetElm).find("div[data-control-bind]"));
+                        createSummary($(targetElm).find('div[data-control-bind]'));
                     });
                 }
 
                 initROTask();
-            }
+            },
         };
 
     return definition;

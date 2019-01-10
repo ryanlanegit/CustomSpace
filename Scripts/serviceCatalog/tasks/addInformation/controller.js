@@ -1,39 +1,37 @@
-/*jslint nomen: true */
 /*global $, _, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Add Information
 **/
 
 define([
-    "text!CustomSpace/Scripts/serviceCatalog/tasks/addInformation/view.html"
+    'text!CustomSpace/Scripts/serviceCatalog/tasks/addInformation/view.html',
 ], function (
     addInformationTemplate
 ) {
-    "use strict";
+    'use strict';
     var roTask = {
-            "Task": "addInformation",
-            "Type": "RequestOffering",
-            "Label": "Add Information",
-            "Access": true,
-            "Configs": {}
+            Task: 'addInformation',
+            Type: 'RequestOffering',
+            Label: 'Add Information',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: addInformationTemplate,
             task: roTask,
             build: function build(promptElm, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("roTask:build", {
-                        "task": roTask,
-                        "promptElm": promptElm,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('roTask:build', {
+                        task: roTask,
+                        promptElm: promptElm,
+                        options: options,
                     });
                 }
 
                 function processNext(targetElm, next, func) {
-                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
                     _.each(targetElms, func);
                 }
 
@@ -53,7 +51,7 @@ define([
                 }
 
                 initROTask();
-            }
+            },
         };
 
     return definition;

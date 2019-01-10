@@ -1,13 +1,11 @@
-/*jslint nomen: true */
 /*global $, _, app, console, define, performance */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Custom Work Item Task Builder
 **/
 
 define([
-    'CustomSpace/Scripts/forms/tasks/resolveIncident/controller'
+    'CustomSpace/Scripts/forms/tasks/resolveIncident/controller',
 ], function () {
     'use strict';
     var taskModules = arguments,
@@ -20,9 +18,9 @@ define([
 
                 if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     console.log('wiTaskBuilder:build', {
-                        'performance': performance.now(),
-                        'vm': vm,
-                        'taskModules': taskModules
+                        performance: performance.now(),
+                        vm: vm,
+                        taskModules: taskModules,
                     });
                 }
 
@@ -40,7 +38,7 @@ define([
                 if (typeof callback === 'function') {
                     callback(ulElement);
                 }
-            }
+            },
         };
 
     return definition;

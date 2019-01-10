@@ -1,35 +1,33 @@
-/*jslint nomen: true */
 /*global _, $, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Grid List Item Link
 **/
 
 define([
-    "text!CustomSpace/Scripts/grids/tasks/link/view.html"
+    'text!CustomSpace/Scripts/grids/tasks/link/view.html',
 ], function (
     listItemLinkTemplate
 ) {
-    "use strict";
+    'use strict';
     var gridTask = {
-            "Task": "link",
-            "Type": "Grid",
-            "Label": "Grid Task List Item Link",
-            "Access": true,
-            "Configs": {}
+            Task: 'link',
+            Type: 'Grid',
+            Label: 'Grid Task List Item Link',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: listItemLinkTemplate,
             task: gridTask,
             build: function build(field, task, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("gridTask:build", {
-                        "gridTask": gridTask,
-                        "field": field,
-                        "task": task,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('gridTask:build', {
+                        gridTask: gridTask,
+                        field: field,
+                        task: task,
+                        options: options,
                     });
                 }
 
@@ -38,11 +36,11 @@ define([
 					var properties = {
 						field: field,
 						task: task,
-						icon: "fa-external-link",
+						icon: 'fa-external-link',
 						bClickPropagation: false,
-						className: "",
-						href: "/",
-						target: "_blank"
+						className: '',
+						href: '/',
+						target: '_blank',
 					},
 						builtLink = _.template(listItemLinkTemplate);
 
@@ -51,7 +49,7 @@ define([
                 }
 
                 return initGridTask();
-            }
+            },
         };
 
     return definition;

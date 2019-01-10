@@ -1,6 +1,4 @@
-/*jslint nomen: true */
 /*global _, $, app, console, define, kendo, session */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Resolve Incident
@@ -11,7 +9,7 @@ define([
     'text!CustomSpace/Scripts/forms/tasks/resolveIncident/view.html',
     'forms/fields/enum/controller',
     'CustomSpace/Scripts/forms/fields/longstring/controller',
-    'forms/fields/boolean/controller'
+    'forms/fields/boolean/controller',
 ], function (
     anchorTemplate,
     resolveIncidentTemplate,
@@ -21,21 +19,21 @@ define([
 ) {
     'use strict';
     var resolveIncidentTask = {
-            'Task': 'resolveIncident',
-            'Type': 'Incident',
-            'Label': 'Resolve Incident',
-            'Access': session.user.Analyst === 1,
-            'Configs': {
-                'ResolutionCategory': {
-                    'Id': 'c5f6ada9-a0df-01d6-7087-6b8500ca6c2b',
-                    'Name': 'Fixed by analyst'
+            Task: 'resolveIncident',
+            Type: 'Incident',
+            Label: 'Resolve Incident',
+            Access: session.user.Analyst === 1,
+            Configs: {
+                ResolutionCategory: {
+                    Id: 'c5f6ada9-a0df-01d6-7087-6b8500ca6c2b',
+                    Name: 'Fixed by analyst',
                 },
-                'description': {
-                    'MinLength': 4,
-                    'MaxLength': 4000,
-                    'Rows': 4
-                }
-            }
+                description: {
+                    MinLength: 4,
+                    MaxLength: 4000,
+                    Rows: 4,
+                },
+            },
         },
 
         incidentResolutionCategoryEnumId = '72674491-02cb-1d90-a48f-1b269eb83602',
@@ -57,7 +55,7 @@ define([
                         app.controls.apply(container, {
                             localize: true,
                             vm: vmModel,
-                            bind: true
+                            bind: true,
                         });
                     });
                 }
@@ -77,9 +75,9 @@ define([
                     checkBoxControl.build(vmModel, props, function (txtCheckboxControl) {
                         container.html(txtCheckboxControl);
                         app.controls.apply(container, {
-                            'localize': true,
-                            'vm': vmModel,
-                            'bind': true
+                            localize: true,
+                            vm: vmModel,
+                            bind: true,
                         });
                     });
                 }
@@ -94,13 +92,13 @@ define([
                         popupNotification = popupNotificationElm.kendoNotification({
                             templates: [{
                                 type: 'resolveIncidentNotification',
-                                template: '<div class="success k-ext-dialog-content"><div class="k-ext-dialog-icon fa fa-check"></div><div class="k-ext-dialog-message">#= message #</div></div>'
-                            }]
+                                template: '<div class="success k-ext-dialog-content"><div class="k-ext-dialog-icon fa fa-check"></div><div class="k-ext-dialog-message">#= message #</div></div>',
+                            }],
                         }).data('kendoNotification');
                     }
 
                     popupNotification.show({
-                        message: app.custom.utils.stringFormat(message, vm.viewModel.Id)
+                        message: app.custom.utils.stringFormat(message, vm.viewModel.Id),
                     }, 'resolveIncidentNotification');
                 }
 
@@ -109,7 +107,7 @@ define([
                         PropertyName: 'ResolutionCategory',
                         PropertyDisplayName: 'ResolutionCategory',
                         Required: true,
-                        EnumId: modalWindowViewModel.resolutionCategoryEnumId
+                        EnumId: modalWindowViewModel.resolutionCategoryEnumId,
                     },
                         resolutionDescriptionProperties = {
                             PropertyName: 'ResolutionDescription',
@@ -118,7 +116,7 @@ define([
                             Required: false,
                             MaxLength: node.Configs.description.MaxLength,
                             CharactersRemaining: node.Configs.description.MaxLength,
-                            Rows: node.Configs.description.Rows
+                            Rows: node.Configs.description.Rows,
                         },
                         resolutionAssignToMeProperties = {
                             PropertyName: 'ResolutionAssignToMe',
@@ -126,7 +124,7 @@ define([
                             Inline: true,
                             Disabled: false,
                             Required: false,
-                            Checked: true
+                            Checked: true,
                         };
                     //resolution picker
                     buildEnumPicker(modalWindowEle.find('#resolutionPicker'), resolutionProperties, modalWindowViewModel);
@@ -149,7 +147,7 @@ define([
                     vm.viewModel.set('RelatesToTroubleTicket', {
                         ClassTypeId: systemDomainUserClassId,
                         BaseId: session.user.Id,
-                        DisplayName: session.user.Name
+                        DisplayName: session.user.Name,
                     });
 
                     // Add 'Resolved Record' comment to the Action Log
@@ -170,7 +168,7 @@ define([
                     // Update Status Indicator
                     vm.viewModel.set('Status', {
                         Id: incidentStatusResolvedEnumId,
-                        Name: 'Resolved'
+                        Name: 'Resolved',
                     });
 
                     if (modalWindowViewModel.showResolutionAssignToMe && modalWindowViewModel.ResolutionAssignToMe) {
@@ -212,7 +210,7 @@ define([
                     resolutionCategoryDropDownTreeViewControl._dropdown.bind('change', onModalUpdateHandler);
                     resolutionCategoryDropDownTreeViewControl._treeview.bind('change', onModalUpdateHandler);
                 }
-                
+
                 function isAssignedToMe() {
                     var assignedUserId = vm.viewModel.AssignedWorkItem.get('BaseId');
                     return (assignedUserId === session.user.Id);
@@ -224,7 +222,7 @@ define([
                         //build the template for the window
                         var builtModal = _.template(windowTemplate),
                             ele = new kendo.View(builtModal(), {
-                                'wrap': false
+                                wrap: false,
                             });
                         //send hidden window back to caller (appended in the callback)
                         if (typeof callback === 'function') {
@@ -237,15 +235,15 @@ define([
                         //build the anchor and bind viewModel to it
                         var builtAnchor = _.template(template),
                             anchorElm = new kendo.View(builtAnchor(properties), {
-                                'wrap': false,
-                                'model': anchorViewModel
+                                wrap: false,
+                                model: anchorViewModel,
                             });
                         //send anchor element back to caller (appended in the callback)
                         if (typeof callback === 'function') {
                             callback(anchorElm.render());
                         }
                         return anchorElm;
-                    }
+                    },
                 };
 
                 function getFormTaskViewModel(modalEle) {
@@ -269,10 +267,10 @@ define([
                                     activate: function activate() {
                                         //on window activate bind the view model to the loaded template content
                                         onModalActivate(modalWindowViewModel, modalWindowEle);
-                                    }/*,
-                                    deactivate: function deactivate() {
+                                    },
+                                    /*deactivate: function deactivate() {
                                         modalWindowControl.destroy();
-                                    }*/
+                                    },*/
 
                                 }).data('kendoWindow');
                                 modalWindowViewModel = kendo.observable({
@@ -287,7 +285,7 @@ define([
                                     },
                                     cancelClick: function cancelClick() {
                                         modalWindowControl.close();
-                                    }
+                                    },
                                 });
 
                                 kendo.bind(modalWindowEle, modalWindowViewModel);
@@ -299,7 +297,7 @@ define([
                                     console.log('resolveIncidentTask:resolveIncident', {
                                         modalWindowEle: modalWindowEle,
                                         modalWindowControl: modalWindowControl,
-                                        modalWindowViewModel: modalWindowViewModel
+                                        modalWindowViewModel: modalWindowViewModel,
                                     });
                                 }
 
@@ -308,7 +306,7 @@ define([
                                 modalWindowControl.wrapper.css('padding-bottom', '65px');
                                 modalWindowControl.open();
                             }
-                        }
+                        },
                     });
 
                     return taskVm;
@@ -324,7 +322,7 @@ define([
                 }
 
                 initFormTask();
-            }
+            },
         };
 
     return definition;

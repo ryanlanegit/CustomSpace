@@ -1,36 +1,34 @@
-/*jslint nomen: true */
-/*global $, _, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
+/*global $, _, app, console, define, kendo */
 
 /**
 External File Attachments Drag & Drop
 **/
 
 define([
-    "forms/predefined/externalFileAttachmentsDragDrop/controller",
-    "text!CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/view.html"
+    'forms/predefined/externalFileAttachmentsDragDrop/controller',
+    'text!CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/view.html',
 ], function (
     externalFileAttachmentsDragDropControl,
     externalFileAttachmentsDragDropTemplate
 ) {
-    "use strict";
+    'use strict';
     var roTask = {
-            "Task": "externalFileAttachmentsDragDrop",
-            "Type": "RequestOffering",
-            "Label": "External File Attachments Drag & Drop",
-            "Access": true,
-            "Configs": {}
+            Task: 'externalFileAttachmentsDragDrop',
+            Type: 'RequestOffering',
+            Label: 'External File Attachments Drag & Drop',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: externalFileAttachmentsDragDropTemplate,
             task: roTask,
             build: function build(promptElm, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("roTask:build", {
-                        "task": roTask,
-                        "promptElm": promptElm,
-                        "options": options
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('roTask:build', {
+                        task: roTask,
+                        promptElm: promptElm,
+                        options: options,
                     });
                 }
 
@@ -47,7 +45,7 @@ define([
                 }
 
                 function processNext(targetElm, next, func) {
-                    var targetElms = $(targetElm).nextAll(":not(.task-container)").slice(0, next);
+                    var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
                     _.each(targetElms, func);
                 }
 
@@ -62,13 +60,13 @@ define([
                         builtExternalFileUpload = _.template(externalFileAttachmentsDragDropTemplate);
 
                     processNext(promptElm, options.next, function (targetElm) {
-                        var container = $(targetElm).html(builtExternalFileUpload(options)).find("div:first");
+                        var container = $(targetElm).html(builtExternalFileUpload(options)).find('div:first');
                         buildExternalFileUpload(container, options);
                     });
                 }
 
                 initROTask();
-            }
+            },
         };
 
     return definition;

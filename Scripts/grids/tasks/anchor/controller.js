@@ -1,33 +1,31 @@
-/*jslint nomen: true */
 /*global _, app, console, define */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 Grid Anchor
 **/
 
 define([
-    "text!CustomSpace/Scripts/grids/tasks/anchor/view.html"
+    'text!CustomSpace/Scripts/grids/tasks/anchor/view.html',
 ], function (
     anchorTemplate
 ) {
-    "use strict";
+    'use strict';
     var gridTask = {
-            "Task": "anchor",
-            "Type": "Grid",
-            "Label": "Grid Task Anchor",
-            "Access": true,
-            "Configs": {}
+            Task: 'anchor',
+            Type: 'Grid',
+            Label: 'Grid Task Anchor',
+            Access: true,
+            Configs: {},
         },
 
         definition = {
             template: anchorTemplate,
             task: gridTask,
             build: function build(column) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get("DEBUG_ENABLED")) {
-                    console.log("gridTask:build", {
-                        "gridTask": gridTask,
-                        "column": column
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('gridTask:build', {
+                        gridTask: gridTask,
+                        column: column,
                     });
                 }
 
@@ -38,7 +36,7 @@ define([
                 }
 
                 return initGridTask();
-            }
+            },
         };
 
     return definition;

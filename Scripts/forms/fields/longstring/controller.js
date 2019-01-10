@@ -1,13 +1,11 @@
-﻿/*jslint nomen: true */
 /*global _, $, define, kendo, setTimeout */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
 
 /**
 LONGSTRING
 **/
 
 define([
-    'text!CustomSpace/Scripts/forms/fields/longstring/view.html'
+    'text!CustomSpace/Scripts/forms/fields/longstring/view.html',
 ], function (longStringTemplate) {
     'use strict';
     var definition = {
@@ -38,7 +36,7 @@ define([
                     },
                     TextCounter: function textCounter() {
                         this.set('CharactersRemaining', this.MaxLength - this.ResolutionDescription.length);
-                    }
+                    },
                 },
                     fieldViewModel = kendo.observable($.extend(true, fieldProperties, properties));
 
@@ -58,7 +56,7 @@ define([
                         callback(fieldElm.render());
                     }
                     return fieldElm;
-                }
+                },
             };
 
             function initField() {
@@ -69,7 +67,7 @@ define([
                     MaxLength: node.MaxLength,
                     LimitLength: (!_.isUndefined(node.MinLength) || !_.isUndefined(node.MaxLength)),
                     Rows: node.Rows || 5,
-                    visible: (!_.isUndefined(node.IsVisible) && node.IsVisible === false ? 'hidden' : '')
+                    visible: (!_.isUndefined(node.IsVisible) && node.IsVisible === false ? 'hidden' : ''),
                 },
                     fieldViewModel = getFieldViewModel(fieldTemplateProps),
                     fieldEle = buildAndRender.fieldEle(fieldTemplateProps, fieldViewModel, longStringTemplate);
@@ -79,7 +77,7 @@ define([
             }
 
             return initField();
-        }
+        },
     };
 
     return definition;

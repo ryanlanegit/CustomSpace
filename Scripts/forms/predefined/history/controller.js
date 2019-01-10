@@ -1,13 +1,13 @@
 ﻿/*jslint nomen: true */
 /*global _, $, app, console, define, kendo */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
+/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }], comma-dangle: ["error", "always-multiline"] */
 
 /**
 history
 **/
 
 define([
-    'text!CustomSpace/Scripts/forms/predefined/history/view.html'
+    'text!CustomSpace/Scripts/forms/predefined/history/view.html',
 ], function (
     historyTemplate
 ) {
@@ -17,9 +17,9 @@ define([
         build: function (vm, node, callback) {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('debug')) {
                 console.log('historyController:build', {
-                    'vm': vm,
-                    'node': node,
-                    'callback': callback
+                    vm: vm,
+                    node: node,
+                    callback: callback,
                 });
             }
 
@@ -48,7 +48,7 @@ define([
                             prefix = prefix || '';
                             data.push({
                                 text: prefix + viewModel.Id + ' - ' + viewModel.Title,
-                                value: viewModel.BaseId
+                                value: viewModel.BaseId,
                             });
                             if (viewModel.Activity !== undefined && viewModel.Activity.length > 0) {
                                 $.each(viewModel.Activity, function (Key, activity) {
@@ -63,16 +63,16 @@ define([
                 },
 
                 getObjectHistory: function (objectGUID, objectTitle) {
-                    vm.setWithNoDirty('historyLabel', { 'type': 'loading' });
+                    vm.setWithNoDirty('historyLabel', { type: 'loading' });
                     vm.setWithNoDirty('showHistory', false);
 
                     $.ajax({
                         url: '/Search/GetObjectHistory',
-                        data: { 'id': objectGUID },
+                        data: { id: objectGUID },
                         type: 'GET',
                         cache: false,
                         success: function (data) {
-                            vm.setWithNoDirty('historyLabel', { 'type': 'info', 'text': objectTitle });
+                            vm.setWithNoDirty('historyLabel', { type: 'info', text: objectTitle });
 
                             /*
                             if(vm.view.historyController.model !== undefined) {
@@ -82,7 +82,7 @@ define([
                             try {
                                 if (vm.view.historyController.model === undefined) {
                                     var customhistoryModel = kendo.observable({
-                                        nodes: data
+                                        nodes: data,
                                     });
 
                                     vm.view.historyController.model = customhistoryModel;
@@ -92,7 +92,7 @@ define([
                                         {
                                             model: customhistoryModel,
                                             wrap: false,
-                                            init: $.noop //empty function
+                                            init: $.noop, //empty function
                                         }
                                     );
 
@@ -103,7 +103,7 @@ define([
                             } catch (err) {
                                 if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('debug')) {
                                     console.log('historyController:error', {
-                                        'err': err
+                                        'err': err,
                                     });
                                 }
                             }
@@ -111,25 +111,25 @@ define([
                             vm.setWithNoDirty('showHistory', true);
                         },
                         error: function (data) {
-                            vm.setWithNoDirty('historyLabel', { 'type': 'error' });
+                            vm.setWithNoDirty('historyLabel', { type: 'error' });
                             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('debug')) {
                                 console.log('historyController:error', {
-                                    'err': data
+                                    err: data,
                                 });
                             }
-                        }
+                        },
                     });
-                }
+                },
             };
 
             function buildAndRender() {
                 var builtHistory = _.template(historyTemplate),
                     historyElm = $(builtHistory(node));
-                
+
                 historyElm.find('#showHistoryDropDown').kendoDropDownList({
                     dataSource: [{
-                        'text': vm.Id + ' - ' + vm.Title,
-                        'value': vm.BaseId
+                        text: vm.Id + ' - ' + vm.Title,
+                        value: vm.BaseId,
                     }],
                     select: function (event) {
                         var dataItem = this.dataItem(event.item);
@@ -140,24 +140,24 @@ define([
                             event.sender.setDataSource(vm.view.historyController.getDropDownDataSource());
                             vm.view.historyController.dataSourceSet = true;
                         }
-                    }
+                    },
                 }).data('kendoDropDownList');
-                
+
                 if (typeof callback === 'function') {
                     callback(historyElm);
                 }
             }
-            
+
             function initHistory() {
                 if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('debug')) {
                     console.log('historyController:initHistory');
                 }
-                vm.setWithNoDirty('historyLabel', { 'type': 'info', 'text': '' });
+                vm.setWithNoDirty('historyLabel', { type: 'info', text: '' });
                 buildAndRender();
             }
-            
+
             initHistory();
-        }
+        },
     };
 
     return definition;
