@@ -118,7 +118,7 @@ define([
                         'callback': function callback(e, itemEle, bClickPropagation) {
                             var that = this,
                                 item = $(itemEle),
-                                gridData = item.closest('div[data-role="grid"]:first').data('kendoGrid'),
+                                gridData = item.closest('div[data-role="grid"]').data('kendoGrid'),
                                 itemData = item.data(),
                                 itemRowEle = item.closest('tr').get(0),
                                 dataItem = gridData.dataItem(itemRowEle),
