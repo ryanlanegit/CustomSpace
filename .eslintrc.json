@@ -1,11 +1,11 @@
 {
-    "rules": {
-        "no-undef": "error",
-        "no-console": [
-            "error", {
-                "allow": ["log", "warn", "error"]
-            }
-        ],
-        "comma-dangle": ["error", "always-multiline"]
-    }
+  "rules": {
+    "no-undef": "error",
+    "no-console": [
+      "error", {
+        "allow": ["log", "warn", "error"]
+      }
+    ],
+    "comma-dangle": ["error", "always-multiline"]
+  }
 }

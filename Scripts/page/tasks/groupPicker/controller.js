@@ -5,54 +5,54 @@ Add Information
 **/
 
 define([
-    'text!CustomSpace/Scripts/page/tasks/groupPicker/view.html',
+  'text!CustomSpace/Scripts/page/tasks/groupPicker/view.html',
 ], function (
-    groupPickerTemplate
+  groupPickerTemplate
 ) {
-    'use strict';
-    var roTask = {
-            Task: 'addInformation',
-            Type: 'RequestOffering',
-            Label: 'Group Picker',
-            Access: true,
-            Configs: {},
-        },
+  'use strict';
+  var roTask = {
+      Task: 'addInformation',
+      Type: 'RequestOffering',
+      Label: 'Group Picker',
+      Access: true,
+      Configs: {},
+    },
 
-        definition = {
-            template: groupPickerTemplate,
+    definition = {
+      template: groupPickerTemplate,
+      task: roTask,
+      build: function build(promptElm, options) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+          console.log('roTask:build', {
             task: roTask,
-            build: function build(promptElm, options) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('roTask:build', {
-                        task: roTask,
-                        promptElm: promptElm,
-                        options: options,
-                    });
-                }
+            promptElm: promptElm,
+            options: options,
+          });
+        }
 
-                function processNext(targetElm, next, func) {
-                    var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
-                    _.each(targetElms, func);
-                }
+        function processNext(targetElm, next, func) {
+          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+          _.each(targetElms, func);
+        }
 
-                /* Initialization code */
-                function initROTask() {
-                    options.next = options.next || 1;
+        /* Initialization code */
+        function initROTask() {
+          options.next = options.next || 1;
 
-                    if (!options.info && !options.icon) {
-                        return;
-                    }
-                    var target = promptElm.next(),
-                        builtInfo = _.template(groupPickerTemplate);
+          if (!options.info && !options.icon) {
+            return;
+          }
+          var target = promptElm.next(),
+            builtInfo = _.template(groupPickerTemplate);
 
-                    processNext(promptElm, options.next, function (targetElm) {
-                        $(targetElm).append(builtInfo(options));
-                    });
-                }
+          processNext(promptElm, options.next, function (targetElm) {
+            $(targetElm).append(builtInfo(options));
+          });
+        }
 
-                initROTask();
-            },
-        };
+        initROTask();
+      },
+    };
 
-    return definition;
+  return definition;
 });

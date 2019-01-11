@@ -5,39 +5,39 @@ Grid Anchor
 **/
 
 define([
-    'text!CustomSpace/Scripts/grids/tasks/anchor/view.html',
+  'text!CustomSpace/Scripts/grids/tasks/anchor/view.html',
 ], function (
-    anchorTemplate
+  anchorTemplate
 ) {
-    'use strict';
-    var gridTask = {
-            Task: 'anchor',
-            Type: 'Grid',
-            Label: 'Grid Task Anchor',
-            Access: true,
-            Configs: {},
-        },
+  'use strict';
+  var gridTask = {
+      Task: 'anchor',
+      Type: 'Grid',
+      Label: 'Grid Task Anchor',
+      Access: true,
+      Configs: {},
+    },
 
-        definition = {
-            template: anchorTemplate,
-            task: gridTask,
-            build: function build(column) {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('gridTask:build', {
-                        gridTask: gridTask,
-                        column: column,
-                    });
-                }
+    definition = {
+      template: anchorTemplate,
+      task: gridTask,
+      build: function build(column) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+          console.log('gridTask:build', {
+            gridTask: gridTask,
+            column: column,
+          });
+        }
 
-                /* Initialization code */
-                function initGridTask() {
-                    var builtAnchor = _.template(anchorTemplate);
+        /* Initialization code */
+        function initGridTask() {
+          var builtAnchor = _.template(anchorTemplate);
 					return builtAnchor(column);
-                }
+        }
 
-                return initGridTask();
-            },
-        };
+        return initGridTask();
+      },
+    };
 
-    return definition;
+  return definition;
 });
