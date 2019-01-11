@@ -9,7 +9,7 @@
     // 'requireLib',
     'CustomSpace/Scripts/path/to/module/template'
   ],
-  excludeShallow: [ 
+  excludeShallow: [
     // 'CustomSpace/Scripts/path/to/module/path/to/submodule/controller',
     // 'text!CustomSpace/Scripts/path/to/module/path/to/submodule/view.html'
   ],

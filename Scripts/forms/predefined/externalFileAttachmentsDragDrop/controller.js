@@ -121,8 +121,8 @@ define([
             var listView = template.find('.fileattachment-list').data('kendoListView');
             var item = el.closest('[role="option"]');
             var dataItem = listView.dataSource.getByUid(item.data('uid'));
-            
-            
+
+
             if (dataItem.DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) && !el.hasClass('download')) {
               dialog.kendoDialog({
                 modal: true,
@@ -196,7 +196,7 @@ define([
                 viewModel.onOpenFile($(this));
               });
             }
-            
+
           }
         });
 
@@ -216,7 +216,7 @@ define([
           $('#files').trigger('click');
         });
 
-         
+
       });
       callback(template);
     }
