@@ -202,20 +202,20 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
         var template =
           '# if (!_.isUndefined(Priority)) { ' +
             'switch (Priority) { ' +
-            'case "4": ' +
-              '# # ' +
-              'break; ' +
-            'case "3": ' +
-              '# background-color:rgba(0, 255, 0, 0.25); # ' +
-              'break; ' +
-            'case "2": ' +
-            'case "Medium": ' +
-              '# background-color:rgba(255, 255, 0, 0.25); # ' +
-              'break; ' +
-            'case "1": ' +
-            'case "High": ' +
-              '# background-color:rgba(255, 0, 0, 0.25); # ' +
-              'break; ' +
+              'case "4": ' +
+                '# # ' +
+                'break; ' +
+              'case "3": ' +
+                '# background-color:rgba(0, 255, 0, 0.25); # ' +
+                'break; ' +
+              'case "2": ' +
+              'case "Medium": ' +
+                '# background-color:rgba(255, 255, 0, 0.25); # ' +
+                'break; ' +
+              'case "1": ' +
+              'case "High": ' +
+                '# background-color:rgba(255, 0, 0, 0.25); # ' +
+                'break; ' +
             '} ' +
           '} #';
         return template;

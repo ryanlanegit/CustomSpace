@@ -60,26 +60,26 @@ define([
                       userInputItem;
 
                     switch (questionType) {
-                    case 'integer':
-                      questionType = 'int';
-                      break;
-                    case 'list':
-                      if (app.custom.utils.isGuid(questionValue)) {
-                        questionType = 'enum';
-                      }
-                      break;
-                    case 'boolean':
-                      questionType = 'bool';
-                      questionLabel = questionElm.find('label.checkbox-label');
-                      switch (questionValue) {
-                      case 'on':
-                        questionValue = 'True';
+                      case 'integer':
+                        questionType = 'int';
                         break;
-                      case 'off':
-                        questionValue = 'False';
+                      case 'list':
+                        if (app.custom.utils.isGuid(questionValue)) {
+                          questionType = 'enum';
+                        }
                         break;
-                      }
-                      break;
+                      case 'boolean':
+                        questionType = 'bool';
+                        questionLabel = questionElm.find('label.checkbox-label');
+                        switch (questionValue) {
+                          case 'on':
+                            questionValue = 'True';
+                            break;
+                          case 'off':
+                            questionValue = 'False';
+                            break;
+                        }
+                        break;
                     }
 
                     userInputItem = {
@@ -107,21 +107,21 @@ define([
                     };
 
                     switch (item.Type) {
-                    case 'enum':
-                      app.lib.getEnumDisplayName(parsedInputItem.Answer, function (data) {
-                        parsedInputItem.Answer = data;
-                      });
-                      break;
-                    case 'datetime':
-                      parsedInputItem.Answer = app.lib.getFormattedLocalDateTime(parsedInputItem.Answer);
-                      break;
-                    case 'fileattachment':
-                      parsedInputItem.Answer = parsedInputItem.Answer.split('(((;)))').join(',').split('(((:)))').join(',').split(',').filter(attachmentFilter).join('<br/>');
-                      break;
-                    default:
-                      if (typeof (parsedInputItem.Answer) === 'object') {
-                        parsedInputItem.Answer = app.lib.getQueryResultDisplayText(item);
-                      }
+                      case 'enum':
+                        app.lib.getEnumDisplayName(parsedInputItem.Answer, function (data) {
+                          parsedInputItem.Answer = data;
+                        });
+                        break;
+                      case 'datetime':
+                        parsedInputItem.Answer = app.lib.getFormattedLocalDateTime(parsedInputItem.Answer);
+                        break;
+                      case 'fileattachment':
+                        parsedInputItem.Answer = parsedInputItem.Answer.split('(((;)))').join(',').split('(((:)))').join(',').split(',').filter(attachmentFilter).join('<br/>');
+                        break;
+                      default:
+                        if (typeof (parsedInputItem.Answer) === 'object') {
+                          parsedInputItem.Answer = app.lib.getQueryResultDisplayText(item);
+                        }
                     }
 
                     parsedUserInput.push(parsedInputItem);

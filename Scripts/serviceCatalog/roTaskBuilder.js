@@ -86,14 +86,14 @@ define([
               }
 
               switch (questionType) {
-              case 'Integer':
-                questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
-                if (questionElm.find('span.k-invalid-msg').length === 0) {
-                  msgSpan = $('<span></span');
-                  msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
-                  questionFormGroup.prepend(msgSpan);
-                }
-                break;
+                case 'Integer':
+                  questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
+                  if (questionElm.find('span.k-invalid-msg').length === 0) {
+                    msgSpan = $('<span></span');
+                    msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
+                    questionFormGroup.prepend(msgSpan);
+                  }
+                  break;
               }
             });
 

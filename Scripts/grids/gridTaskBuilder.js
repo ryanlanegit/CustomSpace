@@ -52,28 +52,28 @@ define([
                 }
 
                 switch (type) {
-                case 'style':
-                  // Set style template function to provided template
-                  taskColumn._style = template;
-                  break;
-                case 'task':
-                  var existingTask = that.get(gridData, field, name);
-                  if (existingTask) {
-                    // Merge new task with existing one in the column template
-                    $.extend(existingTask, {
-                      name : name,
-                      template: template,
-                      callback: callback,
-                    });
-                  } else {
-                    // Add new task to the column template
-                    taskColumn._tasks.push({
-                      name : name,
-                      template: template,
-                      callback: callback,
-                    });
-                  }
-                  break;
+                  case 'style':
+                    // Set style template function to provided template
+                    taskColumn._style = template;
+                    break;
+                  case 'task':
+                    var existingTask = that.get(gridData, field, name);
+                    if (existingTask) {
+                      // Merge new task with existing one in the column template
+                      $.extend(existingTask, {
+                        name : name,
+                        template: template,
+                        callback: callback,
+                      });
+                    } else {
+                      // Add new task to the column template
+                      taskColumn._tasks.push({
+                        name : name,
+                        template: template,
+                        callback: callback,
+                      });
+                    }
+                    break;
                 }
               } else {
                 console.log('gridTasks:add', "Warning! Unable to find field '" + field + "'.");

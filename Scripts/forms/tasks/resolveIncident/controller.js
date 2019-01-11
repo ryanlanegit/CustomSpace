@@ -157,12 +157,12 @@ define([
 
           // Update Resolved Date Field
           switch (resolvedDateElement.attr('data-control')) {
-          case 'datePicker':
-            resolvedDateElement.val(kendo.toString(new Date(), 'd'));
-            break;
-          case 'dateTimePicker':
-            resolvedDateElement.val(kendo.toString(new Date(), 'g'));
-            break;
+            case 'datePicker':
+              resolvedDateElement.val(kendo.toString(new Date(), 'd'));
+              break;
+            case 'dateTimePicker':
+              resolvedDateElement.val(kendo.toString(new Date(), 'g'));
+              break;
           }
 
           // Update Status Indicator
