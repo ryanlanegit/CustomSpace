@@ -33,16 +33,16 @@ define([
 
         /* Initialization code */
         function initGridTask() {
-					var properties = {
-						field: field,
-						task: task,
-						icon: 'fa-pencil',
-						bClickPropagation: true,
-					},
-						builtTask = _.template(listItemTaskTemplate);
+          var properties = {
+              field: field,
+              task: task,
+              icon: 'fa-pencil',
+              bClickPropagation: true,
+            },
+            builtTask = _.template(listItemTaskTemplate);
 
-					$.extend(properties, options);
-					return builtTask(properties);
+          $.extend(properties, options);
+          return builtTask(properties);
         }
 
         return initGridTask();

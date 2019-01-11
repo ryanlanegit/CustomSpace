@@ -33,19 +33,19 @@ define([
 
         /* Initialization code */
         function initGridTask() {
-					var properties = {
-						field: field,
-						task: task,
-						icon: 'fa-external-link',
-						bClickPropagation: false,
-						className: '',
-						href: '/',
-						target: '_blank',
-					},
-						builtLink = _.template(listItemLinkTemplate);
+          var properties = {
+              field: field,
+              task: task,
+              icon: 'fa-external-link',
+              bClickPropagation: false,
+              className: '',
+              href: '/',
+              target: '_blank',
+            },
+            builtLink = _.template(listItemLinkTemplate);
 
-					$.extend(properties, options);
-					return builtLink(properties);
+          $.extend(properties, options);
+          return builtLink(properties);
         }
 
         return initGridTask();

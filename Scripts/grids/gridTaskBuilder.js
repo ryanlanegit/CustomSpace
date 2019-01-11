@@ -5,9 +5,9 @@ Custom Grid Task Builder
 **/
 
 define([
-	'CustomSpace/Scripts/grids/tasks/anchor/controller',
-	'CustomSpace/Scripts/grids/tasks/link/controller',
-	'CustomSpace/Scripts/grids/tasks/task/controller',
+  'CustomSpace/Scripts/grids/tasks/anchor/controller',
+  'CustomSpace/Scripts/grids/tasks/link/controller',
+  'CustomSpace/Scripts/grids/tasks/task/controller',
 ], function () {
   'use strict';
   var gridTaskModules = arguments,
@@ -204,5 +204,5 @@ define([
       },
     };
 
-	return definition;
+  return definition;
 });

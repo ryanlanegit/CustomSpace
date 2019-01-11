@@ -52,7 +52,7 @@ define([
               });
               if (viewModel.Activity !== undefined && viewModel.Activity.length > 0) {
                 $.each(viewModel.Activity, function (Key, activity) {
-                  getChildren(activity, prefix + '  ');
+                  getChildren(activity, prefix + '    ');
                 });
               }
             };

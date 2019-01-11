@@ -32,7 +32,7 @@ define([
         /* Initialization code */
         function initGridTask() {
           var builtAnchor = _.template(anchorTemplate);
-					return builtAnchor(column);
+          return builtAnchor(column);
         }
 
         return initGridTask();
