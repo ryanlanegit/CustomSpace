@@ -27,7 +27,7 @@ require([
   function initTasks() {
     // Build out custom request offering tasks
     pageTaskBuilder.build($('div#main_wrapper'), pageTaskBuilder.node, function () {
-      app.events.publish('pageTasksReady');
+      app.events.publish('pageTasks.Ready');
     });
   }
 

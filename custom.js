@@ -16,26 +16,25 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   (function () {
     'use strict';
     function debugEventSubscriber(e) {
-      console.log(e.type, {
+      console.log(e.type + '.' + e.namespace, {
         performance: performance.now(),
         event: e,
       });
     }
 
     var debugEvents = [
-      'viewModelReady',
-      'boundReadyReady',
-      'dynamicPageReady',
       'sessionStorageReady',
-      'requirejsReady',
-      'angularReady',
-      'gridTasksReady',
-      'roTasksReady',
-      'pageTasksReady',
+      'dynamicPageReady',
+      'boundReady.Ready',
+      'requirejs.Ready',
+      'angular.Ready',
+      'gridTasks.Ready',
+      'roTasks.Ready',
+      'pageTasks.Ready',
+      'wiTasks.Ready',
     ];
-    _.each(debugEvents, function (debugEvent) {
-      app.events.subscribe(debugEvent, debugEventSubscriber);
-    });
+    
+    app.events.subscribe(debugEvents.join(' '), debugEventSubscriber);
   }());
 }
 
@@ -43,13 +42,13 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   Custom Utilities
 */
 app.custom.utils = {
-  'setDebugMode': function setDebugMode(enabled) {
+  setDebugMode: function setDebugMode(enabled) {
     'use strict';
-    console.log('setDebugMode', enabled);
+    console.log('setDebugMode', {enabled: enabled, this: this});
     app.storage.custom.set('DEBUG_ENABLED', enabled);
   },
 
-  'getCachedScript': function getCachedScript(url, options) {
+  getCachedScript: function getCachedScript(url, options) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('getCachedScript', url);
@@ -63,7 +62,7 @@ app.custom.utils = {
     return $.ajax(options);
   },
 
-  'getCSS': function getCSS(url) {
+  getCSS: function getCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('getCSS', url);
@@ -75,7 +74,7 @@ app.custom.utils = {
     }).appendTo('head');
   },
 
-  'isGuid': function isGuid(string) {
+  isGuid: function isGuid(string) {
     'use strict';
     if (string[0] === '{') {
       string = string.substring(1, string.length - 1);
@@ -84,7 +83,7 @@ app.custom.utils = {
     return regexGuid.test(string);
   },
 
-  'sortList': function sortList(ulElement) {
+  sortList: function sortList(ulElement) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('sortList', ulElement);
@@ -98,12 +97,19 @@ app.custom.utils = {
     _.each(listitems, function (listItem) { ulElement.append(listItem); });
   },
 
-  'stringFormat': function stringFormat(format) {
+  stringFormat: function stringFormat(format) {
     'use strict';
-    var args = Array.prototype.slice.call(arguments, 1);
-    return format.replace(/\{(\d+)\}/g, function (match, number) {
-      return typeof args[number] !== 'undefined' ? args[number] : match;
-    });
+    format = format.toString();
+    if (arguments.length > 1) {
+        var args = (typeof arguments[1] === 'string' || typeof arguments[1] === 'number') ? Array.prototype.slice.call(arguments, 1) : arguments[1],
+            key;
+        for (key in args) {
+            if (args.hasOwnProperty(key)) {
+                format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), args[key]);
+            }
+        }
+    }
+    return format;
   },
 };
 
@@ -114,26 +120,26 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
 
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
 
-  app.events.subscribe('sessionStorageReady', function loadROToolbox() {
+  app.events.subscribe('sessionStorageReady', function loadROToolbox(event) {
     'use strict';
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
       app.lib.mask.apply('Applying Request Offering Template');
       transformRO();
       app.lib.mask.remove();
     });
-    // Unsubscibe from further sessionStorage events
-    app.events.unsubscribe('sessionStorageReady', loadROToolbox);
+    // Unsubscribe from further sessionStorage events
+    app.events.unsubscribe(event.type, loadROToolbox);
   });
 } else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:WorkItem', performance.now());
   }
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
-    app.events.subscribe('requirejsReady', function loadWITaskMain() {
+    app.events.subscribe('requirejs.Ready', function loadWITaskMain(event) {
       'use strict';
       app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
-      // Unsubscibe from further requirejs events
-      app.events.unsubscribe('requirejsReady', loadWITaskMain);
+      // Unsubscribe from further requirejs events
+      app.events.unsubscribe(event.type + '.' + event.namespace, loadWITaskMain);
     });
     /*
       Check Is Private In Action Log By Default
@@ -164,32 +170,32 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     console.log('Custom:Page', performance.now());
   }
 
-  app.events.subscribe('angularReady', function loadPageTaskMain() {
+  app.events.subscribe('angular.Ready', function loadPageTaskMain(event) {
     'use strict';
-    console.log('angularReady.loadPageTaskMain', loadPageTaskMain);
+    console.log(event.type + '.' + event.namespace + ':loadPageTaskMain', loadPageTaskMain, event);
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
-    // Unsubscibe from further angular events
-    app.events.unsubscribe('angularReady', loadPageTaskMain);
+    // Unsubscribe from further angular events
+    app.events.unsubscribe(event.type + '.' + event.namespace, loadPageTaskMain);
   });
 } else if (window.location.pathname.indexOf('/View/') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:View', performance.now());
   }
 
-  app.events.subscribe('requirejsReady', function loadGridTaskMain() {
+  app.events.subscribe('requirejs.Ready', function loadGridTaskMain(event) {
     'use strict';
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-    // Unsubscibe from further requirejs events
-    app.events.unsubscribe('requirejsReady', loadGridTaskMain);
+    // Unsubscribe from further requirejs events
+    app.events.unsubscribe(event.type + '.' + event.namespace, loadGridTaskMain);
   });
 
   /*
     Custom Grid Tasks
   */
-  app.events.subscribe('gridTasksReady', function populateGridTasks() {
+  app.events.subscribe('gridTasks.Ready', function populateGridTasks(event) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('gridTasksReady:event', {
+      console.log(event.type + '.' + event.namespace + ':event', {
         performance: performance.now(),
       });
     }
@@ -273,8 +279,8 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
       app.custom.gridTasks.updateGrid(gridData);
     }
 
-    // Unsubscibe from further gridTasks events
-    app.events.unsubscribe('gridTasksReady', populateGridTasks);
+    // Unsubscribe from further gridTasks events
+    app.events.unsubscribe(event.type + '.' + event.namespace, populateGridTasks);
   });
 } else {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -286,7 +292,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   Javascript Library Monitoring
 */
 if (!_.isUndefined(window.requirejs)) {
-  app.events.publish('requirejsReady');
+  app.events.publish('requirejs.Ready');
 } else {
   Object.defineProperty(window, 'requirejs', {
     configurable: true,
@@ -299,13 +305,13 @@ if (!_.isUndefined(window.requirejs)) {
     set: function (val) {
       'use strict';
       this._requirejs = val;
-      app.events.publish('requirejsReady');
+      app.events.publish('requirejs.Ready');
     },
   });
 }
 
 if (!_.isUndefined(window.angular)) {
-  app.events.publish('angularReady');
+  app.events.publish('angular.Ready');
 } else {
   Object.defineProperty(window, 'angular', {
     configurable: true,
@@ -318,13 +324,13 @@ if (!_.isUndefined(window.angular)) {
     set: function (val) {
       'use strict';
       this._angular = val;
-      app.events.publish('angularReady');
+      app.events.publish('angular.Ready');
     },
   });
 }
 
 if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady)) {
-  app.events.publish('boundReadyReady');
+  app.events.publish('boundReady.Ready');
 } else {
   Object.defineProperty(window, 'pageForm', {
     configurable: true,
@@ -338,7 +344,7 @@ if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady
       'use strict';
       this._pageForm = val;
       if (this._pageForm.boundReady !== undefined) {
-        app.events.publish('boundReadyReady');
+        app.events.publish('boundReady.Ready');
       } else {
         Object.defineProperty(this._pageForm, 'boundReady', {
           configurable: true,
@@ -349,7 +355,7 @@ if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady
           },
           set: function (val) {
             this._boundReady = val;
-            app.events.publish('boundReadyReady');
+            app.events.publish('boundReady.Ready');
           },
         });
       }

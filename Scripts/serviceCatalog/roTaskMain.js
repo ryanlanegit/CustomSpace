@@ -26,7 +26,7 @@ require([
   function initTasks() {
     // Build out custom request offering tasks
     roTaskBuilder.build($('div.page-panel'), roTaskBuilder.node, function () {
-      app.events.publish('roTasksReady');
+      app.events.publish('roTasks.Ready');
     });
   }
 

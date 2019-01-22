@@ -15,7 +15,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
-  // 'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
 ], function () {
   'use strict';
   var roTaskModules = arguments,
