@@ -92,7 +92,10 @@ define([
             popupNotification = popupNotificationElm.kendoNotification({
               templates: [{
                 type: 'resolveIncidentNotification',
-                template: '<div class="success k-ext-dialog-content"><div class="k-ext-dialog-icon fa fa-check"></div><div class="k-ext-dialog-message">#= message #</div></div>',
+                template: '<div class="success k-ext-dialog-content">' +
+                            '<div class="k-ext-dialog-icon fa fa-check"></div>' +
+                            '<div class="k-ext-dialog-message">#= message #</div>' +
+                          '</div>',
               }],
             }).data('kendoNotification');
           }
