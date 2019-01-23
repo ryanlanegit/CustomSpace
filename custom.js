@@ -82,6 +82,22 @@ app.custom.utils = {
     var regexGuid = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi;
     return regexGuid.test(string);
   },
+  
+  isValidJSON: function isValidJSON(content) {
+    // Regex Check For Valid JSON based on https://github.com/douglascrockford/JSON-js/blob/master/json2.js
+    'use strict';
+    var rx_one = /^[\],:{}\s]*$/,
+      rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+      rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+      rx_four = /(?:^|:|,)(?:\s*\[)+/g;
+      
+    return rx_one.test(
+      content
+        .replace(rx_two, '@')
+        .replace(rx_three, ']')
+        .replace(rx_four, '')
+    );
+  },
 
   sortList: function sortList(ulElement) {
     'use strict';
@@ -101,13 +117,13 @@ app.custom.utils = {
     'use strict';
     format = format.toString();
     if (arguments.length > 1) {
-        var args = (typeof arguments[1] === 'string' || typeof arguments[1] === 'number') ? Array.prototype.slice.call(arguments, 1) : arguments[1],
-            key;
-        for (key in args) {
-            if (args.hasOwnProperty(key)) {
-                format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), args[key]);
-            }
+      var args = (typeof arguments[1] === 'string' || typeof arguments[1] === 'number') ? Array.prototype.slice.call(arguments, 1) : arguments[1],
+        key;
+      for (key in args) {
+        if (args.hasOwnProperty(key)) {
+          format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), args[key]);
         }
+      }
     }
     return format;
   },

@@ -60,7 +60,9 @@ define([
         function initTask() {
           $('div.page-panel').each(function () {
             var roPage = $(this),
-              roTaskElms = roPage.find("p:contains('{\"'), p:contains('{ \"')"),
+              roTaskElms = roPage.find('div.row').filter(function (index) {
+                return app.custom.utils.isValidJSON($(this).text());
+              }),
               roQuestionElms = roPage.find('div.question-container');
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               console.log('roTaskBuilder:initTask', {
@@ -72,6 +74,9 @@ define([
 
             // Set 100% Width for Display Rows
             roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
+            
+            // Add 'task-container' class to rows contains task JSON
+            roTaskElms.addClass('task-container');
 
             roQuestionElms.each(function () {
               var questionElm = $(this),
@@ -98,22 +103,16 @@ define([
             });
 
             roTaskElms.each(function () {
-              var propertyContainer = $(this).closest('.row');
-              // Add 'task-container' class to container row
-              propertyContainer.addClass('task-container');
-            });
-
-            roTaskElms.each(function () {
-              var parsedProperties = JSON.parse($(this).text()),
-                propertyContainer = $(this).closest('.row'),
+              var roTaskElm = $(this),
+                parsedProperties = JSON.parse(roTaskElm.text()),
                 propName;
 
               // Hide/Show Request Offering Task Template Rows
               if (_.isUndefined(app.storage.custom)) {
-                propertyContainer.hide();
+                roTaskElm.hide();
               } else {
                 if (!app.storage.custom.get('DEBUG_ENABLED')) {
-                  propertyContainer.hide();
+                  roTaskElm.hide();
                 }
               }
               for (propName in parsedProperties) {
@@ -124,7 +123,7 @@ define([
                       value: parsedProperties[propName],
                     });
                   }
-                  buildAndRender(propName, propertyContainer, parsedProperties[propName]);
+                  buildAndRender(propName, roTaskElm, parsedProperties[propName]);
                 }
               }
             });
