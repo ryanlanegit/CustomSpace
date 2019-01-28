@@ -74,13 +74,18 @@ app.custom.utils = {
     }).appendTo('head');
   },
 
-  isGuid: function isGuid(string) {
+  isValidGUID: function isValidGUID(content) {
     'use strict';
-    if (string[0] === '{') {
-      string = string.substring(1, string.length - 1);
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('isValidGUID', content);
     }
-    var regexGuid = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi;
-    return regexGuid.test(string);
+    content = content.toString();
+    var rx_one = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi,
+      rx_braces = /(^{|}$)/gi;
+    return rx_one.test(
+      content
+        .replace(rx_braces, '')
+    );
   },
   
   isValidJSON: function isValidJSON(content) {

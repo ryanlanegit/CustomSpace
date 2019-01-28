@@ -64,7 +64,7 @@ define([
                         questionType = 'int';
                         break;
                       case 'list':
-                        if (app.custom.utils.isGuid(questionValue)) {
+                        if (app.custom.utils.isValidGUID(questionValue)) {
                           questionType = 'enum';
                         }
                         break;
