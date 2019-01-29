@@ -79,13 +79,34 @@ define(function () {
           }
 
           processNext(promptElm, options.next, function (targetElm) {
-            // Update Input If HASH exists on Load
             var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase();
 
+            // Update Input If HASH exists on Load
             if (currentParams && currentParams.hasOwnProperty(paramKey)) {
-              processParam(targetElm, currentParams[paramKey]);
+              // Check if angular framework is ready
+              if (typeof angular === 'undefined') {
+                // Wait for angular framework to be ready
+                app.events.subscribe('angular.Ready', function processROTask(event) {
+                  'use strict';
+                  // Wait for Request Offering scope to be ready
+                  angular.element($('#GeneralInformation')).ready(function () {
+                    'use strict';
+                    // Set Field to Fetched Data value
+                    processParam(targetElm, currentParams[paramKey]);
+                  });
+                    // Unsubscribe from further angular.Ready events
+                  app.events.unsubscribe(event.type, processROTask);
+                });
+              } else {
+                // Wait for Request Offering scope to be ready
+                angular.element($('#GeneralInformation')).ready(function () {
+                  'use strict';
+                  // Set Field to Fetched Data value
+                  processParam(targetElm, currentParams[paramKey]);
+                });
+              }
             }
 
             // Update URL HASH on Input Change

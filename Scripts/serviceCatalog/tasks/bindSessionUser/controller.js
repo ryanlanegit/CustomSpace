@@ -95,25 +95,73 @@ define(function () {
             }
 
             if (session.user.hasOwnProperty(propertyKey)) {
-              console.log('Using session.user object');
-              $(targetElm).find('textarea').val(session.user[propertyKey]);
-              $(targetElm).find('textarea').trigger('onkeyup');
-                    
-              console.log('set textarea', session.user[propertyKey], $(targetElm).find('textarea'));
-            } else {
-              console.log('Waiting for sessionUserData object load');
-              app.events.subscribe('sessionUserData.Ready', function (event, data) {
-                console.log('TEST Bind Session User!', {
-                  data: data[0],
-                  dataLength: data.length,
-                  propertKey: propertyKey,
+              // Check if angular framework is ready
+              if (typeof angular === 'undefined') {
+                // Wait for angular framework to be ready
+                app.events.subscribe('angular.Ready', function processROTask(event) {
+                  'use strict';
+                  // Wait for Request Offering scope to be ready
+                  angular.element($('#GeneralInformation')).ready(function () {
+                    'use strict';
+                    // Set Field to session.user value
+                    $(targetElm).find('textarea').val(session.user[propertyKey]);
+                    $(targetElm).find('textarea').trigger('onkeyup');
+                    // console.log('set textarea', session.user[propertyKey], $(targetElm).find('textarea'));
+                  });
+                    // Unsubscribe from further angular.Ready events
+                  app.events.unsubscribe(event.type, processROTask);
                 });
+              } else {
+                // Wait for Request Offering scope to be ready
+                angular.element($('#GeneralInformation')).ready(function () {
+                  'use strict';
+                  // console.log('Using session.user object no event wait');
+                  // Set Field to session.user value
+                  $(targetElm).find('textarea').val(session.user[propertyKey]);
+                  $(targetElm).find('textarea').trigger('onkeyup');
+                  // console.log('set textarea', session.user[propertyKey], $(targetElm).find('textarea'));
+                });
+              }
+            } else {
+              // console.log('Waiting for sessionUserData object load');
+              app.events.subscribe('sessionUserData.Ready', function (event, data) {
+                'use strict';
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  console.log('Session User Data Ready', {
+                    data: data[0],
+                    dataLength: data.length,
+                    propertKey: propertyKey,
+                  });
+                }
                 if (data.length > 0) {
                   if (data[0].hasOwnProperty(propertyKey)) {
-                    $(targetElm).find('textarea').val(data[0][propertyKey]);
-                    $(targetElm).find('textarea').trigger('onkeyup');
-                    
-                    console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
+                    // Check if angular framework is ready
+                    if (typeof angular === 'undefined') {
+                      // Wait for angular framework to be ready
+                      app.events.subscribe('angular.Ready', function processROTask(event) {
+                        'use strict';
+                        // Wait for Request Offering scope to be ready
+                        angular.element($('#GeneralInformation')).ready(function () {
+                          'use strict';
+                          // Set Field to Fetched Data value
+                          $(targetElm).find('textarea').val(data[0][propertyKey]);
+                          $(targetElm).find('textarea').trigger('onkeyup');
+                          // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
+                        });
+                          // Unsubscribe from further angular.Ready events
+                        app.events.unsubscribe(event.type, processROTask);
+                      });
+                    } else {
+                      // Wait for Request Offering scope to be ready
+                      angular.element($('#GeneralInformation')).ready(function () {
+                        'use strict';
+                        // console.log('Using session.user object no event wait');
+                        // Set Field to Fetched Data value
+                        $(targetElm).find('textarea').val(data[0][propertyKey]);
+                        $(targetElm).find('textarea').trigger('onkeyup');
+                        // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
+                      });
+                    }
                   } else {
                     switch (propertyKey) {
                     case 'EmailAddress':
@@ -122,9 +170,32 @@ define(function () {
                         return item.ChannelName === 'SMTP';
                       });
                       if (SMTPFilter) {
-                        $(targetElm).find('textarea').val(SMTPFilter[0].TargetAddress);
-                        $(targetElm).find('textarea').trigger('onkeyup');
-                        
+                        // Check if angular framework is ready
+                        if (typeof angular === 'undefined') {
+                          // Wait for angular framework to be ready
+                          app.events.subscribe('angular.Ready', function processROTask(event) {
+                            'use strict';
+                            // Wait for Request Offering scope to be ready
+                            angular.element($('#GeneralInformation')).ready(function () {
+                              // Set Field to Fetched Data value
+                              $(targetElm).find('textarea').val(SMTPFilter[0].TargetAddress);
+                              $(targetElm).find('textarea').trigger('onkeyup');
+                              // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
+                            });
+                              // Unsubscribe from further angular.Ready events
+                            app.events.unsubscribe(event.type, processROTask);
+                          });
+                        } else {
+                          // Wait for Request Offering scope to be ready
+                          angular.element($('#GeneralInformation')).ready(function () {
+                            'use strict';
+                            // console.log('Using session.user object no event wait');
+                            // Set Field to Fetched Data value
+                            $(targetElm).find('textarea').val(SMTPFilter[0].TargetAddress);
+                            $(targetElm).find('textarea').trigger('onkeyup');
+                            // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
+                          });
+                        }
                       }
                       break;
                     }
@@ -173,8 +244,8 @@ define(function () {
             });
             */
           });
-          
-          // Add DataSource For All User Properties 
+
+          // Add DataSource For All User Properties
           if(typeof vm.userObjectPropertiesDataSource === 'undefined') {
             vm.userObjectPropertiesDataSource = new kendo.data.DataSource({
                 serverFiltering: false,
