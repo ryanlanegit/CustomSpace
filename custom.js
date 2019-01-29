@@ -15,15 +15,18 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   console.log('DEBUG Mode Enabled', performance.now());
   (function () {
     'use strict';
-    function debugEventSubscriber(e) {
+    function debugEventSubscriber(e, data) {
       console.log(e.type + '.' + e.namespace, {
         performance: performance.now(),
         event: e,
+        data: data,
       });
     }
 
     var debugEvents = [
+      'window.hashChange',
       'sessionStorageReady',
+      'sessionUserData.Ready',
       'dynamicPageReady',
       'boundReady.Ready',
       'requirejs.Ready',
@@ -33,7 +36,7 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'pageTasks.Ready',
       'wiTasks.Ready',
     ];
-    
+
     app.events.subscribe(debugEvents.join(' '), debugEventSubscriber);
   }());
 }
@@ -87,7 +90,7 @@ app.custom.utils = {
         .replace(rx_braces, '')
     );
   },
-  
+
   isValidJSON: function isValidJSON(content) {
     // Regex Check For Valid JSON based on https://github.com/douglascrockford/JSON-js/blob/master/json2.js
     'use strict';
@@ -95,7 +98,7 @@ app.custom.utils = {
       rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
       rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
       rx_four = /(?:^|:|,)(?:\s*\[)+/g;
-      
+
     return rx_one.test(
       content
         .replace(rx_two, '@')
@@ -308,6 +311,22 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     console.log('Custom:Other', performance.now());
   }
 }
+
+/*
+  URL Hash Change Monitoring
+*/
+$(window).on('hashchange', function(event) {
+  var oldURL = event.originalEvent.oldURL,
+      newURL = event.originalEvent.newURL;
+  if (newURL !== oldURL) {
+    app.events.publish('window.hashChange', {
+      event: event,
+      oldQueryParams: app.lib.getQueryParams(oldURL.slice(oldURL.indexOf('#'))),
+      newQueryParams: app.lib.getQueryParams(newURL.slice(newURL.indexOf('#'))),
+    });
+  }
+});
+
 
 /*
   Javascript Library Monitoring

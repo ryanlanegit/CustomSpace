@@ -16,6 +16,8 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/bindHash/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
 ], function () {
   'use strict';
   var roTaskModules = arguments,
@@ -47,7 +49,7 @@ define([
           })[0];
 
           if (!_.isUndefined(roTask)) {
-            roTask.build(promptElm, options);
+            roTask.build(vm, promptElm, options);
           } else {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               console.log('Property Not Found For Rendering:', taskName);
@@ -74,7 +76,7 @@ define([
 
             // Set 100% Width for Display Rows
             roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
-            
+
             // Add 'task-container' class to rows contains task JSON
             roTaskElms.addClass('task-container');
 

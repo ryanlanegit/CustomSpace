@@ -21,7 +21,7 @@ define([
     definition = {
       template: summaryTemplate,
       task: roTask,
-      build: function build(promptElm, options) {
+      build: function build(vm, promptElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           console.log('roTask:build', {
             task: roTask,
