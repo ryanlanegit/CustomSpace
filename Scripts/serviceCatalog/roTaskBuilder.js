@@ -18,6 +18,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/bindHash/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/addShowCriteria/controller',
 ], function () {
   'use strict';
   var roTaskModules = arguments,
@@ -106,8 +107,8 @@ define([
 
             roTaskElms.each(function () {
               var roTaskElm = $(this),
-                parsedProperties = JSON.parse(roTaskElm.text()),
-                propName;
+                  parsedProperties = JSON.parse(roTaskElm.text()),
+                  propName;
 
               // Hide/Show Request Offering Task Template Rows
               if (_.isUndefined(app.storage.custom)) {
@@ -125,7 +126,9 @@ define([
                       value: parsedProperties[propName],
                     });
                   }
-                  buildAndRender(propName, roTaskElm, parsedProperties[propName]);
+                  if (propName !== 'criteria') {
+                    buildAndRender(propName, roTaskElm, parsedProperties[propName]);
+                  }
                 }
               }
             });
