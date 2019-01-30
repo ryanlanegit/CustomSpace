@@ -73,6 +73,33 @@ define(function () {
           }
         }*/
 
+        function updateTextAreaField(textareaElm, value) {
+          // Check if angular framework is ready
+          if (typeof angular === 'undefined') {
+            // Wait for angular framework to be ready
+            app.events.subscribe('angular.Ready', function processROTask(event) {
+              'use strict';
+              // Wait for Request Offering scope to be ready
+              angular.element($('#GeneralInformation')).ready(function () {
+                'use strict';
+                // Set Field to value
+                $(textareaElm).val(value);
+                $(textareaElm).trigger('onkeyup');
+              });
+                // Unsubscribe from further angular.Ready events
+              app.events.unsubscribe(event.type, processROTask);
+            });
+          } else {
+            // Wait for Request Offering scope to be ready
+            angular.element($('#GeneralInformation')).ready(function () {
+              'use strict';
+              // Set Field to session.user value
+              $(textareaElm).val(value);
+              $(textareaElm).trigger('onkeyup');
+            });
+          }
+        }
+
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
@@ -95,33 +122,7 @@ define(function () {
             }
 
             if (session.user.hasOwnProperty(propertyKey)) {
-              // Check if angular framework is ready
-              if (typeof angular === 'undefined') {
-                // Wait for angular framework to be ready
-                app.events.subscribe('angular.Ready', function processROTask(event) {
-                  'use strict';
-                  // Wait for Request Offering scope to be ready
-                  angular.element($('#GeneralInformation')).ready(function () {
-                    'use strict';
-                    // Set Field to session.user value
-                    $(targetElm).find('textarea').val(session.user[propertyKey]);
-                    $(targetElm).find('textarea').trigger('onkeyup');
-                    // console.log('set textarea', session.user[propertyKey], $(targetElm).find('textarea'));
-                  });
-                    // Unsubscribe from further angular.Ready events
-                  app.events.unsubscribe(event.type, processROTask);
-                });
-              } else {
-                // Wait for Request Offering scope to be ready
-                angular.element($('#GeneralInformation')).ready(function () {
-                  'use strict';
-                  // console.log('Using session.user object no event wait');
-                  // Set Field to session.user value
-                  $(targetElm).find('textarea').val(session.user[propertyKey]);
-                  $(targetElm).find('textarea').trigger('onkeyup');
-                  // console.log('set textarea', session.user[propertyKey], $(targetElm).find('textarea'));
-                });
-              }
+              updateTextAreaField($(targetElm).find('textarea'), session.user[propertyKey]);
             } else {
               // console.log('Waiting for sessionUserData object load');
               app.events.subscribe('sessionUserData.Ready', function (event, data) {
@@ -135,33 +136,7 @@ define(function () {
                 }
                 if (data.length > 0) {
                   if (data[0].hasOwnProperty(propertyKey)) {
-                    // Check if angular framework is ready
-                    if (typeof angular === 'undefined') {
-                      // Wait for angular framework to be ready
-                      app.events.subscribe('angular.Ready', function processROTask(event) {
-                        'use strict';
-                        // Wait for Request Offering scope to be ready
-                        angular.element($('#GeneralInformation')).ready(function () {
-                          'use strict';
-                          // Set Field to Fetched Data value
-                          $(targetElm).find('textarea').val(data[0][propertyKey]);
-                          $(targetElm).find('textarea').trigger('onkeyup');
-                          // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
-                        });
-                          // Unsubscribe from further angular.Ready events
-                        app.events.unsubscribe(event.type, processROTask);
-                      });
-                    } else {
-                      // Wait for Request Offering scope to be ready
-                      angular.element($('#GeneralInformation')).ready(function () {
-                        'use strict';
-                        // console.log('Using session.user object no event wait');
-                        // Set Field to Fetched Data value
-                        $(targetElm).find('textarea').val(data[0][propertyKey]);
-                        $(targetElm).find('textarea').trigger('onkeyup');
-                        // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
-                      });
-                    }
+                    updateTextAreaField($(targetElm).find('textarea'), data[0][propertyKey]);
                   } else {
                     switch (propertyKey) {
                     case 'EmailAddress':
@@ -170,32 +145,7 @@ define(function () {
                         return item.ChannelName === 'SMTP';
                       });
                       if (SMTPFilter) {
-                        // Check if angular framework is ready
-                        if (typeof angular === 'undefined') {
-                          // Wait for angular framework to be ready
-                          app.events.subscribe('angular.Ready', function processROTask(event) {
-                            'use strict';
-                            // Wait for Request Offering scope to be ready
-                            angular.element($('#GeneralInformation')).ready(function () {
-                              // Set Field to Fetched Data value
-                              $(targetElm).find('textarea').val(SMTPFilter[0].TargetAddress);
-                              $(targetElm).find('textarea').trigger('onkeyup');
-                              // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
-                            });
-                              // Unsubscribe from further angular.Ready events
-                            app.events.unsubscribe(event.type, processROTask);
-                          });
-                        } else {
-                          // Wait for Request Offering scope to be ready
-                          angular.element($('#GeneralInformation')).ready(function () {
-                            'use strict';
-                            // console.log('Using session.user object no event wait');
-                            // Set Field to Fetched Data value
-                            $(targetElm).find('textarea').val(SMTPFilter[0].TargetAddress);
-                            $(targetElm).find('textarea').trigger('onkeyup');
-                            // console.log('set textarea', data[0][propertyKey], $(targetElm).find('textarea'));
-                          });
-                        }
+                        updateTextAreaField($(targetElm).find('textarea'), SMTPFilter[0].TargetAddress);
                       }
                       break;
                     }
@@ -203,46 +153,6 @@ define(function () {
                 }
               });
             }
-            /*
-            if (currentParams && currentParams.hasOwnProperty(paramKey)) {
-              processParam(targetElm, currentParams[paramKey]);
-            }
-
-            // Update URL HASH on Input Change
-            $('#' + targetId).on('change', function onInputChange(event) {
-              'use strict';
-              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                console.log(event.type + '.' + event.namespace + ':onInputChange', {
-                  targetElm: targetElm,
-                  event: event,
-                });
-              }
-              var currentParams = app.lib.getQueryParams() || {};
-              currentParams[paramKey] = $('#' + targetId).val();
-              window.location.replace(window.location.href.split('#')[0] + '#' + $.param(currentParams));
-            });
-
-            // Update Input on HASH Change
-            app.events.subscribe('window.hashChange', function onHashChange(event, data) {
-              'use strict';
-              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                console.log(event.type + '.' + event.namespace + ':onHashChange', {
-                  targetElm: targetElm,
-                  event: event,
-                  data: data,
-                });
-              }
-              if (data.newQueryParams && data.newQueryParams.hasOwnProperty(paramKey)) {
-                if(data.oldQueryParams && data.oldQueryParams.hasOwnProperty(paramKey)) {
-                  if (data.newQueryParams[paramKey] !== data.oldQueryParams[paramKey]) {
-                    processParam(targetElm, data.newQueryParams[paramKey]);
-                  }
-                } else {
-                  processParam(targetElm, data.newQueryParams[paramKey]);
-                }
-              }
-            });
-            */
           });
 
           // Add DataSource For All User Properties
