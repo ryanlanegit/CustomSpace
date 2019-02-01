@@ -5,43 +5,6 @@ Custom
 **/
 
 /*
-  Custom Session Debugging
-*/
-app.storage.custom = store.namespace('custom');
-// app.storage.custom.set('debug', true); // Enable DEBUG Mode via Console/Script/Plugin
-// app.storage.custom.set('debug', false); // Disable DEBUG Mode via Console/Script/Plugin
-
-if (app.storage.custom.get('DEBUG_ENABLED')) {
-  console.log('DEBUG Mode Enabled', performance.now());
-  (function () {
-    'use strict';
-    function debugEventSubscriber(e, data) {
-      console.log(e.type + '.' + e.namespace, {
-        performance: performance.now(),
-        event: e,
-        data: data,
-      });
-    }
-
-    var debugEvents = [
-      'window.hashChange',
-      'sessionStorageReady',
-      'sessionUserData.Ready',
-      'dynamicPageReady',
-      'boundReady.Ready',
-      'requirejs.Ready',
-      'angular.Ready',
-      'gridTasks.Ready',
-      'roTasks.Ready',
-      'pageTasks.Ready',
-      'wiTasks.Ready',
-    ];
-
-    app.events.subscribe(debugEvents.join(' '), debugEventSubscriber);
-  }());
-}
-
-/*
   Custom Utilities
 */
 app.custom.utils = {
@@ -49,6 +12,11 @@ app.custom.utils = {
     'use strict';
     console.log('setDebugMode', {enabled: enabled, this: this});
     app.storage.custom.set('DEBUG_ENABLED', enabled);
+    if (enabled) {
+      app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
+    } else {
+      app.custom.utils.removeCSS('/CustomSpace/Content/Styles/custom.debug.css');
+    }
   },
 
   getCachedScript: function getCachedScript(url, options) {
@@ -75,6 +43,17 @@ app.custom.utils = {
       rel: 'stylesheet',
       href: url,
     }).appendTo('head');
+  },
+  
+  removeCSS: function removeCSS(url) {
+    'use strict';
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('removeCSS', url);
+    }
+    
+    if (url !== null && url.length > 0 && url !== ' ') {
+      $('link[href*="' + url + '"]').remove();
+    }
   },
 
   isValidGUID: function isValidGUID(content) {
@@ -136,6 +115,48 @@ app.custom.utils = {
     return format;
   },
 };
+
+/*
+  Custom Session Debugging
+*/
+app.storage.custom = store.namespace('custom');
+// app.storage.custom.set('debug', true); // Enable DEBUG Mode via Console/Script/Plugin
+// app.storage.custom.set('debug', false); // Disable DEBUG Mode via Console/Script/Plugin
+
+if (app.storage.custom.get('DEBUG_ENABLED')) {
+  console.log('DEBUG Mode Enabled', performance.now());
+  // Load Debug CSS File
+  app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
+  
+  // Debug subscribtion to out of the box and custom events
+  (function () {
+    'use strict';
+    function debugEventSubscriber(e, data) {
+      console.log(e.type + '.' + e.namespace, {
+        performance: performance.now(),
+        event: e,
+        data: data,
+      });
+    }
+
+    var debugEvents = [
+      'window.hashChange',
+      'sessionStorageReady',
+      'sessionUserData.Ready',
+      'dynamicPageReady',
+      'boundReady.Ready',
+      'requirejs.Ready',
+      'angular.Ready',
+      'gridTasks.Ready',
+      'roTasks.Ready',
+      'pageTasks.Ready',
+      'wiTasks.Ready',
+    ];
+
+    app.events.subscribe(debugEvents.join(' '), debugEventSubscriber);
+  }());
+}
+
 
 if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {

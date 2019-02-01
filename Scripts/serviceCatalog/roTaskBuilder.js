@@ -1,4 +1,4 @@
-/*global _, $, app, console, define */
+/*global _, $, angular, app, console, define */
 
 /**
 Custom Request Offering Task Builder
@@ -94,14 +94,18 @@ define([
               }
 
               switch (questionType) {
-                case 'Integer':
-                  questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
-                  if (questionElm.find('span.k-invalid-msg').length === 0) {
-                    msgSpan = $('<span></span');
-                    msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
-                    questionFormGroup.prepend(msgSpan);
-                  }
-                  break;
+              case 'Integer':
+                vm.waitForAngular('#GeneralInformation', function () {
+                  angular.element(questionFormGroup).ready(function () {
+                    questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
+                    if (questionElm.find('span.k-invalid-msg').length === 0) {
+                      msgSpan = $('<span></span');
+                      msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
+                      questionFormGroup.prepend(msgSpan);
+                    }
+                  });
+                });
+                break;
               }
             });
 
@@ -109,15 +113,6 @@ define([
               var roTaskElm = $(this),
                   parsedProperties = JSON.parse(roTaskElm.text()),
                   propName;
-
-              // Hide/Show Request Offering Task Template Rows
-              if (_.isUndefined(app.storage.custom)) {
-                roTaskElm.hide();
-              } else {
-                if (!app.storage.custom.get('DEBUG_ENABLED')) {
-                  roTaskElm.hide();
-                }
-              }
               for (propName in parsedProperties) {
                 if (parsedProperties.hasOwnProperty(propName)) {
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {

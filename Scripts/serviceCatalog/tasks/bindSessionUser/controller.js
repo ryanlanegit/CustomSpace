@@ -1,4 +1,4 @@
-/*global $, _, app, console, define, window */
+/*global $, _, angular, app, console, define, kendo, session, window */
 
 /**
 Bind Session User Properties
@@ -30,74 +30,20 @@ define(function () {
         function processNext(targetElm, next, func) {
           var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
-
         }
 
-        /*
-        function processParam(targetElm, paramValue) {
-          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-            console.log('roTask:build:processParam', {
-              targetElm: targetElm,
-              paramValue: paramValue,
-            });
-          }
-          var questionType = $(targetElm).find('input.question-answer-type').attr('value'),
-              targetId = $(targetElm).find('input.question-answer-id').attr('value');
-          switch (questionType) {
-          case 'List':
-            var currentValue = $(targetElm).find('#' + targetId).val();
-            if (paramValue !== currentValue) {
-              var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList'),
-                  targetDataSourceData = targetDropdownData.dataSource.data(),
-                  filteredData;
-              if (targetDataSourceData.length > 0) {
-                filteredData = _.filter(targetDataSourceData, function (item, index) {
-                  return item.name === paramValue;
-                });
-                if (filteredData) {
-                  targetDropdownData.select(function(dataItem) {
-                    return dataItem.name === paramValue;
-                  });
-                  targetDropdownData.trigger('change');
-                }
-              }
-            }
-            break;
-          default:
-            console.log('Unable to determine Question Type', {
-              task: roTask,
-              promptElm: promptElm,
-              targetElm: targetElm,
-              options: options,
-            });
-          }
-        }*/
-
-        function updateTextAreaField(textareaElm, value) {
+        function updateTextAreaField(targetElm, value) {
+          var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
-          if (typeof angular === 'undefined') {
-            // Wait for angular framework to be ready
-            app.events.subscribe('angular.Ready', function processROTask(event) {
-              'use strict';
-              // Wait for Request Offering scope to be ready
-              angular.element($('#GeneralInformation')).ready(function () {
-                'use strict';
-                // Set Field to value
-                $(textareaElm).val(value);
-                $(textareaElm).trigger('onkeyup');
-              });
-                // Unsubscribe from further angular.Ready events
-              app.events.unsubscribe(event.type, processROTask);
-            });
-          } else {
-            // Wait for Request Offering scope to be ready
-            angular.element($('#GeneralInformation')).ready(function () {
-              'use strict';
-              // Set Field to session.user value
+          vm.waitForAngular(targetElm, function () {
+            'use strict';
+            var currentValue = $(textareaElm).val();
+            // Set Field to value if current value is blank
+            if(currentValue === null || currentValue.length === 0 || currentValue === ' ') {
               $(textareaElm).val(value);
               $(textareaElm).trigger('onkeyup');
-            });
-          }
+            }
+          });
         }
 
         /* Initialization code */
@@ -122,7 +68,7 @@ define(function () {
             }
 
             if (session.user.hasOwnProperty(propertyKey)) {
-              updateTextAreaField($(targetElm).find('textarea'), session.user[propertyKey]);
+              updateTextAreaField(targetElm, session.user[propertyKey]);
             } else {
               // console.log('Waiting for sessionUserData object load');
               app.events.subscribe('sessionUserData.Ready', function (event, data) {
@@ -136,16 +82,15 @@ define(function () {
                 }
                 if (data.length > 0) {
                   if (data[0].hasOwnProperty(propertyKey)) {
-                    updateTextAreaField($(targetElm).find('textarea'), data[0][propertyKey]);
+                    updateTextAreaField(targetElm, data[0][propertyKey]);
                   } else {
                     switch (propertyKey) {
                     case 'EmailAddress':
-                      console.log('Email Search');
                       var SMTPFilter = _.filter(data[0].Preference, function (item, index) {
                         return item.ChannelName === 'SMTP';
                       });
                       if (SMTPFilter) {
-                        updateTextAreaField($(targetElm).find('textarea'), SMTPFilter[0].TargetAddress);
+                        updateTextAreaField(targetElm, SMTPFilter[0].TargetAddress);
                       }
                       break;
                     }
@@ -183,7 +128,15 @@ define(function () {
           }
         }
 
-        initROTask();
+        if (app.isSessionStored()) {
+          initROTask();
+        } else {
+          app.events.subscribe('sessionStorageReady', function execInitTasks(event) {
+            initROTask();
+            // Unsubscibe from further sessionStorage events
+            app.events.unsubscribe(event.type, execInitTasks);
+          });
+        }
       },
     };
 

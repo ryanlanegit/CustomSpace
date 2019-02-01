@@ -1,4 +1,4 @@
-/*global $, _, app, console, define, window */
+/*global $, _, angular, app, console, define, window */
 
 /**
 Bind Hash
@@ -40,36 +40,41 @@ define(function () {
               paramValue: paramValue,
             });
           }
-          var questionType = $(targetElm).find('input.question-answer-type').attr('value'),
-              targetId = $(targetElm).find('input.question-answer-id').attr('value');
-          switch (questionType) {
-          case 'List':
-            var currentValue = $(targetElm).find('#' + targetId).val();
-            if (paramValue !== currentValue) {
-              var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList'),
-                  targetDataSourceData = targetDropdownData.dataSource.data(),
-                  filteredData;
-              if (targetDataSourceData.length > 0) {
-                filteredData = _.filter(targetDataSourceData, function (item, index) {
-                  return item.name === paramValue;
-                });
-                if (filteredData) {
-                  targetDropdownData.select(function(dataItem) {
-                    return dataItem.name === paramValue;
+          
+          // Check if angular framework is ready
+          vm.waitForAngular(targetElm, function () {
+            'use strict';
+            var questionType = $(targetElm).find('input.question-answer-type').attr('value'),
+                targetId = $(targetElm).find('input.question-answer-id').attr('value');
+            switch (questionType) {
+            case 'List':
+              var currentValue = $(targetElm).find('#' + targetId).val();
+              if (paramValue !== currentValue) {
+                var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList');
+                var targetDataSourceData = targetDropdownData.dataSource.data(),
+                    filteredData;
+                if (targetDataSourceData.length > 0) {
+                  filteredData = _.filter(targetDataSourceData, function (item, index) {
+                    return item.name === paramValue;
                   });
-                  targetDropdownData.trigger('change');
+                  if (filteredData) {
+                    targetDropdownData.select(function(dataItem) {
+                      return dataItem.name === paramValue;
+                    });
+                    targetDropdownData.trigger('change');
+                  }
                 }
               }
+              break;
+            default:
+              console.log('Unable to determine Question Type', {
+                task: roTask,
+                promptElm: promptElm,
+                targetElm: targetElm,
+                options: options,
+              });
             }
-            break;
-          default:
-            console.log('Unable to determine Question Type', {
-              task: roTask,
-              promptElm: promptElm,
-              targetElm: targetElm,
-              options: options,
-            });
-          }
+          });
         }
 
         /* Initialization code */
@@ -88,28 +93,8 @@ define(function () {
 
             // Update Input If HASH exists on Load
             if (currentParams && currentParams.hasOwnProperty(paramKey)) {
-              // Check if angular framework is ready
-              if (typeof angular === 'undefined') {
-                // Wait for angular framework to be ready
-                app.events.subscribe('angular.Ready', function processROTask(event) {
-                  'use strict';
-                  // Wait for Request Offering scope to be ready
-                  angular.element($('#GeneralInformation')).ready(function () {
-                    'use strict';
-                    // Set Field to Fetched Data value
-                    processParam(targetElm, currentParams[paramKey]);
-                  });
-                    // Unsubscribe from further angular.Ready events
-                  app.events.unsubscribe(event.type, processROTask);
-                });
-              } else {
-                // Wait for Request Offering scope to be ready
-                angular.element($('#GeneralInformation')).ready(function () {
-                  'use strict';
-                  // Set Field to Fetched Data value
-                  processParam(targetElm, currentParams[paramKey]);
-                });
-              }
+              // Set Field to Fetched Data value
+              processParam(targetElm, currentParams[paramKey]);
             }
 
             // Update URL HASH on Input Change
@@ -123,9 +108,9 @@ define(function () {
               }
 
               if (onChangeTimeout != null) {
-                  clearTimeout(onChangeTimeout);
+                  window.clearTimeout(onChangeTimeout);
               }
-              onChangeTimeout = setTimeout(function() {
+              onChangeTimeout = window.setTimeout(function() {
                 onChangeTimeout = null;
                 var currentParams = app.lib.getQueryParams() || {},
                     newParams = $.extend({}, currentParams),

@@ -1,4 +1,4 @@
-/*global $, _, app, console, define */
+/*global $, _, angular, app, console, define */
 
 /**
 Set Options
@@ -36,7 +36,11 @@ define(function () {
           options.next = options.next || 1;
 
           processNext(promptElm, options.next, function (targetElm) {
-            $(targetElm).find('[data-role]').data().handler.setOptions(options);
+            // Check if angular framework is ready
+            vm.waitForAngular(targetElm, function () {
+              'use strict';
+              $(targetElm).find('[data-role]').data().handler.setOptions(options);
+            });
           });
         }
 

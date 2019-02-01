@@ -83,3 +83,10 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
 .question-container panel {
     margin-top: 20px;
 }
+
+/*
+  Hide roTask Container By Default
+*/
+.task-container {
+    display: none;
+}
