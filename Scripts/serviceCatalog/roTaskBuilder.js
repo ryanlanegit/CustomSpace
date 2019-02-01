@@ -75,27 +75,22 @@ define([
               });
             }
 
-            // Set 100% Width for Display Rows
-            roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
-
-            // Add 'task-container' class to rows contains task JSON
-            roTaskElms.addClass('task-container');
-
             roQuestionElms.each(function () {
               var questionElm = $(this),
                 questionId = questionElm.find('input.question-answer-id').attr('value'),
                 questionType = questionElm.find('input.question-answer-type').attr('value'),
-                questionContainer = questionElm.find('div.col-xs-12'),
                 questionFormGroup = questionElm.find('div.form-group'),
                 msgSpan;
-
-              if (questionContainer.hasClass('col-md-4') || questionContainer.hasClass('col-md-8')) {
-                questionContainer.removeClass('col-md-4 col-md-8').addClass('col-md-6');
-              }
 
               switch (questionType) {
               case 'Integer':
                 vm.waitForAngular(questionFormGroup, function () {
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('roTaskBuilder:initTask:SetDefaultOptions', {
+                      questionType: questionType,
+                      options: {format: '#', decimals: 0 },
+                    });
+                  }
                   questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
                   if (questionElm.find('span.k-invalid-msg').length === 0) {
                     msgSpan = $('<span></span');
