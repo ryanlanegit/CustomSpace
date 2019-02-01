@@ -95,15 +95,13 @@ define([
 
               switch (questionType) {
               case 'Integer':
-                vm.waitForAngular('#GeneralInformation', function () {
-                  angular.element(questionFormGroup).ready(function () {
-                    questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
-                    if (questionElm.find('span.k-invalid-msg').length === 0) {
-                      msgSpan = $('<span></span');
-                      msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
-                      questionFormGroup.prepend(msgSpan);
-                    }
-                  });
+                vm.waitForAngular(questionFormGroup, function () {
+                  questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
+                  if (questionElm.find('span.k-invalid-msg').length === 0) {
+                    msgSpan = $('<span></span');
+                    msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
+                    questionFormGroup.prepend(msgSpan);
+                  }
                 });
                 break;
               }

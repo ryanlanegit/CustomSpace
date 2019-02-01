@@ -94,7 +94,7 @@ define(function () {
             if (typeof $injector !== 'undefined') {
               $injector.invoke(['$compile', function ($compile) {
                 $compile(angularElm)($scope);
-                $scope.$digest();
+                // $scope.$digest();
               }]);
             }
           });
@@ -149,8 +149,8 @@ define(function () {
         function patchCriteriafn($scope, criteriaOptions, promptElmNGShow) {
           if (criteriaOptions.hasOwnProperty('ng-show')) {
             var fnName = getfnCallName(promptElmNGShow);
-            if ($scope.$$childTail.hasOwnProperty(fnName)) {
-              var fnDefinition = $scope.$$childTail[fnName],
+            if ($scope.$parent.hasOwnProperty(fnName)) {
+              var fnDefinition = $scope.$parent[fnName],
                   fnCallArgList = getfnCallArgList(promptElmNGShow),
                   fnDefinitionArgList = getfnDefinitionArgList(fnDefinition),
                   propName;
@@ -200,7 +200,7 @@ define(function () {
           };
           options = $.extend({}, defaultOptions, options);
           processNext(promptElm, options.next, function (targetElm) {
-            processOnAngularReady($('#GeneralInformation'), function (angularElm, $scope) {
+            vm.waitForAngular(targetElm, function ($element, $scope) {
               var criteriaArray = [],
                   criteriaGroupStack = [],
                   currentCriteriaGroup = criteriaArray,

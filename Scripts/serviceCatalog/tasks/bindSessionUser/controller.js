@@ -38,8 +38,8 @@ define(function () {
           vm.waitForAngular(targetElm, function () {
             'use strict';
             var currentValue = $(textareaElm).val();
-            // Set Field to value if current value is blank
-            if(currentValue === null || currentValue.length === 0 || currentValue === ' ') {
+            // Set Field to value if current value is still blank
+            if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
               $(textareaElm).val(value);
               $(textareaElm).trigger('onkeyup');
             }
@@ -57,46 +57,63 @@ define(function () {
           processNext(promptElm, options.next, function (targetElm) {
             // Update Input If HASH exists on Load
             var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
+                targetType = $(targetElm).find('input.question-answer-type').attr('value'),
+                targetInputElm,
                 currentParams = app.lib.getQueryParams(),
-                propertyKey = options.property;
+                propertyKey = options.property,
+                currentValue,
+                bUpdateValue = false;
 
-            // Mapping commonly used Properties to the session.user equivalent
-            switch (propertyKey) {
-            case 'DisplayName':
-              propertyKey = 'Name';
+            switch (targetType) {
+            case 'String':
+              targetInputElm = $(targetElm).find('textarea');
+              currentValue = $(targetInputElm).val();
+              // Set Field to value if current value is blank
+              if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
+                bUpdateValue = true;
+              }
               break;
             }
 
-            if (session.user.hasOwnProperty(propertyKey)) {
-              updateTextAreaField(targetElm, session.user[propertyKey]);
-            } else {
-              // console.log('Waiting for sessionUserData object load');
-              app.events.subscribe('sessionUserData.Ready', function (event, data) {
-                'use strict';
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                  console.log('Session User Data Ready', {
-                    data: data[0],
-                    dataLength: data.length,
-                    propertKey: propertyKey,
-                  });
-                }
-                if (data.length > 0) {
-                  if (data[0].hasOwnProperty(propertyKey)) {
-                    updateTextAreaField(targetElm, data[0][propertyKey]);
-                  } else {
-                    switch (propertyKey) {
-                    case 'EmailAddress':
-                      var SMTPFilter = _.filter(data[0].Preference, function (item, index) {
-                        return item.ChannelName === 'SMTP';
-                      });
-                      if (SMTPFilter) {
-                        updateTextAreaField(targetElm, SMTPFilter[0].TargetAddress);
+            if (bUpdateValue) {
+              // Mapping commonly used Properties to the session.user equivalent
+              switch (propertyKey) {
+              case 'DisplayName':
+                propertyKey = 'Name';
+                break;
+              }
+
+              if (session.user.hasOwnProperty(propertyKey)) {
+                updateTextAreaField(targetElm, session.user[propertyKey]);
+              } else {
+                // console.log('Waiting for sessionUserData object load');
+                app.events.subscribe('sessionUserData.Ready', function (event, data) {
+                  'use strict';
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    console.log('Session User Data Ready', {
+                      data: data[0],
+                      dataLength: data.length,
+                      propertKey: propertyKey,
+                    });
+                  }
+                  if (data.length > 0) {
+                    if (data[0].hasOwnProperty(propertyKey)) {
+                      updateTextAreaField(targetElm, data[0][propertyKey]);
+                    } else {
+                      switch (propertyKey) {
+                      case 'EmailAddress':
+                        var SMTPFilter = _.filter(data[0].Preference, function (item, index) {
+                          return item.ChannelName === 'SMTP';
+                        });
+                        if (SMTPFilter) {
+                          updateTextAreaField(targetElm, SMTPFilter[0].TargetAddress);
+                        }
+                        break;
                       }
-                      break;
                     }
                   }
-                }
-              });
+                });
+              }
             }
           });
 

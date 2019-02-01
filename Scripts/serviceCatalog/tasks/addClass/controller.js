@@ -40,7 +40,11 @@ define(function () {
           }
 
           processNext(promptElm, options.next, function (targetElm) {
-            $(targetElm).addClass(options.cssclass);
+            if (typeof options.selector === 'undefined') {
+              $(targetElm).addClass(options.cssclass);
+            } else {
+              $(targetElm).find(options.selector).addClass(options.cssclass);
+            }
           });
         }
 

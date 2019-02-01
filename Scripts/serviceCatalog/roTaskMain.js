@@ -1,4 +1,4 @@
-/*global $, _, app, console, document, kendo, performance, require, session, window */
+/*global $, _, angular, app, console, document, kendo, performance, require, session, window */
 
 /**
 Load Custom Request Offering Task Builder
@@ -27,15 +27,13 @@ require([
     // Build out custom request offering tasks
     var roTaskVm = kendo.observable({
       /**
-       * Wait until Angular has finished rendering and has
-       * no outstanding $http calls before continuing. The specific Angular app
-       * is determined by the rootSelector.
+       * Wait until Angular has finished rendering and insert callback
+       * into Angular's evalAsync queue.
        *
        * Asynchronous.
        *
-       * @param {string} rootSelector The selector housing an ng-app
-       * @param {function(string)} callback callback. If a failure occurs, it will
-       *     be passed as a parameter.
+       * @param {string} rootSelector The Angular element selector
+       * @param {function(string)} callback callback.
        */
       waitForAngular: function waitForAngular(rootSelector, callback) {
         'use strict';
@@ -45,8 +43,14 @@ require([
             callback: callback,
           });
         }
-        
-        angular.element(rootSelector).ready(callback);
+
+        $(document).ready(function () {
+          var angularElm = angular.element(rootSelector),
+              angularScope = angularElm.scope();
+          angularScope.$evalAsync(function () {
+            callback(angularElm, angularScope);
+          });
+        });
       },
     });
 
