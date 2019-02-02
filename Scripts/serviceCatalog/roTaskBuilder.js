@@ -7,18 +7,19 @@ Custom Request Offering Task Builder
 define([
   'CustomSpace/Scripts/serviceCatalog/tasks/addClass/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/addInformation/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/addShowCriteria/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/autoSize/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/bindHash/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/charCount/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/indent/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/layoutTemplate/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
-  'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
+// 'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
-  'CustomSpace/Scripts/serviceCatalog/tasks/bindHash/controller',
-  'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
-  'CustomSpace/Scripts/serviceCatalog/tasks/addShowCriteria/controller',
 ], function () {
   'use strict';
   var roTaskModules = arguments,
@@ -114,7 +115,8 @@ define([
                       value: parsedProperties[propName],
                     });
                   }
-                  if (propName !== 'criteria') {
+                  // Ignore tasks with a namespace as they represent additional options/criteria for a previous task
+                  if (propName.indexOf('.') === -1) {
                     buildAndRender(propName, roTaskElm, parsedProperties[propName]);
                   }
                 }

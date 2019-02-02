@@ -38,9 +38,15 @@ define([
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
+          options.rows = options.rows || 1;
 
           processNext(promptElm, options.next, function (targetElm) {
-            autosize($(targetElm).find('textarea'));
+            var targetInputELm = $(targetElm).find('textarea');
+            vm.waitForAngular(targetElm, function () {
+              'use strict';
+              targetInputELm.addClass('auto-size').attr('rows', options.rows);
+              autosize(targetInputELm);
+            });
           });
         }
 

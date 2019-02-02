@@ -215,7 +215,7 @@ define(function () {
                 if (options.hasOwnProperty('ng-show')) {
                     promptElmNGShow = patchCriteriafn($scope, options, promptElmNGShow);
                 }
-                // Do not add initial operator is ng-show for target question is empty of blank
+                // Do not add initial operator is ng-show for target question is empty or blank
                 if (targetElmNGShow !== null && targetElmNGShow.length !== 0 && targetElmNGShow !== " ") {
                   currentCriteriaGroup.push(targetElmNGShow, options.operator);
                 }
@@ -237,9 +237,10 @@ define(function () {
                   var parsedProperties = JSON.parse(roTaskElm.text()),
                       roTaskElmNGShow = roTaskElm.attr('ng-show'),
                       propName,
-                      criteriaOptions = {};
-                  if (typeof parsedProperties['criteria'] !== 'undefined') {
-                    $.extend(criteriaOptions, defaultOptions, parsedProperties['criteria']);
+                      criteriaOptions = {},
+                      criteriaPropertyName = roTask.Task + '.criteria';
+                  if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
+                    $.extend(criteriaOptions, defaultOptions, parsedProperties[criteriaPropertyName]);
                     currentCriteriaGroup.push(criteriaOptions.operator);
                     // Return true if ng-show for task-container is empty or blank (Always Display)
                     if (roTaskElmNGShow === null || roTaskElmNGShow.length === 0 || roTaskElmNGShow === " ") {

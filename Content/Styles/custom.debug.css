@@ -2,5 +2,12 @@
   Show roTask Container During Debug
 */
 .task-container {
-    display: block;
+  display: block;
+}
+
+/*
+  Hide roTask Container Content By Default
+*/
+.task-container .task-container-content {
+  display: block;
 }

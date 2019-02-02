@@ -36,7 +36,7 @@ require([
           roQuestionElms = roPage.find('div.question-container');
 
       // Add 'task-container' class to rows contains task JSON
-      roTaskElms.addClass('task-container');
+      roTaskElms.addClass('task-container').children().addClass('task-container-content');
       
       // Set 100% Width for Display Rows
       roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');

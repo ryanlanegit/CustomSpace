@@ -1,92 +1,113 @@
 /*
-    Custom Request Offerings
+  Custom Request Offerings
 */
 
 
 /*
-    Left Indents
+  Left Indents
 */
 .indent-0 {
-    padding-left: 30px;
+  padding-left: 30px;
 }
 
 .indent-1 {
-    padding-left: 60px;
+  padding-left: 60px;
 }
 
 .indent-2 {
-    padding-left: 90px;
+  padding-left: 90px;
 }
 
 .indent-3 {
-    padding-left: 120px;
+  padding-left: 120px;
 }
 
 .indent-4 {
-    padding-left: 160px;
+  padding-left: 160px;
 }
 
 
 /*
-    ARO Information Icon CSS
+  ARO Information Icon CSS
 */
 i.AROHoverIcon {
-	font-size: 36px;
-	color: blue
+  font-size: 36px;
+  color: blue
 }
 
 /*
-    Styles for the datepicker in the Request Offering Toolbox.
-    These are required so that the date picker matches the date time picker on the forms.
+  Styles for the datepicker in the Request Offering Toolbox.
+  These are required so that the date picker matches the date time picker on the forms.
 */
 body .k-datepicker .k-select {
-    border-radius: 0;
+  border-radius: 0;
 }
 span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
-    right: 0;
+  right: 0;
 }
 .defined-form .k-datepicker .k-select {
-    position: static;
+  position: static;
 }
 .defined-form .k-datepicker .k-select span.k-icon {
-    margin: 3px 7px 0 0;
-    background-image: none;
-    overflow: visible;
+  margin: 3px 7px 0 0;
+  background-image: none;
+  overflow: visible;
 }
 .defined-form .k-datepicker .k-select span.k-icon.k-i-calendar:before {
-    content: "\f073";
-    font-family: FontAwesome;
-    font-size: 15px;
-    font-style: normal;
-    font-weight: normal;
-    text-decoration: inherit;
-    color: #008fd6;
-    position: absolute;
-    margin: 5px 0 0 -10px;
+  content: "\f073";
+  font-family: FontAwesome;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+  color: #008fd6;
+  position: absolute;
+  margin: 5px 0 0 -10px;
 }
 
 /*
-    Normalize Text Areas To Match Other Input
+  Normalize Text Areas To Match Other Input
 */
 .question-container textarea {
-    overflow: auto;
-    box-sizing: border-box;
-    -webkit-appearance: textfield;
-    -moz-appearance: textfield;
-    appearance: textfield;
-    padding: 5px 10px;
-    line-height: 30px;
-    min-height: 32px !important;
-    max-height: 122px;
+  overflow: auto;
+  box-sizing: border-box;
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  padding: 5px 10px;
+  line-height: 30px;
+  min-height: 32px !important;
+  max-height: 122px;
 }
 
 .question-container panel {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 /*
-  Hide roTask Container By Default
+Reset Auto-Sized Text Areas
+*/
+.question-container textarea.auto-size {
+  height: auto;
+}
+
+/*
+Hide roTask Container By Default
 */
 .task-container {
-    display: none;
+  display: none;
+}
+
+/*
+Show roTask Row Container By Default
+*/
+.task-container.row-container {
+  display: block;
+}
+
+/*
+Hide roTask Container Content By Default
+*/
+.task-container .task-container-content {
+  display: none;
 }
