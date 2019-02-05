@@ -31,7 +31,6 @@ define(function () {
           _.each(targetElms, func);
         }
 
-        //handle pasted values, pasted values via context menu DON'T trigger change
         function singleLinePasteValue(textInputId) {
           _.defer(function () {
             singleLneMatchValues(textInputId);
@@ -53,12 +52,12 @@ define(function () {
 
           processNext(promptElm, options.next, function (targetElm) {
             targetElm = $(targetElm);
-            var textInputId = targetElm.find('input.question-answer-id').attr('value'),
+            var textInputId = targetElm.find('input.question-answer-id').val(),
                 targetTextAreaElm = targetElm.find('textArea');
 
-            targetTextAreaElm.removeAttr('onkeyup').removeAttr('onpaste');
-            
             targetTextAreaElm
+              .removeAttr('onkeyup')
+              .removeAttr('onpaste')
               .on('keypress', function (event) {
                 if (event.which === 13) {
                   return false;

@@ -87,8 +87,8 @@ define([
 
             roQuestionElms.each(function () {
               var questionElm = $(this),
-                questionId = questionElm.find('input.question-answer-id').attr('value'),
-                questionType = questionElm.find('input.question-answer-type').attr('value'),
+                questionId = questionElm.find('input.question-answer-id').val(),
+                questionType = questionElm.find('input.question-answer-type').val(),
                 questionFormGroup = questionElm.find('div.form-group'),
                 msgSpan;
 

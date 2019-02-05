@@ -44,8 +44,8 @@ define(function () {
           // Check if angular framework is ready
           vm.waitForAngular(targetElm, function () {
             'use strict';
-            var questionType = $(targetElm).find('input.question-answer-type').attr('value'),
-                targetId = $(targetElm).find('input.question-answer-id').attr('value');
+            var questionType = $(targetElm).find('input.question-answer-type').val(),
+                targetId = $(targetElm).find('input.question-answer-id').val();
             switch (questionType) {
             case 'List':
               var currentValue = $(targetElm).find('#' + targetId).val();
@@ -86,7 +86,7 @@ define(function () {
           }
 
           processNext(promptElm, options.next, function (targetElm) {
-            var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
+            var targetId = $(targetElm).find('input.question-answer-id').val(),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),
                 onInputChange;

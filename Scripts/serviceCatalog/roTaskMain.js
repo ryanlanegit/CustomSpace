@@ -75,7 +75,7 @@ require([
         });
       }
 
-      $(document).ready(function () {
+      angular.element(document).ready(function () {
         var angularElm = angular.element(rootSelector),
             angularScope = angularElm.scope();
         angularScope.$evalAsync(function () {
