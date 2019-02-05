@@ -31,24 +31,45 @@ define(function () {
           _.each(targetElms, func);
         }
 
+        //handle pasted values, pasted values via context menu DON'T trigger change
+        function singleLinePasteValue(textInputId) {
+          _.defer(function () {
+            singleLneMatchValues(textInputId);
+          });
+        }
+
+        function singleLneMatchValues(textInputId) {
+          var targetTextAreaElm = $('#textArea' + textInputId),
+              areaVal = targetTextAreaElm.val()
+                .replace(/[\n\r]/g, '');
+
+          targetTextAreaElm.val(areaVal);
+          matchValues(textInputId);
+        };
+
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
 
-          function preventDefaultOnEnter(event) {
-            if (event.which === 13) {
-              event.preventDefault();
-            } else {
-              var textAreaData = $(this).find('textarea').val(),
-                newLineMatch = /\r|\n/.exec(textAreaData);
-              if (newLineMatch) {
-                $(this).find('textarea').val(textAreaData.replace(/[\n\r]/g, '')).keyup();
-              }
-            }
-          }
-
           processNext(promptElm, options.next, function (targetElm) {
-            $(targetElm).keydown(preventDefaultOnEnter).keyup(preventDefaultOnEnter);
+            targetElm = $(targetElm);
+            var textInputId = targetElm.find('input.question-answer-id').attr('value'),
+                targetTextAreaElm = targetElm.find('textArea');
+
+            targetTextAreaElm.removeAttr('onkeyup').removeAttr('onpaste');
+            
+            targetTextAreaElm
+              .on('keypress', function (event) {
+                if (event.which === 13) {
+                  return false;
+                }
+              })
+              .on('keyup', function () {
+                singleLneMatchValues(textInputId);
+              })
+              .on('paste', function () {
+                singleLinePasteValue(textInputId);
+            });
           });
         }
 
