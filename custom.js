@@ -132,8 +132,7 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   (function () {
     'use strict';
     function debugEventSubscriber(e, data) {
-      console.log(e.type + '.' + e.namespace, {
-        performance: performance.now(),
+      console.log(e.type + '.' + e.namespace, performance.now(), {
         event: e,
         data: data,
       });

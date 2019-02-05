@@ -85,7 +85,7 @@ define(function () {
                 $injector = angularElm.injector();
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              console.log('recompileAngularElm', {
+              console.log('recompileAngularElm', performance.now(), {
                 '$injector': $injector,
                 '$scope': $scope,
                 'angularElm': angularElm,

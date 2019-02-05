@@ -22,6 +22,9 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
 ], function () {
   'use strict';
+  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+    console.log('roTaskBuilder:define', performance.now());
+  }
   var roTaskModules = arguments,
     nodeConfig = {
       Name: 'roTaskBuilder',
@@ -34,7 +37,7 @@ define([
       node: nodeConfig,
       build: function build(vm, node, callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTaskBuilder:build', {
+          console.log('roTaskBuilder:build', performance.now(), {
             vm: vm,
             node: node,
             callback: callback,
@@ -62,6 +65,12 @@ define([
 
         /* Initialization code */
         function initTask() {
+          
+          if (!vm.initContainerStylesComplete) {
+            console.log('RERUN initContainerStyles');
+            vm.initContainerStyles();
+          }
+          
           $('div.page-panel').each(function () {
             var roPage = $(this),
               roTaskElms = roPage.find('div.row').filter(function (index) {
@@ -69,7 +78,7 @@ define([
               }),
               roQuestionElms = roPage.find('div.question-container');
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              console.log('roTaskBuilder:initTask', {
+              console.log('roTaskBuilder:initTask', performance.now(), {
                 roPage: roPage,
                 roTaskElms: roTaskElms,
                 roQuestionElms: roQuestionElms,
@@ -87,7 +96,7 @@ define([
               case 'Integer':
                 vm.waitForAngular(questionFormGroup, function () {
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('roTaskBuilder:initTask:SetDefaultOptions', {
+                    console.log('roTaskBuilder:initTask:SetDefaultOptions', performance.now(), {
                       questionType: questionType,
                       options: {format: '#', decimals: 0 },
                     });
@@ -129,7 +138,7 @@ define([
           }
         }
 
-        initTask();
+        $(document).ready(initTask);
       },
     };
 

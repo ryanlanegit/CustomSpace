@@ -29,7 +29,15 @@ define(function () {
 
         function processNext(targetElm, next, func) {
           var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
-          _.each(targetElms, func);
+          if (app.isSessionStored()) {
+            _.each(targetElms, func);
+          } else {
+            app.events.subscribe('sessionStorageReady', function execInitTasks(event) {
+              _.each(targetElms, func);
+              // Unsubscibe from further sessionStorage events
+              app.events.unsubscribe(event.type, execInitTasks);
+            });
+          }
         }
 
         function updateTextAreaField(targetElm, value) {
@@ -50,20 +58,51 @@ define(function () {
         function initROTask() {
           options.next = options.next || 1;
 
-          if (!options.property) {
+          if (!options.property && typeof options.properties === 'undefined') {
             return;
           }
+          
+          // Add DataSource For All User Properties
+          if (typeof vm.userObjectPropertiesDataSource === 'undefined') {
+            vm.userObjectPropertiesDataSource = new kendo.data.DataSource({
+                serverFiltering: false,
+                transport: {
+                    read: {
+                        url: "/Search/GetObjectPropertiesByProjection",
+                        data: {
+                            projectionId: roTask.Configs.SystemUserPreferencesNotificationEndpointProjectionId,
+                            id: session.user.Id,
+                        },
+                        dataType: "json",
+                        type: "GET",
+                    },
+                },/* // For Use With Non-Array Results
+                schema: {
+                  data: function(response) {
+                    return [response];
+                  },
+                },*/
+            });
+          }
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
             // Update Input If HASH exists on Load
             var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
                 targetType = $(targetElm).find('input.question-answer-type').attr('value'),
                 targetInputElm,
                 currentParams = app.lib.getQueryParams(),
-                propertyKey = options.property,
+                propertyKey = options.property || options.properties[targetIndex],
                 currentValue,
                 bUpdateValue = false;
-
+            if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+              console.log('roTask:processNext', {
+                task: roTask,
+                promptElm: promptElm,
+                targetElm: targetElm,
+                propertyKey: propertyKey,
+                options: options,
+              });
+            }
             switch (targetType) {
             case 'String':
               targetInputElm = $(targetElm).find('textarea');
@@ -86,11 +125,11 @@ define(function () {
               if (session.user.hasOwnProperty(propertyKey)) {
                 updateTextAreaField(targetElm, session.user[propertyKey]);
               } else {
-                // console.log('Waiting for sessionUserData object load');
-                app.events.subscribe('sessionUserData.Ready', function (event, data) {
+                vm.userObjectPropertiesDataSource.fetch(function () {
                   'use strict';
+                  var data = this.data();
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('Session User Data Ready', {
+                    console.log('Session User Data Ready', performance.now(), {
                       data: data[0],
                       dataLength: data.length,
                       propertKey: propertyKey,
@@ -116,44 +155,9 @@ define(function () {
               }
             }
           });
-
-          // Add DataSource For All User Properties
-          if(typeof vm.userObjectPropertiesDataSource === 'undefined') {
-            vm.userObjectPropertiesDataSource = new kendo.data.DataSource({
-                serverFiltering: false,
-                transport: {
-                    read: {
-                        url: "/Search/GetObjectPropertiesByProjection",
-                        data: {
-                            projectionId: roTask.Configs.SystemUserPreferencesNotificationEndpointProjectionId,
-                            id: session.user.Id,
-                        },
-                        dataType: "json",
-                        type: "GET",
-                    },
-                },/* // For Use With Non-Array Results
-                schema: {
-                  data: function(response) {
-                    return [response];
-                  },
-                },*/
-            });
-            vm.userObjectPropertiesDataSource.fetch(function(){
-              var data = this.data();
-              app.events.publish('sessionUserData.Ready', [data]);
-            });
-          }
         }
 
-        if (app.isSessionStored()) {
-          initROTask();
-        } else {
-          app.events.subscribe('sessionStorageReady', function execInitTasks(event) {
-            initROTask();
-            // Unsubscibe from further sessionStorage events
-            app.events.unsubscribe(event.type, execInitTasks);
-          });
-        }
+        initROTask();
       },
     };
 
