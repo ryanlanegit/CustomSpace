@@ -89,7 +89,7 @@ define(function () {
             var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),
-                onChangeTimeout = null;
+                onInputChange;
 
             // Update Input If HASH exists on Load
             if (currentParams && currentParams.hasOwnProperty(paramKey)) {
@@ -98,7 +98,7 @@ define(function () {
             }
 
             // Update URL HASH on Input Change
-            $('#' + targetId).on('change', function onInputChange(event) {
+            onInputChange = _.debounce(function(event) {
               'use strict';
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 console.log(event.type + ':onInputChange', {
@@ -106,26 +106,20 @@ define(function () {
                   event: event,
                 });
               }
-
-              if (onChangeTimeout != null) {
-                  window.clearTimeout(onChangeTimeout);
+              var currentParams = app.lib.getQueryParams() || {},
+                  newParams = $.extend({}, currentParams),
+                  newValue = $('#' + targetId).val();
+              if (newValue === null || newValue.length === 0 || newValue === " ") {
+                delete newParams[paramKey];
+              } else {
+                newParams[paramKey] = newValue;
               }
-              onChangeTimeout = window.setTimeout(function() {
-                onChangeTimeout = null;
-                var currentParams = app.lib.getQueryParams() || {},
-                    newParams = $.extend({}, currentParams),
-                    newValue = $('#' + targetId).val();
-                if (newValue === null || newValue.length === 0 || newValue === " ") {
-                  delete newParams[paramKey];
-                } else {
-                  newParams[paramKey] = newValue;
-                }
 
-                if ($.param(newParams) !== $.param(currentParams)) {
-                  window.location.replace(window.location.href.split('#')[0] + '#' + $.param(newParams));
-                }
-              }, roTask.Configs.onChangeTimeOutDelay);
-            });
+              if ($.param(newParams) !== $.param(currentParams)) {
+                window.location.replace(window.location.href.split('#')[0] + '#' + $.param(newParams));
+              }
+            }, roTask.Configs.onChangeTimeOutDelay);
+            $('#' + targetId).on('change', onInputChange);
 
             // Update Input on HASH Change
             app.events.subscribe('window.hashChange', function onHashChange(event, data) {
