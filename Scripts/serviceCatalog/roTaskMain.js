@@ -75,10 +75,12 @@ require([
         });
       }
 
-      var angularElm = angular.element(rootSelector),
-          angularScope = angularElm.scope();
-      angularScope.$evalAsync(function () {
-        callback(angularElm, angularScope);
+      $(document).ready(function () {
+        var angularElm = angular.element(rootSelector),
+            angularScope = angularElm.scope();
+        angularScope.$evalAsync(function () {
+          callback(angularElm, angularScope);
+        });
       });
     },
   });
