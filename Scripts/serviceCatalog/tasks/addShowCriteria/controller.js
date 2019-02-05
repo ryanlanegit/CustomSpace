@@ -31,34 +31,6 @@ define(function () {
           _.each(targetElms, func);
         }
 
-        function processOnAngularReady(targetElm, func) {
-          if (typeof func === 'function') {
-            if (typeof angular === 'undefined') {
-              // Wait for angular framework to be ready
-              app.events.subscribe('angular.Ready', function processROTask(event) {
-                'use strict';
-                // Wait for Request Offering child scope to be ready
-                angular.element(targetElm).ready(function () {
-                  'use strict';
-                  var angularElm = angular.element(targetElm),
-                      $scope = angularElm.scope();
-                  func(angularElm, $scope);
-                });
-                  // Unsubscribe from further angular.Ready events
-                app.events.unsubscribe(event.type, processROTask);
-              });
-            } else {
-              // Wait for Request Offering child scope to be ready
-              angular.element(targetElm).ready(function () {
-                'use strict';
-                var angularElm = angular.element(targetElm),
-                    $scope = angularElm.scope();
-                func(angularElm, $scope);
-              });
-            }
-          }
-        }
-
         function flattenCriteria(criteria) {
           if (typeof criteria === 'object') {
             var criteriaArray = [],
@@ -78,23 +50,20 @@ define(function () {
 
         function recompileAngularElm(targetElm) {
           // Check if angular framework is ready
-          vm.waitForAngular(targetElm, function () {
+          vm.waitForAngular(targetElm, function ($element, $scope) {
             'use strict';
-            var angularElm = angular.element(targetElm),
-                $scope = angularElm.scope(),
-                $injector = angularElm.injector();
+            var $injector = $element.injector();
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               console.log('recompileAngularElm', performance.now(), {
                 '$injector': $injector,
                 '$scope': $scope,
-                'angularElm': angularElm,
+                '$element': $element,
               });
             }
             if (typeof $injector !== 'undefined') {
               $injector.invoke(['$compile', function ($compile) {
-                $compile(angularElm)($scope);
-                // $scope.$digest();
+                $compile($element)($scope);
               }]);
             }
           });
