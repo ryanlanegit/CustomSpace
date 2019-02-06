@@ -1,18 +1,20 @@
-/*global _, app, console, pageForm, performance, require */
+/*global _, app, console, pageForm, performance, require, session */
 
 /**
 Load Custom Work Item Task Builder
 **/
 
-require.config({
-  waitSeconds: 0,
-  urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
-  baseUrl: '/Scripts/',
-  paths: {
-    'text': 'require/text',
-    'CustomSpace': '../CustomSpace',
-  },
-});
+if (typeof require !== 'undefined') {
+  require.config({
+    waitSeconds: 0,
+    urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
+    baseUrl: '/Scripts/',
+    paths: {
+      'text': 'require/text',
+      'CustomSpace': '../CustomSpace',
+    },
+  });
+}
 
 require([
   'CustomSpace/Scripts/forms/wiTaskBuilder',
@@ -60,7 +62,6 @@ require([
   }
 
   app.events.subscribe('boundReady.Ready', function execInitTasks() {
-    'use strict';
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('wiTaskMain:boundReady', performance.now());
     }

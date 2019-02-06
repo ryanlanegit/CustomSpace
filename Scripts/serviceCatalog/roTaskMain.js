@@ -3,15 +3,17 @@
 /**
 Load Custom Request Offering Task Builder
 **/
-require.config({
-  waitSeconds: 0,
-  urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
-  baseUrl: '/Scripts/',
-  paths: {
-    'text': 'require/text',
-    'CustomSpace': '../CustomSpace',
-  },
-});
+if (typeof require !== 'undefined') {
+  require.config({
+    waitSeconds: 0,
+    urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
+    baseUrl: '/Scripts/',
+    paths: {
+      'text': 'require/text',
+      'CustomSpace': '../CustomSpace',
+    },
+  });
+}
 
 require([
   'CustomSpace/Scripts/serviceCatalog/roTaskBuilder',
@@ -84,9 +86,13 @@ require([
     },
   });
 
-  function initTasks() {
+  function initTasks(event) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:initTask', performance.now());
+    }
+    // Unsubscibe from further angular.Ready events
+    if(typeof event !== 'undefined') {
+      app.events.unsubscribe(event.type + '.' + event.namespace, initTasks);
     }
     // Build out custom request offering tasks
     roTaskBuilder.build(roTaskVm, roTaskBuilder.node, function () {
@@ -95,13 +101,9 @@ require([
   }
 
   roTaskVm.initContainerStyles();
-  if (typeof angular !== 'undefined') {
+  if (app.custom.utils.isAngularReady()) {
       initTasks();
   } else {
-    app.events.subscribe('angular.Ready', function execInitTasks(event) {
-      initTasks();
-      // Unsubscibe from further angular.Ready events
-      app.events.unsubscribe(event.type + '.' + event.namespace, execInitTasks);
-    });
+    app.events.subscribe('angular.Ready', initTasks);
   }
 });

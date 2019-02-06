@@ -20,7 +20,23 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
 // 'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
-], function () {
+], function (
+  addClassController,
+  addInformationController,
+  addShowCriteriaController,
+  autoSizeController,
+  bindHashController,
+  bindSessionUserController,
+  charCountController,
+  indentController,
+  layoutTemplateController,
+  rowContainerController,
+  setAttributeController,
+  setOptionsController,
+  singleLineEntryController,
+//  externalFileAttachmentsDragDropController,
+  summaryController
+) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('roTaskBuilder:define', performance.now());
@@ -137,7 +153,7 @@ define([
           }
         }
 
-        angular.element(document).ready(initTask);
+        $(document).ready(initTask);
       },
     };
 

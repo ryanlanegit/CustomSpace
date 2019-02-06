@@ -6,7 +6,9 @@ Custom Work Item Task Builder
 
 define([
   'CustomSpace/Scripts/forms/tasks/resolveIncident/controller',
-], function () {
+], function (
+  resolveIncidentController
+) {
   'use strict';
   var taskModules = arguments,
     definition = {

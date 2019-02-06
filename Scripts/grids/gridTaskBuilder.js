@@ -8,7 +8,11 @@ define([
   'CustomSpace/Scripts/grids/tasks/anchor/controller',
   'CustomSpace/Scripts/grids/tasks/link/controller',
   'CustomSpace/Scripts/grids/tasks/task/controller',
-], function () {
+], function (
+  anchorController,
+  linkController,
+  taskController
+) {
   'use strict';
   var gridTaskModules = arguments,
     definition = {

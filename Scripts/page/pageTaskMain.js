@@ -3,16 +3,17 @@
 /**
 Load Custom Page Task Builder
 **/
-
-require.config({
-  waitSeconds: 0,
-  urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
-  baseUrl: '/Scripts/',
-  paths: {
-    'text': 'require/text',
-    'CustomSpace': '../CustomSpace',
-  },
-});
+if (typeof require !== 'undefined') {
+  require.config({
+    waitSeconds: 0,
+    urlArgs: 'v=' + ((typeof session !== 'undefined' && typeof session.staticFileVersion !== 'undefined') ? session.staticFileVersion : 894),
+    baseUrl: '/Scripts/',
+    paths: {
+      'text': 'require/text',
+      'CustomSpace': '../CustomSpace',
+    },
+  });
+}
 
 require([
   'CustomSpace/Scripts/page/pageTaskBuilder',

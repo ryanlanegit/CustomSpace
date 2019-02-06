@@ -6,7 +6,9 @@ Custom Page Task Builder
 
 define([
   'CustomSpace/Scripts/page/tasks/groupPicker/controller',
-], function () {
+], function (
+  groupPickerController
+) {
   'use strict';
   var pageTaskModules = arguments,
     nodeConfig = {
