@@ -1,3 +1,5 @@
+[![DeepScan grade](https://deepscan.io/api/teams/2866/projects/4285/branches/34911/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=2866&pid=4285&bid=34911)
+
 # CustomSpace
 
 CustomSpace Directory Contained Within a Cireson Portal Installation
