@@ -22,7 +22,7 @@ app.custom.utils = {
   getCachedScript: function getCachedScript(url, options) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('getCachedScript', url);
+      console.log('getCachedScript', performance.now(), url);
     }
     options = $.extend(options || {}, {
       dataType: 'script',
@@ -36,7 +36,7 @@ app.custom.utils = {
   getCSS: function getCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('getCSS', url);
+      console.log('getCSS', performance.now(), url);
     }
     return $('<link>', {
       type: 'text/css',
@@ -44,13 +44,13 @@ app.custom.utils = {
       href: url,
     }).appendTo('head');
   },
-  
+
   removeCSS: function removeCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('removeCSS', url);
     }
-    
+
     if (url !== null && url.length > 0 && url !== ' ') {
       $('link[href*="' + url + '"]').remove();
     }
@@ -114,6 +114,26 @@ app.custom.utils = {
     }
     return format;
   },
+
+  isRequireJSReady: function isRequireJSReady() {
+    'use strict';
+    var ready = false;
+
+    if (!_.isUndefined(window.requirejs)) {
+      ready = true;
+    }
+    return ready;
+  },
+
+  isAngularReady: function isAngularReady() {
+    'use strict';
+    var ready = false;
+
+    if (!_.isUndefined(window.angular)) {
+      ready = true;
+    }
+    return ready;
+  },
 };
 
 /*
@@ -127,12 +147,12 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   console.log('DEBUG Mode Enabled', performance.now());
   // Load Debug CSS File
   app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
-  
+
   // Debug subscribtion to out of the box and custom events
   (function () {
     'use strict';
     function debugEventSubscriber(e, data) {
-      console.log(e.type + '.' + e.namespace, performance.now(), {
+      console.log('EVENT ' + e.type + '.' + e.namespace, performance.now(), {
         event: e,
         data: data,
       });
@@ -164,27 +184,37 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
 
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
 
-  app.events.subscribe('sessionStorageReady', function loadROToolbox(event) {
+  function loadROToolbox(event) {
     'use strict';
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('loadROToolbox', performance.now(), arguments);
+    }
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
       app.lib.mask.apply('Applying Request Offering Template');
       transformRO();
       app.lib.mask.remove();
     });
-    // Unsubscribe from further sessionStorage events
-    app.events.unsubscribe(event.type, loadROToolbox);
-  });
+    if (typeof event !== 'undefined') {
+      // Unsubscribe from further sessionStorage events
+      app.events.unsubscribe(event.type, loadROToolbox);
+    }
+  }
+
+  if (app.isSessionStored()) {
+    loadROToolbox();
+  } else {
+    app.events.subscribe('sessionStorageReady', loadROToolbox);
+  }
 } else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:WorkItem', performance.now());
   }
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
-    app.events.subscribe('requirejs.Ready', function loadWITaskMain(event) {
-      'use strict';
-      app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
-      // Unsubscribe from further requirejs events
-      app.events.unsubscribe(event.type + '.' + event.namespace, loadWITaskMain);
-    });
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('loadWITaskMain', performance.now());
+    }
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
+
     /*
       Check Is Private In Action Log By Default
     */
@@ -214,34 +244,27 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     console.log('Custom:Page', performance.now());
   }
 
-  app.events.subscribe('angular.Ready', function loadPageTaskMain(event) {
-    'use strict';
-    console.log(event.type + '.' + event.namespace + ':loadPageTaskMain', loadPageTaskMain, event);
-    app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
-    // Unsubscribe from further angular events
-    app.events.unsubscribe(event.type + '.' + event.namespace, loadPageTaskMain);
-  });
+  if (app.storage.custom.get('DEBUG_ENABLED')) {
+    console.log('loadPageTaskMain', performance.now());
+  }
+  app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
 } else if (window.location.pathname.indexOf('/View/') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:View', performance.now());
   }
 
-  app.events.subscribe('requirejs.Ready', function loadGridTaskMain(event) {
-    'use strict';
-    app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-    // Unsubscribe from further requirejs events
-    app.events.unsubscribe(event.type + '.' + event.namespace, loadGridTaskMain);
-  });
+  if (app.storage.custom.get('DEBUG_ENABLED')) {
+    console.log('loadGridTaskMain', performance.now());
+  }
+  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
 
   /*
     Custom Grid Tasks
   */
-  app.events.subscribe('gridTasks.Ready', function populateGridTasks(event) {
+  function populateGridTasks(event) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log(event.type + '.' + event.namespace + ':event', {
-        performance: performance.now(),
-      });
+      console.log('populateGridTasks', performance.now(), arguments);
     }
 
     var gridData = $('div[data-role="grid"]:first').data('kendoGrid');
@@ -323,9 +346,17 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
       app.custom.gridTasks.updateGrid(gridData);
     }
 
-    // Unsubscribe from further gridTasks events
-    app.events.unsubscribe(event.type + '.' + event.namespace, populateGridTasks);
-  });
+    if (typeof event !== 'undefined') {
+      // Unsubscribe from further gridTasks events
+      app.events.unsubscribe(event.type + '.' + event.namespace, populateGridTasks);
+    }
+  }
+
+  if (typeof app.custom.gridTasks !== 'undefined') {
+    populateGridTasks();
+  } else {
+    app.events.subscribe('gridTasks.Ready', populateGridTasks);
+  }
 } else {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:Other', performance.now());
@@ -336,6 +367,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   URL Hash Change Monitoring
 */
 $(window).on('hashchange', function(event) {
+  'use strict';
   var oldURL = event.originalEvent.oldURL,
       newURL = event.originalEvent.newURL;
   if (newURL !== oldURL) {
@@ -351,7 +383,7 @@ $(window).on('hashchange', function(event) {
 /*
   Javascript Library Monitoring
 */
-if (!_.isUndefined(window.requirejs)) {
+if (app.custom.utils.isRequireJSReady()) {
   app.events.publish('requirejs.Ready');
 } else {
   Object.defineProperty(window, 'requirejs', {
@@ -370,7 +402,7 @@ if (!_.isUndefined(window.requirejs)) {
   });
 }
 
-if (!_.isUndefined(window.angular)) {
+if (app.custom.utils.isAngularReady()) {
   app.events.publish('angular.Ready');
 } else {
   Object.defineProperty(window, 'angular', {
@@ -403,7 +435,7 @@ if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady
     set: function (val) {
       'use strict';
       this._pageForm = val;
-      if (this._pageForm.boundReady !== undefined) {
+      if (typeof this._pageForm.boundReady !== 'undefined') {
         app.events.publish('boundReady.Ready');
       } else {
         Object.defineProperty(this._pageForm, 'boundReady', {
