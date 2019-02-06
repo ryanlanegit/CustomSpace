@@ -33,12 +33,12 @@ define(function () {
 
         /* Initialization code */
         function initROTask() {
-          options.level = options.level || 1;
           options.next = options.next || 1;
+          options.level = options.level || '1';
 
-          processNext(promptElm, options.next, function (targetElm) {
-            var targetElmContainer = $(targetElm).children('div.col-xs-12');
-            targetElmContainer.addClass('indent-' + options.level);
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+            var targetLevel = (typeof options.level === 'string') ? options.level : options.level[targetIndex];
+            $(targetElm).children('div').addClass('indent-' + targetLevel);
           });
         }
 

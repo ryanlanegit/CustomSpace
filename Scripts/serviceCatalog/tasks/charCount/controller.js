@@ -49,19 +49,22 @@ define([
 
         /* Initialization code */
         function initROTask() {
-          options.next = options.next || 1;
+          var defaultOptions = {
+            next: 1,
+            minText: 'Minimum Extra Characters Required',
+            maxText: 'Maximum Characters Remaining',
+            showMin: 'true',
+            showMax: 'true',
+            showMinMax: 'false',
+          }
+          options = $.extend(defaultOptions, options);
 
           processNext(promptElm, options.next, function (targetElm) {
             var targetTextAreaElm = $(targetElm).find('textarea'),
-              targetOptions = {
-                minText: options.minText || 'Minimum Extra Characters Required',
-                maxText: options.maxText || 'Maximum Characters Remaining',
-                showMin: options.showMin || 'true',
-                showMax: options.showMax || 'true',
-                showMinMax: options.showMinMax || 'false',
-                charMin: $(targetTextAreaElm).parent().find('input').attr('minlength') || 0,
-                charMax: $(targetTextAreaElm).parent().find('input').attr('maxlength') || 0,
-              };
+                targetOptions = $.extend({}, options, {
+                  charMin: $(targetTextAreaElm).siblings('input').attr('minlength') || 0,
+                  charMax: $(targetTextAreaElm).siblings('input').attr('maxlength') || 0,
+                });
 
             function funcOnPaste () {
               setTimeout(function () {

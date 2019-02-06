@@ -38,10 +38,10 @@ require([
 
         // Add 'task-container' class to rows contains task JSON
         roTaskElms.addClass('task-container').children().addClass('task-container-content');
-        
+
         // Set 100% Width for Display Rows
         roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
-        
+
         // Set 50% Width for Question Rows
         roQuestionElms.each(function () {
           var questionElm = $(this),
@@ -50,7 +50,7 @@ require([
             questionContainer.removeClass('col-md-4 col-md-8').addClass('col-md-6');
           }
         });
-        
+
         // Mark as complete in vm
         if (roQuestionElms.length) {
           roTaskVm.initContainerStylesComplete = true;
@@ -67,7 +67,6 @@ require([
      * @param {function(string)} callback callback.
      */
     waitForAngular: function waitForAngular(rootSelector, callback) {
-      'use strict';
       if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
         console.log('waitForAngular', {
           rootSelector: rootSelector,
@@ -84,7 +83,7 @@ require([
       });
     },
   });
-  
+
   function initTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:initTask', performance.now());

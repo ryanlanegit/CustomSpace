@@ -34,12 +34,15 @@ define(function () {
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
+          options.selector = options.selector || '[data-role]';
 
-          processNext(promptElm, options.next, function (targetElm) {
-            // Check if angular framework is ready
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+            var targetOptions = $.extend({}, options),
+                targetSelector = (typeof targetOptions.selector === 'string') ? targetOptions.selector : targetOptions.selector[targetIndex];
+            delete targetOptions.next;
+            delete targetOptions.selector;
             vm.waitForAngular(targetElm, function () {
-              'use strict';
-              $(targetElm).find('[data-role]').data().handler.setOptions(options);
+              $(targetElm).find(targetSelector).data().handler.setOptions(targetOptions);
             });
           });
         }

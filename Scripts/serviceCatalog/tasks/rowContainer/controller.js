@@ -1,4 +1,4 @@
-/*global _, app, console, define */
+/*global $, _, app, console, define */
 
 /**
 Row Container
@@ -34,7 +34,7 @@ define([
           var lastTargetElm = $(promptElm).nextAll(':not(.task-container):not(.row-container)').slice(0, next).slice(-1),
               targetElms = $(promptElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
               builtRowContainer = _.template(rowContainerTemplate);
-          
+
           targetElms.wrapAll(builtRowContainer());
           _.each(targetElms, func);
         }
@@ -42,15 +42,18 @@ define([
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
-          options.next = (options.next <= 2 ) ? options.next: 4;
-          var columnSpanMap = {
-            1: 6,
-            2: 3
-          }
-          
-          options.colSpan = columnSpanMap[options.next];
+          options.next = (options.next <= 2 ) ? options.next : 2;
 
-          processNext(promptElm, options.next, function (targetElm) {    
+          if (typeof options.colspan === 'undefined') {
+            var columnSpanMap = {
+              1: '6',
+              2: '3',
+            }
+            options.colspan = columnSpanMap[options.next];
+          }
+
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+            var targetColSpan = (typeof options.colspan === 'string') ? options.colspan : options.colspan[targetIndex];
             targetElm = $(targetElm);
             // Remove row class and column classes
             if (targetElm.hasClass('task-container')) {
@@ -60,9 +63,9 @@ define([
             } else {
               targetElm
                 .removeClass('row')
-                .addClass('col-xs-12 col-md-' + options.colSpan);
+                .addClass('col-xs-12 col-md-' + targetColSpan);
             }
-            
+
             // Turn inner column div into a form group div
              $(targetElm).children('.col-xs-12')
                 .removeClass('col-xs-12 col-md-6 col-md-8 col-md-12')

@@ -1,4 +1,4 @@
-/*global _, $, angular, app, console, define */
+/*global _, $, angular, app, console, define, document, performance */
 
 /**
 Custom Request Offering Task Builder
@@ -65,12 +65,11 @@ define([
 
         /* Initialization code */
         function initTask() {
-          
           if (!vm.initContainerStylesComplete) {
             console.log('RERUN initContainerStyles');
             vm.initContainerStyles();
           }
-          
+
           $('div.page-panel').each(function () {
             var roPage = $(this),
               roTaskElms = roPage.find('div.row').filter(function (index) {
@@ -138,7 +137,7 @@ define([
           }
         }
 
-        $(document).ready(initTask);
+        angular.element(document).ready(initTask);
       },
     };
 

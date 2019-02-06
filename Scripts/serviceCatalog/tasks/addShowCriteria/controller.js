@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define */
+/*global $, _, angular, app, console, define, performance */
 
 /**
 Add Show Criteria
@@ -51,7 +51,6 @@ define(function () {
         function recompileAngularElm(targetElm) {
           // Check if angular framework is ready
           vm.waitForAngular(targetElm, function ($element, $scope) {
-            'use strict';
             var $injector = $element.injector();
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {

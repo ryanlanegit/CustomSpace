@@ -40,10 +40,9 @@ define(function () {
               paramValue: paramValue,
             });
           }
-          
+
           // Check if angular framework is ready
           vm.waitForAngular(targetElm, function () {
-            'use strict';
             var questionType = $(targetElm).find('input.question-answer-type').val(),
                 targetId = $(targetElm).find('input.question-answer-id').val();
             switch (questionType) {
@@ -99,7 +98,6 @@ define(function () {
 
             // Update URL HASH on Input Change
             onInputChange = _.debounce(function(event) {
-              'use strict';
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 console.log(event.type + ':onInputChange', {
                   targetElm: targetElm,
@@ -123,7 +121,6 @@ define(function () {
 
             // Update Input on HASH Change
             app.events.subscribe('window.hashChange', function onHashChange(event, data) {
-              'use strict';
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 console.log(event.type + '.' + event.namespace + ':onHashChange', {
                   targetElm: targetElm,

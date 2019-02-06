@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define, kendo, session, window */
+/*global $, _, angular, app, console, define, kendo, performance, session, window */
 
 /**
 Bind Session User Properties
@@ -44,7 +44,6 @@ define(function () {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
           vm.waitForAngular(targetElm, function () {
-            'use strict';
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
@@ -61,7 +60,7 @@ define(function () {
           if (!options.property && typeof options.properties === 'undefined') {
             return;
           }
-          
+
           // Add DataSource For All User Properties
           if (typeof vm.userObjectPropertiesDataSource === 'undefined') {
             vm.userObjectPropertiesDataSource = new kendo.data.DataSource({
@@ -126,7 +125,6 @@ define(function () {
                 updateTextAreaField(targetElm, session.user[propertyKey]);
               } else {
                 vm.userObjectPropertiesDataSource.fetch(function () {
-                  'use strict';
                   var data = this.data();
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     console.log('Session User Data Ready', performance.now(), {

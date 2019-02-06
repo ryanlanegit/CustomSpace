@@ -1,4 +1,4 @@
-/*global $, _, app, console, define */
+/*global $, _, app, console, define, matchValues */
 
 /**
 Single Line Entry

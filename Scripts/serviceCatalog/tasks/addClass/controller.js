@@ -35,15 +35,18 @@ define(function () {
         function initROTask() {
           options.next = options.next || 1;
 
-          if (!options.cssclass) {
+          if (typeof options.cssclass === 'undefined') {
             return;
           }
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+            var targetCSSClass = (typeof options.cssclass === 'string') ? options.cssclass : options.cssclass[targetIndex],
+                targetSelector;
             if (typeof options.selector === 'undefined') {
-              $(targetElm).addClass(options.cssclass);
+              $(targetElm).addClass(targetCSSClass);
             } else {
-              $(targetElm).find(options.selector).addClass(options.cssclass);
+              targetSelector = (typeof options.selector === 'string') ? options.selector : options.selector[targetIndex];
+              $(targetElm).find(targetSelector).addClass(targetCSSClass);
             }
           });
         }

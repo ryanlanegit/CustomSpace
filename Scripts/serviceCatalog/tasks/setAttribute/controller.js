@@ -34,9 +34,14 @@ define(function () {
         /* Initialization code */
         function initROTask() {
           options.next = options.next || 1;
+          options.selector = options.selector || '[data-role]';
 
-          processNext(promptElm, options.next, function (targetElm) {
-            $(targetElm).find('[data-role]').attr(options);
+          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+            var targetOptions = $.extend({}, options),
+                targetSelector = (typeof targetOptions.selector === 'string') ? targetOptions.selector : targetOptions.selectors[targetIndex];
+            delete targetOptions.next;
+            delete targetOptions.selector;
+            $(targetElm).find(targetSelector).attr(targetOptions);
           });
         }
 
