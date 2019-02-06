@@ -202,7 +202,6 @@ define(function () {
                   roTaskElm = $(roTaskElm);
                   var parsedProperties = JSON.parse(roTaskElm.text()),
                       roTaskElmNGShow = roTaskElm.attr('ng-show'),
-                      propName,
                       criteriaOptions = {},
                       criteriaPropertyName = roTask.Task + '.criteria';
                   if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
