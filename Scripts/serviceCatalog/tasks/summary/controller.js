@@ -38,6 +38,7 @@ define([
         function createSummary(targetEle) {
           if (!targetEle) {
             app.controls.exception('targetEle missing - roTaskBuilder.createSumary');
+            return;
           }
 
           var gridEle = targetEle.find('div[data-control-grid]'),
@@ -158,8 +159,8 @@ define([
 
         /* Initialization code */
         function initROTask() {
-          var target = promptElm.next().find('div.col-xs-12'),
-            builtSummary = _.template(summaryTemplate);
+          //var target = promptElm.next().find('div.col-xs-12'),
+          var builtSummary = _.template(summaryTemplate);
 
           processNext(promptElm, options.next, function (targetElm) {
             $(targetElm).removeClass('col-md-8').addClass('col-md-12');

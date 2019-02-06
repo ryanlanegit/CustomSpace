@@ -86,10 +86,8 @@ define(function () {
 
           processNext(promptElm, options.next, function (targetElm, targetIndex) {
             // Update Input If HASH exists on Load
-            var targetId = $(targetElm).find('input.question-answer-id').attr('value'),
-                targetType = $(targetElm).find('input.question-answer-type').attr('value'),
+            var targetType = $(targetElm).find('input.question-answer-type').val(),
                 targetInputElm,
-                currentParams = app.lib.getQueryParams(),
                 propertyKey = options.property || options.properties[targetIndex],
                 currentValue,
                 bUpdateValue = false;

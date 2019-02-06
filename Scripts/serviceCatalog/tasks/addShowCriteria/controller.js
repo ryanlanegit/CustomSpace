@@ -73,8 +73,7 @@ define(function () {
           var fnString = (typeof fn === 'function') ? fn.toString() : fn,
               FN_NAME = /^\s*([^\(\s]*)/g,
               STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-              fnText = fnString.replace(STRIP_COMMENTS, ''),
-              fnName = fnText.match(FN_NAME)[0];
+              fnText = fnString.replace(STRIP_COMMENTS, '');
           return fnText.match(FN_NAME)[0];
         }
 
@@ -120,8 +119,7 @@ define(function () {
             if ($scope.$parent.hasOwnProperty(fnName)) {
               var fnDefinition = $scope.$parent[fnName],
                   fnCallArgList = getfnCallArgList(promptElmNGShow),
-                  fnDefinitionArgList = getfnDefinitionArgList(fnDefinition),
-                  propName;
+                  fnDefinitionArgList = getfnDefinitionArgList(fnDefinition);
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 console.log(fnName, {
                   fnCall: promptElmNGShow,
@@ -132,7 +130,7 @@ define(function () {
                 });
               }
 
-              for (propName in criteriaOptions['ng-show']) {
+              for (var propName in criteriaOptions['ng-show']) {
                 if (criteriaOptions['ng-show'].hasOwnProperty(propName)) {
                   var propValue = criteriaOptions['ng-show'][propName],
                       argIndex = fnDefinitionArgList.indexOf(propName);

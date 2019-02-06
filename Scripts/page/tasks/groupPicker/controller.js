@@ -42,8 +42,7 @@ define([
           if (!options.info && !options.icon) {
             return;
           }
-          var target = promptElm.next(),
-            builtInfo = _.template(groupPickerTemplate);
+          var builtInfo = _.template(groupPickerTemplate);
 
           processNext(promptElm, options.next, function (targetElm) {
             $(targetElm).append(builtInfo(options));
