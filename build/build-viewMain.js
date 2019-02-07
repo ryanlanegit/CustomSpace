@@ -1,5 +1,5 @@
 ({
-  baseUrl: '../..//Scripts',
+  baseUrl: '../../Scripts',
   paths: {
     'text': 'require/text',
     'CustomSpace': '../CustomSpace'
