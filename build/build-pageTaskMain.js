@@ -1,14 +1,15 @@
+/*global console, module */
 ({
   baseUrl: '../Scripts',
   paths: {
     'text': '../../Scripts/require/text',
-    'CustomSpace': '../../CustomSpace'
+    'CustomSpace': '../../CustomSpace',
   },
   stubModules: [
-    'text'
+    'text',
   ],
   include: [
-    'CustomSpace/Scripts/page/pageTaskMain'
+    'CustomSpace/Scripts/page/pageTaskMain',
   ],
   excludeShallow: [
   //  'CustomSpace/Scripts/page/pageTaskBuilder'
@@ -27,8 +28,8 @@
         inputFile = data.path,
         outputFile = './build/clean.js',
         cleanedCode = amdclean.clean({
-          'filePath': inputFile
+          'filePath': inputFile,
         });
     fs.writeFileSync(inputFile, cleanedCode);
-  }
+  },
 })

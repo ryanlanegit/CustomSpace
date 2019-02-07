@@ -2,14 +2,14 @@
   baseUrl: '../../Scripts',
   paths: {
     'text': 'require/text',
-    'CustomSpace': '../CustomSpace'
+    'CustomSpace': '../CustomSpace',
   },
   include: [
-    'viewMain'
+    'viewMain',
   ],
   out: '../Scripts/viewMain-built.min.js',
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
-  preserveLicenseComments: false
+  preserveLicenseComments: false,
 })

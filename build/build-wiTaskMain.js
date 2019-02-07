@@ -1,17 +1,18 @@
+/*global console, module */
 ({
   baseUrl: '../../Scripts',
   paths: {
     'text': 'require/text',
-    'CustomSpace': '../CustomSpace'
+    'CustomSpace': '../CustomSpace',
   },
   stubModules: [
-    'text'
+    'text',
   ],
   include: [
-    'CustomSpace/Scripts/forms/wiTaskMain'
+    'CustomSpace/Scripts/forms/wiTaskMain',
   ],
   excludeShallow: [
-    'text'
+    'text',
     // 'CustomSpace/Scripts/forms/tasks/resolveIncident/controller'
   ],
   out: '../Scripts/forms/wiTaskMain-built.min.js',
@@ -29,8 +30,8 @@
         inputFile = data.path,
         outputFile = './build/clean.js',
         cleanedCode = amdclean.clean({
-          'filePath': inputFile
+          'filePath': inputFile,
         });
     fs.writeFileSync(inputFile, cleanedCode);
-  }
+  },
 })

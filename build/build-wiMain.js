@@ -2,10 +2,10 @@
   baseUrl: '../../Scripts',
   paths: {
     'text': 'require/text',
-    'CustomSpace': '../CustomSpace'
+    'CustomSpace': '../CustomSpace',
   },
   include: [
-    'forms/wiMain'
+    'forms/wiMain',
   ],
   excludeShallow: [
     // 'CustomSpace/Scripts/forms/predefined/history/controller',
@@ -15,5 +15,5 @@
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
-  preserveLicenseComments: false
+  preserveLicenseComments: false,
 })

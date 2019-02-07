@@ -5,5 +5,5 @@
   findNestedDependencies: true,
   optimizeCss: 'default',
   generateSourceMaps: true,
-  preserveLicenseComments: false
+  preserveLicenseComments: false,
 })

@@ -3,14 +3,14 @@
   paths: {
     // 'requireLib': '../../Scripts/require',
     'text': '../../require/text',
-    'CustomSpace': '../CustomSpace'
+    'CustomSpace': '../CustomSpace',
   },
   stubModules: [
-    'text'
+    'text',
   ],
   include: [
     // 'requireLib',
-    'CustomSpace/Scripts/path/to/module/template'
+    'CustomSpace/Scripts/path/to/module/template',
   ],
   excludeShallow: [
     // 'CustomSpace/Scripts/path/to/module/path/to/submodule/controller',
@@ -22,7 +22,8 @@
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
   // pathToSourceMaps: '/path/to/sourceMap/',
-  preserveLicenseComments: false/*,
+  preserveLicenseComments: false,
+  /*
   onModuleBundleComplete: function (data) {
     'use strict';
     console.log('AMD Cleaning File:' + data.path);
@@ -35,5 +36,6 @@
           'filePath': inputFile
         });
     fs.writeFileSync(inputFile, cleanedCode);
-  }*/
+  },
+  */
 })

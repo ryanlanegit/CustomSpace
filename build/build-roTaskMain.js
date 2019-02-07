@@ -1,16 +1,17 @@
+/*global console, module */
 ({
   baseUrl: '../Scripts',
   paths: {
     'requireLib': '../../Scripts/require',
     'text': '../../Scripts/require/text',
-    'CustomSpace': '../'
+    'CustomSpace': '../',
   },
   stubModules: [
-    'text'
+    'text',
   ],
   include: [
     'requireLib',
-    'CustomSpace/Scripts/serviceCatalog/roTaskMain'
+    'CustomSpace/Scripts/serviceCatalog/roTaskMain',
   ],
   excludeShallow: [
     // 'CustomSpace/Scripts/serviceCatalog/roTaskBuilder'
@@ -31,8 +32,8 @@
         inputFile = data.path,
         outputFile = './build/clean.js',
         cleanedCode = amdclean.clean({
-          'filePath': inputFile
+          'filePath': inputFile,
         });
     fs.writeFileSync(inputFile, cleanedCode);
-  }
+  },
 })

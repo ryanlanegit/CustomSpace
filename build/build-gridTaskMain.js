@@ -1,18 +1,19 @@
+/*global console, module */
 ({
   baseUrl: '../Scripts',
   paths: {
     'text': '../../Scripts/require/text',
-    'CustomSpace': '../../CustomSpace'
+    'CustomSpace': '../../CustomSpace',
   },
   stubModules: [
-    'text'
+    'text',
   ],
   include: [
-    'CustomSpace/Scripts/grids/gridTaskMain'
+    'CustomSpace/Scripts/grids/gridTaskMain',
   ],
   excludeShallow: [
-    'text'
-  //  'CustomSpace/Scripts/grids/gridTaskBuilder'
+    'text',
+  //  'CustomSpace/Scripts/grids/gridTaskBuilder',
   ],
   out: '../Scripts/grids/gridTaskMain-built.min.js',
   findNestedDependencies: true,
@@ -29,8 +30,8 @@
         inputFile = data.path,
         outputFile = './build/clean.js',
         cleanedCode = amdclean.clean({
-          'filePath': inputFile
+          'filePath': inputFile,
         });
     fs.writeFileSync(inputFile, cleanedCode);
-  }
+  },
 })
