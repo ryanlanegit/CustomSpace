@@ -343,23 +343,6 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
 }
 
 /*
-  URL Hash Change Monitoring
-*/
-$(window).on('hashchange', function(event) {
-  'use strict';
-  var oldURL = event.originalEvent.oldURL,
-      newURL = event.originalEvent.newURL;
-  if (newURL !== oldURL) {
-    app.events.publish('window.hashChange', {
-      event: event,
-      oldQueryParams: app.lib.getQueryParams(oldURL.slice(oldURL.indexOf('#'))),
-      newQueryParams: app.lib.getQueryParams(newURL.slice(newURL.indexOf('#'))),
-    });
-  }
-});
-
-
-/*
   Javascript Library Monitoring
 */
 if (!app.custom.utils.isAngularReady()) {

@@ -6,6 +6,21 @@ Bind Hash
 
 define(function () {
   'use strict';
+  /*
+    URL Hash Change Monitoring
+  */
+  $(window).on('hashchange', function(event) {
+    var oldURL = event.originalEvent.oldURL,
+        newURL = event.originalEvent.newURL;
+    if (newURL !== oldURL) {
+      app.events.publish('window.hashChange', {
+        event: event,
+        oldQueryParams: app.lib.getQueryParams(oldURL.slice(oldURL.indexOf('#'))),
+        newQueryParams: app.lib.getQueryParams(newURL.slice(newURL.indexOf('#'))),
+      });
+    }
+  });
+
   var roTask = {
       Task: 'bindHash',
       Type: 'RequestOffering',
