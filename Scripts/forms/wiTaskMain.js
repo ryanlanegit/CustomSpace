@@ -55,9 +55,9 @@ require([
   }
 
   function boundReadyInitTasks(formObj) {
-    //if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('wiTaskMain:boundReadyInitTasks', performance.now());
-    //}
+    }
     formObj.boundReady(initTasks);
   }
 
