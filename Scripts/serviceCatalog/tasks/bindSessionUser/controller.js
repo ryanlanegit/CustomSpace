@@ -34,7 +34,7 @@ define(function () {
           } else {
             app.events.subscribe('sessionStorageReady', function execInitTasks(event) {
               _.each(targetElms, func);
-              // Unsubscibe from further sessionStorage events
+              // Unsubscribe from further sessionStorage events
               app.events.unsubscribe(event.type, execInitTasks);
             });
           }

@@ -84,13 +84,9 @@ require([
     return (roPages.length > 0);
   }
 
-  function initTasks(event) {
+  function initTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('roTaskMain:initTask', performance.now(), arguments);
-    }
-    // Unsubscibe from further angular.Ready events
-    if(typeof event !== 'undefined') {
-      app.events.unsubscribe(event.type + '.' + event.namespace, initTasks);
+      console.log('roTaskMain:initTask', performance.now());
     }
     // Build out custom request offering tasks
     roTaskBuilder.build(roTaskVm, roTaskBuilder.node, function () {

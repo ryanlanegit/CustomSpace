@@ -37,7 +37,7 @@ require([
   } else {
     app.events.subscribe('sessionStorageReady', function execInitTasks() {
       initTasks();
-      // Unsubscibe from further sessionStorage events
+      // Unsubscribe from further sessionStorage events
       app.events.unsubscribe('sessionStorageReady', execInitTasks);
     });
   }

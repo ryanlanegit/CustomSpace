@@ -33,7 +33,7 @@ require([
     gridTaskBuilder.build(function () {
       app.events.subscribe('dynamicPageReady', function publishGridTasksReady() {
         app.events.publish('gridTasks.Ready');
-        // Unsubscibe from further dynamicPage events
+        // Unsubscribe from further dynamicPage events
         app.events.unsubscribe('dynamicPageReady', publishGridTasksReady);
       });
     });
