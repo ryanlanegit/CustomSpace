@@ -23,6 +23,10 @@ define([
         /* BEGIN Functions */
         function getGridTaskViewModel() {
           var gridTaskVm = new kendo.observable({
+            '_isReady': false,
+            'isReady': function isReady() {
+              return this._isReady;
+            },
             'add': function add(gridData, field, type, name, template, callback) {
               var that = this,
                 // Look for provided column in grid by field name
