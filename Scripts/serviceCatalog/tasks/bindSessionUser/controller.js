@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define, kendo, performance, session, window */
+/*global $, _, app, console, define, kendo, performance, session, window */
 
 /**
 Bind Session User Properties

@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define */
+/*global $, _, app, console, define */
 
 /**
 Set Options

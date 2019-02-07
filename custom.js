@@ -130,8 +130,8 @@ app.custom.utils = {
   Custom Session Debugging
 */
 app.storage.custom = store.namespace('custom');
-// app.storage.custom.set('debug', true); // Enable DEBUG Mode via Console/Script/Plugin
-// app.storage.custom.set('debug', false); // Disable DEBUG Mode via Console/Script/Plugin
+// app.storage.custom.set('DEBUG_ENABLED', true); // Enable DEBUG Mode via Console/Script/Plugin
+// app.storage.custom.set('DEBUG_ENABLED', false); // Disable DEBUG Mode via Console/Script/Plugin
 
 if (app.storage.custom.get('DEBUG_ENABLED')) {
   console.log('DEBUG Mode Enabled', performance.now());
@@ -151,8 +151,8 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
     var debugEvents = [
       'window.hashChange',
       'sessionStorageReady',
-      'sessionUserData.Ready',
       'dynamicPageReady',
+      'sessionUserData.Ready',
       'angular.Ready',
       'gridTasks.Ready',
       'roTasks.Ready',

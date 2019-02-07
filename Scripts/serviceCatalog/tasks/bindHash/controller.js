@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define, window */
+/*global $, _, app, console, define, window */
 
 /**
 Bind Hash

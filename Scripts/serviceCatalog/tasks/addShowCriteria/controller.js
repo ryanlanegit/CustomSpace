@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, define, performance */
+/*global $, _, app, console, define, performance */
 
 /**
 Add Show Criteria
