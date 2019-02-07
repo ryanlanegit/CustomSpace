@@ -153,7 +153,6 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'sessionStorageReady',
       'sessionUserData.Ready',
       'dynamicPageReady',
-      'boundReady.Ready',
       'angular.Ready',
       'gridTasks.Ready',
       'roTasks.Ready',
@@ -199,9 +198,6 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     console.log('Custom:WorkItem', performance.now());
   }
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
-    if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('loadWITaskMain', performance.now());
-    }
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
 
     /*
@@ -233,18 +229,12 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     console.log('Custom:Page', performance.now());
   }
 
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('loadPageTaskMain', performance.now());
-  }
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
 } else if (window.location.pathname.indexOf('/View/') > -1) {
   if (app.storage.custom.get('DEBUG_ENABLED')) {
     console.log('Custom:View', performance.now());
   }
 
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('loadGridTaskMain', performance.now());
-  }
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
 
   /*
@@ -372,10 +362,7 @@ $(window).on('hashchange', function(event) {
 /*
   Javascript Library Monitoring
 */
-
-if (app.custom.utils.isAngularReady()) {
-  app.events.publish('angular.Ready');
-} else {
+if (!app.custom.utils.isAngularReady()) {
   Object.defineProperty(window, 'angular', {
     configurable: true,
     enumerable: true,
@@ -388,40 +375,6 @@ if (app.custom.utils.isAngularReady()) {
       'use strict';
       this._angular = val;
       app.events.publish('angular.Ready');
-    },
-  });
-}
-
-if (!_.isUndefined(window.pageForm) && !_.isUndefined(window.pageForm.boundReady)) {
-  app.events.publish('boundReady.Ready');
-} else {
-  Object.defineProperty(window, 'pageForm', {
-    configurable: true,
-    enumerable: true,
-    writeable: true,
-    get: function () {
-      'use strict';
-      return this._pageForm;
-    },
-    set: function (val) {
-      'use strict';
-      this._pageForm = val;
-      if (typeof this._pageForm.boundReady !== 'undefined') {
-        app.events.publish('boundReady.Ready');
-      } else {
-        Object.defineProperty(this._pageForm, 'boundReady', {
-          configurable: true,
-          enumerable: true,
-          writeable: true,
-          get: function () {
-            return this._boundReady;
-          },
-          set: function (val) {
-            this._boundReady = val;
-            app.events.publish('boundReady.Ready');
-          },
-        });
-      }
     },
   });
 }

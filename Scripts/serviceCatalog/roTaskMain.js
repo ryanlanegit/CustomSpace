@@ -88,7 +88,7 @@ require([
 
   function initTasks(event) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('roTaskMain:initTask', performance.now());
+      console.log('roTaskMain:initTask', performance.now(), arguments);
     }
     // Unsubscibe from further angular.Ready events
     if(typeof event !== 'undefined') {

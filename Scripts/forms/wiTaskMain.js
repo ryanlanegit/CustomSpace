@@ -61,14 +61,12 @@ require([
     }
   }
 
-  app.events.subscribe('boundReady.Ready', function execInitTasks() {
+  function boundReadyInitTasks(formObj) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('wiTaskMain:boundReady', performance.now());
+      console.log('wiTaskMain:boundReadyInitTasks', performance.now());
     }
-    pageForm.boundReady(function () {
-      initTasks();
-      // Unsubscibe from further boundReady events
-      app.events.unsubscribe('boundReady.Ready', execInitTasks);
-    });
-  });
+    formObj.boundReady(initTasks);
+  }
+  app.custom.formTasks.add('Incident', null, boundReadyInitTasks);
+  app.custom.formTasks.add('ServiceRequest', null, boundReadyInitTasks);
 });
