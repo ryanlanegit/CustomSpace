@@ -130,9 +130,9 @@ app.custom.utils = {
   Custom Session Debugging
 */
 app.storage.custom = store.namespace('custom');
+
 // app.storage.custom.set('DEBUG_ENABLED', true); // Enable DEBUG Mode via Console/Script/Plugin
 // app.storage.custom.set('DEBUG_ENABLED', false); // Disable DEBUG Mode via Console/Script/Plugin
-
 if (app.storage.custom.get('DEBUG_ENABLED')) {
   console.log('DEBUG Mode Enabled', performance.now());
   // Load Debug CSS File
@@ -141,13 +141,6 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
   // Debug subscribtion to out of the box and custom events
   (function () {
     'use strict';
-    function debugEventSubscriber(e, data) {
-      console.log('EVENT ' + e.type + '.' + e.namespace, performance.now(), {
-        event: e,
-        data: data,
-      });
-    }
-
     var debugEvents = [
       'window.hashChange',
       'sessionStorageReady',
@@ -160,16 +153,19 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'wiTasks.Ready',
     ];
 
-    app.events.subscribe(debugEvents.join(' '), debugEventSubscriber);
+    app.events.subscribe(debugEvents.join(' '), function debugEventSubscriber(e, data) {
+      console.log('EVENT ' + e.type + '.' + e.namespace, performance.now(), {
+        event: e,
+        data: data,
+      });
+    });
   }());
 }
 
-
 if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('Custom:RequestOffering', performance.now());
-  }
-
+  /*
+    Custom Request Offering Tasks
+  */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
 
   function loadROToolbox(event) {
@@ -194,10 +190,10 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     app.events.subscribe('sessionStorageReady', loadROToolbox);
   }
 } else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('Custom:WorkItem', performance.now());
-  }
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
+    /*
+      Custom Work Item Tasks
+    */
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
 
     /*
@@ -225,21 +221,16 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     });
   }
 } else if (window.location.pathname.indexOf('/Page/') > -1) {
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('Custom:Page', performance.now());
-  }
-
+  /*
+    Custom Page Tasks
+  */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
 } else if (window.location.pathname.indexOf('/View/') > -1) {
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('Custom:View', performance.now());
-  }
-
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-
   /*
     Custom Grid Tasks
   */
+  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
+
   function populateGridTasks(event) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -317,7 +308,6 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
           data.gridData.select(data.itemRowEle);
 
           var assignToAnalystByGroupButton = $('li[data-bind*="click: analystByGroup"]').first();
-
           assignToAnalystByGroupButton.click();
         });
       }
@@ -335,10 +325,6 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     populateGridTasks();
   } else {
     app.events.subscribe('gridTasks.Ready', populateGridTasks);
-  }
-} else {
-  if (app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('Custom:Other', performance.now());
   }
 }
 
