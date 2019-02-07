@@ -3,6 +3,11 @@
 /**
 Load Custom Page Task Builder
 **/
+
+/**
+ * Uncomment when loading gridTaskmain directly through client unoptimized
+**/
+/*
 if (typeof require !== 'undefined') {
   require.config({
     waitSeconds: 0,
@@ -14,6 +19,7 @@ if (typeof require !== 'undefined') {
     },
   });
 }
+*/
 
 require([
   'CustomSpace/Scripts/page/pageTaskBuilder',

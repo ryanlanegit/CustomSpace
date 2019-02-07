@@ -67,7 +67,7 @@ Custom Grid Tasks Config
         return template;
       });
 
-      if (session.user.Analyst) {
+      if (session.user.Analyst === 1) {
         // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
         app.custom.gridTasks.add(gridData, 'AssignedUser', 'task', 'AssignToAnalystByGroup', function (column, task) {
           // Custom AssignToAnalystByGroup Task Template
@@ -93,7 +93,7 @@ Custom Grid Tasks Config
     }
   }
 
-  if (app.custom.gridTasks.isReady()) {
+  if (typeof app.custom.gridTasks !== 'undefined' && app.custom.gridTasks.isReady()) {
     populateGridTasks();
   } else {
     app.events.subscribe('gridTasks.Ready', function execUpdateGrid(event) {

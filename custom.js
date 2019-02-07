@@ -191,6 +191,8 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   }
 } else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
+    // app.events.subscribe('wiTasks.Ready', function () { 'use strict'; window.location.reload(); });
+
     /*
       Custom Work Item Tasks
     */
@@ -229,10 +231,8 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   /*
     Custom Grid Tasks
   */
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js').done(function() {
-    'use strict';
-    app.custom.utils.getCachedScript('/CustomSpace/custom.gridTasks.js');
-  });
+  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
+  app.custom.utils.getCachedScript('/CustomSpace/custom.gridTasks.js');
 }
 
 /*
