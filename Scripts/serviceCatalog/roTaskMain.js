@@ -1,4 +1,4 @@
-/*global $, _, angular, app, console, document, kendo, MutationObserver, performance, require, session, window */
+/*global $, _, angular, app, console, document, kendo, performance, require, session */
 
 /**
 Load Custom Request Offering Task Builder
