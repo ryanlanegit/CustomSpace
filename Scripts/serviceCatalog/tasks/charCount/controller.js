@@ -14,8 +14,8 @@ define([
       Task: 'charCount',
       Type: 'RequestOffering',
       Label: 'Character Count',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

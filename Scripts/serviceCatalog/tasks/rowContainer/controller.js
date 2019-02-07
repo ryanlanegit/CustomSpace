@@ -14,8 +14,8 @@ define([
       Task: 'rowContainer',
       Type: 'RequestOffering',
       Label: 'Row Container',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

@@ -16,8 +16,8 @@ define([
       Task: 'externalFileAttachmentsDragDrop',
       Type: 'RequestOffering',
       Label: 'External File Attachments Drag & Drop',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

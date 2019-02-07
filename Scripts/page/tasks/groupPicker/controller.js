@@ -14,8 +14,8 @@ define([
       Task: 'addInformation',
       Type: 'RequestOffering',
       Label: 'Group Picker',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

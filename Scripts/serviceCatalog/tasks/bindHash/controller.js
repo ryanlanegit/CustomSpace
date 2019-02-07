@@ -25,10 +25,10 @@ define(function () {
       Task: 'bindHash',
       Type: 'RequestOffering',
       Label: 'Bind Hash',
-      Access: true,
       Configs: {
         onChangeTimeOutDelay: 100,
       },
+      Access: true,
     },
 
     definition = {

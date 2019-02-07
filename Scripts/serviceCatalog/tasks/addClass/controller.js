@@ -10,8 +10,8 @@ define(function () {
       Task: 'addClass',
       Type: 'RequestOffering',
       Label: 'Add Class',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

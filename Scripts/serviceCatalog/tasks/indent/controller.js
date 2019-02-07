@@ -10,8 +10,8 @@ define(function () {
       Task: 'indent',
       Type: 'RequestOffering',
       Label: 'Indent',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

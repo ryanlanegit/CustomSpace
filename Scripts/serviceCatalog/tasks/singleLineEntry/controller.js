@@ -10,8 +10,8 @@ define(function () {
       Task: 'singleLineEntry',
       Type: 'RequestOffering',
       Label: 'Single Line Entry',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

@@ -10,10 +10,10 @@ define(function () {
       Task: 'bindSessionUser',
       Type: 'RequestOffering',
       Label: 'Bind Session User Properties',
-      Access: true,
       Configs: {
         SystemUserPreferencesNotificationEndpointProjectionId: '39d94137-3c03-d846-4eb4-511f7d7aa3fc',
       },
+      Access: true,
     },
     definition = {
       template: null,

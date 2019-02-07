@@ -14,8 +14,8 @@ define([
       Task: 'addInformation',
       Type: 'RequestOffering',
       Label: 'Add Information',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

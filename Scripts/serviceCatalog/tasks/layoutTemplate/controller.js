@@ -10,8 +10,8 @@ define(function () {
       Task: 'layoutTemplate',
       Type: 'RequestOffering',
       Label: 'Layout Template',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

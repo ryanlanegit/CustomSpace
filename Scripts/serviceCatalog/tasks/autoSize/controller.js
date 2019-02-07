@@ -14,8 +14,8 @@ define([
       Task: 'autoSize',
       Type: 'RequestOffering',
       Label: 'Autosize Textarea',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

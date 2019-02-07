@@ -14,8 +14,8 @@ define([
       Task: 'anchor',
       Type: 'Grid',
       Label: 'Grid Task Anchor',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

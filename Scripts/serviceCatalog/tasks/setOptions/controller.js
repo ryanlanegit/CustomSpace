@@ -10,8 +10,8 @@ define(function () {
       Task: 'setOptions',
       Type: 'RequestOffering',
       Label: 'Set Options',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

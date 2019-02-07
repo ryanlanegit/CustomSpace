@@ -10,8 +10,8 @@ define(function () {
       Task: 'addShowCriteria',
       Type: 'RequestOffering',
       Label: 'Add Show Criteria',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {

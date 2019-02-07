@@ -22,7 +22,6 @@ define([
       Task: 'resolveIncident',
       Type: 'Incident',
       Label: 'Resolve Incident',
-      Access: session.user.Analyst === 1,
       Configs: {
         ResolutionCategory: {
           Id: 'c5f6ada9-a0df-01d6-7087-6b8500ca6c2b',
@@ -33,6 +32,9 @@ define([
           MaxLength: 4000,
           Rows: 4,
         },
+      },
+      get Access() {
+        return (session.user.Analyst === 1);
       },
     },
 

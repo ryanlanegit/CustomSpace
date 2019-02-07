@@ -14,8 +14,8 @@ define([
       Task: 'task',
       Type: 'Grid',
       Label: 'Grid Task List Item Task',
-      Access: true,
       Configs: {},
+      Access: true,
     },
 
     definition = {
