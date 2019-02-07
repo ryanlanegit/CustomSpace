@@ -115,16 +115,6 @@ app.custom.utils = {
     return format;
   },
 
-  isRequireJSReady: function isRequireJSReady() {
-    'use strict';
-    var ready = false;
-
-    if (!_.isUndefined(window.requirejs)) {
-      ready = true;
-    }
-    return ready;
-  },
-
   isAngularReady: function isAngularReady() {
     'use strict';
     var ready = false;
@@ -164,7 +154,6 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'sessionUserData.Ready',
       'dynamicPageReady',
       'boundReady.Ready',
-      'requirejs.Ready',
       'angular.Ready',
       'gridTasks.Ready',
       'roTasks.Ready',
@@ -383,24 +372,6 @@ $(window).on('hashchange', function(event) {
 /*
   Javascript Library Monitoring
 */
-if (app.custom.utils.isRequireJSReady()) {
-  app.events.publish('requirejs.Ready');
-} else {
-  Object.defineProperty(window, 'requirejs', {
-    configurable: true,
-    enumerable: true,
-    writeable: true,
-    get: function () {
-      'use strict';
-      return this._requirejs;
-    },
-    set: function (val) {
-      'use strict';
-      this._requirejs = val;
-      app.events.publish('requirejs.Ready');
-    },
-  });
-}
 
 if (app.custom.utils.isAngularReady()) {
   app.events.publish('angular.Ready');
