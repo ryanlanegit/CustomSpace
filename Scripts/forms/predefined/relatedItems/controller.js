@@ -1,11 +1,18 @@
-﻿/**
+/*global _, $, app, console, define, kendo, localization, performance, session */
+/*eslint  "comma-dangle": ["off", "always-multiline"] */
+
+/**
 relatedItems
 **/
 
-define(function (require) {
-    var tpl = require("text!forms/predefined/relatedItems/view.html");
-    var objectPickerPopup = require("forms/popups/multipleObjectPickerPopup/controller");
-
+define([
+  'text!forms/predefined/relatedItems/view.html',
+  'forms/popups/multipleObjectPickerPopup/controller',
+], function (
+  tpl,
+  objectPickerPopup
+) {
+    'use strict';
     var definition = {
         template: tpl,
         build: function (vm, node, callback) {
@@ -138,80 +145,116 @@ define(function (require) {
                 isDesktopView: !app.isMobileDevice(),
                 isMobileView: app.isMobileDevice(),
                 isEnabled: !properties.Disabled,
-                isWindowsComputer: false,
-                isConfigItemWindowsComputer: function (id) {
-                    $.ajax({
-                        type: "GET",
-                        async: false,
-                        url: "/ConfigItems/IsComputer",
-                        data: { objectId: id },
-                        success: function (result) {
-                            vm.view.relatedItemController.isWindowsComputer = (result.toLowerCase() === "true");
-                        }
-                    });
+                isConfigItemWindowsComputer: function isConfigItemWindowsComputer(viewModel) {
+                  return $.ajax({
+                    type: 'GET',
+                    async: true,
+                    url: '/ConfigItems/IsComputer',
+                    data: {
+                        objectId: viewModel.BaseId,
+                    },
+                    success: function (result) {
+                      if (typeof viewModel._isWindowsComputer === 'undefined') {
+                        Object.defineProperty(
+                          viewModel,
+                          '_isWindowsComputer', {
+                            enumerable: false,
+                            writable: true,
+                            value: null,
+                          }
+                        );
+                      }
+                      viewModel.set('_isWindowsComputer', (result.toLowerCase() === 'true'));
+                    },
+                  });
                 },
-                isUser: false,
-                isConfigItemUser: function (id) {
-                    // Replaced IsUser call due to large delays in returning data
-                    /*
-                    $.ajax({
-                        type: "GET",
-                        async: false,
-                        url: "/ConfigItems/IsUser",
-                        data: { objectId: id },
-                        success: function (result) {
-                            vm.view.relatedItemController.isUser = (result.toLowerCase() === "true");
-                        }
-                    });
-                    */
-                    $.ajax({
-                        type: "GET",
-                        async: false,
-                        url: "/Search/GetObjectProperties",
-                        data: {
-							id: id
-						},
-                        success: function (result) {
-                            vm.view.relatedItemController.isUser = (result.IsUser === true);
-                        }
-                    });
+                isConfigItemUser: function isConfigItemUser(viewModel) {
+                  return $.ajax({
+                    type: 'GET',
+                    async: true,
+                    url: '/Search/GetObjectProperties',
+                    data: {
+                        id: viewModel.BaseId,
+        						},
+                    success: function (result) {
+                      if (typeof viewModel._isUser === 'undefined') {
+                        Object.defineProperty(
+                          viewModel,
+                          '_isUser', {
+                            enumerable: false,
+                            writable: true,
+                            value: null,
+                          }
+                        );
+                      }
+                      viewModel.set('_isUser', (result.IsUser === true));
+                    },
+                  });
                 },
-                isMoreInfo: function (viewModel) {
-                    var bSlideOut = vm.view.relatedItemController.isSlideOut(viewModel);
-                    return !bSlideOut;
-                },
-                isSlideOut: function (viewModel) {
-                    // Replaced unneeded calls to IsUser/IsWindowsComputer
-                    /*
-                    vm.view.relatedItemController.isConfigItemWindowsComputer(viewModel.BaseId);
-                    vm.view.relatedItemController.isConfigItemUser(viewModel.BaseId);
-
-                    var bIsWindowsComputer = vm.view.relatedItemController.isWindowsComputer;
-                    var bIsUser = vm.view.relatedItemController.isUser;
-                    */
-                    // Get IsUser Result
-                    vm.view.relatedItemController.isConfigItemUser(viewModel.BaseId);
-					var bIsUser = vm.view.relatedItemController.isUser;
-
-                    // Set Default IsWindowsComputer Result
-                    vm.view.relatedItemController.isWindowsComputer = false;
-					var bIsWindowsComputer = false;
-
-                    // If ConfigItem is not a user then check if it is a computer
-                    if (!bIsUser) {
-                        // Get IsWindowsComputer Result
-                        vm.view.relatedItemController.isConfigItemWindowsComputer(viewModel.BaseId);
-                        bIsWindowsComputer = vm.view.relatedItemController.isWindowsComputer;
+                isMoreInfo: function isMoreInfo(viewModel) {
+                    if (typeof viewModel._isSlideOut === 'undefined') {
+                      Object.defineProperty(
+                        viewModel,
+                        '_isSlideOut', {
+                          enumerable: false,
+                          writable: true,
+                          value: false,
+                        }
+                      );
+                      vm.view.relatedItemController.isSlideOut(viewModel);
                     }
+                    return !viewModel._isSlideOut;
+                },
+                isSlideOut: function isSlideOut(viewModel) {
+                    if (typeof viewModel._isSlideOut === 'undefined') {
+                      Object.defineProperty(
+                        viewModel,
+                        '_isSlideOut', {
+                          enumerable: false,
+                          writable: true,
+                          value: false,
+                        }
+                      );
+                      vm.view.relatedItemController.isSlideOutAsync(viewModel);
+                    }
+                    return viewModel._isSlideOut;
+                },
+                isSlideOutAsync: function isSlideOutAsync(viewModel) {
+                  // Get IsUser Result
+                  vm.view.relatedItemController.isConfigItemUser(viewModel).always(function(){
+                    // Set Default IsWindowsComputer Result
+                    if (typeof viewModel._isWindowsComputer === 'undefined') {
+                      Object.defineProperty(
+                        viewModel,
+                        '_isWindowsComputer', {
+                          enumerable: false,
+                          writable: true,
+                          value: false,
+                        }
+                      );
+                    }
+                    var bIsUser = viewModel._isUser,
+                        bIsWindowsComputer = viewModel._isWindowsComputer,
+                        hasControlCenterURL = !_.isNull(session.consoleSetting.TrueControlCenterURL) && (session.consoleSetting.TrueControlCenterURL != '');
 
-                    var hasControlCenterURL = !_.isNull(session.consoleSetting.TrueControlCenterURL) && (session.consoleSetting.TrueControlCenterURL != "");
-
-                    return ((bIsWindowsComputer || bIsUser) && hasControlCenterURL) ? true : false;
+                    if (bIsUser) {
+                      var bisSlideOut = ((bIsWindowsComputer || bIsUser) && hasControlCenterURL) ? true : false;
+                      viewModel.set('_isSlideOut', bisSlideOut);
+                    } else {
+                      // If ConfigItem is not a user then check if it is a computer
+                      // Get IsWindowsComputer Result
+                      vm.view.relatedItemController.isConfigItemWindowsComputer(viewModel).always(function () {
+                        bIsWindowsComputer = viewModel._isWindowsComputer;
+                        var bisSlideOut = ((bIsWindowsComputer || bIsUser) && hasControlCenterURL) ? true : false;
+                        viewModel.set('_isSlideOut', bisSlideOut);
+                      });
+                    }
+                  })
                 },
                 showTCCInfo: function (dataItem) {
                     var src = session.consoleSetting.TrueControlCenterURL;
-                    var bIsWindowsComputer = vm.view.relatedItemController.isWindowsComputer;
-                    var bIsUser = vm.view.relatedItemController.isUser;
+                    var bIsWindowsComputer = dataItem._isWindowsComputer;
+                    var bIsUser = dataItem._isUser;
                     var tooltip = localization.ComputerManagement;
 
                     if (bIsWindowsComputer) {
@@ -228,57 +271,57 @@ define(function (require) {
                     app.slideOutNav.show(options);
                 },
                 onContextmenuSelect: function (e) {
-                    var type = e.item.attributes["custom"].value;
-                    var baseId = e.target.attributes["data-base-id"].value;
-                    var dataItem =_.find(e.data.RelatesToConfigItem, function (item) { return item.BaseId==baseId; });
+                  var type = e.item.attributes["custom"].value,
+                      baseId = e.target.attributes["data-base-id"].value,
+                      dataItem =_.find(e.data.RelatesToConfigItem, function (item) { return item.BaseId==baseId; });
 
-                    (type == "slideout") ? vm.view.relatedItemController.showTCCInfo(dataItem) : vm.view.relatedItemController.showMoreInfo(dataItem);
+                  (type == "slideout") ? vm.view.relatedItemController.showTCCInfo(dataItem) : vm.view.relatedItemController.showMoreInfo(dataItem);
                 },
                 onContextmenuActivate: function (e) {
-                    var baseId = e.target.attributes["data-base-id"].value;
-                    // Replaced unneeded calls to IsUser/IsWindowsComputer
-                    /*
-                    vm.view.relatedItemController.isConfigItemWindowsComputer(baseId);
-                    vm.view.relatedItemController.isConfigItemUser(baseId);
-                    */
-                    // Get IsUser Result
-                    vm.view.relatedItemController.isConfigItemUser(baseId);
-                    vm.view.relatedItemController.isWindowsComputer = false;
+                  var baseId = e.target.attributes["data-base-id"].value,
+                      dataItem =_.find(e.data.RelatesToConfigItem, function (item) { return item.BaseId === baseId; }),
+                      managementTitle = localization.UserManagement;
 
-                    // If ConfigItem is not a user then check if it is a computer
-                    if (!vm.view.relatedItemController.isUser) {
-                        vm.view.relatedItemController.isConfigItemWindowsComputer(baseId);
-                    }
-
-                    var managementTitle = localization.UserManagement;
-                    if (vm.view.relatedItemController.isWindowsComputer) {
-                        managementTitle = localization.ComputerManagement;
-                    }
-
+                  function createContextMenu() {
                     var menuItems = [{
                         text: managementTitle,
-                        imageUrl: "/Content/Images/Icons/Other/control-center-launcher.png",
+                        imageUrl: '/Content/Images/Icons/Other/control-center-launcher.png',
                         imageAttr: {
-                            height: '16px',
-                            width: '16px'
+                          height: '16px',
+                          width: '16px',
                         },
                         attr: {
-                            custom: 'slideout' //custom attribute holds the link type
-                        }
-                     },
-                     {
-                         text: "<i class='fa fa-info-circle cursor-pointer'></i>" + localization.AdditionalDetails,
+                          custom: 'slideout', //custom attribute holds the link type
+                        },
+                      },
+                      {
+                        text: "<i class='fa fa-info-circle cursor-pointer'></i>" + localization.AdditionalDetails,
                         encoded: false,
                         attr: {
-                            custom: 'info' //custom attribute holds the link type
-                        }
-                     }];
+                          custom: 'info', //custom attribute holds the link type
+                        },
+                    }];
 
                     var contextmenu = $("#tccmenu-related-ci").data("kendoContextMenu");
                     contextmenu.setOptions({
-                        dataSource: menuItems
+                      dataSource: menuItems,
                     });
-                }
+                  }
+
+                  // Get IsUser Result
+                  vm.view.relatedItemController.isConfigItemUser(dataItem).always(function(){
+                    if (dataItem._isUser) {
+                      createContextMenu();
+                    } else {
+                      vm.view.relatedItemController.isConfigItemWindowsComputer(dataItem).always(function () {
+                        if (dataItem._isWindowsComputer) {
+                          managementTitle = localization.ComputerManagement;
+                        }
+                        createContextMenu();
+                      });
+                    }
+                  });
+                },
             });
 
             var grid = vm.view.relatedItemController;
