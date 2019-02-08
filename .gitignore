@@ -18,3 +18,6 @@ Scripts/serviceCatalog/roTaskMain-built.min.js
 Scripts/serviceCatalog/roTaskMain-built.min.js.map
 Scripts/viewMain-built.min.js
 Scripts/viewMain-built.min.js.map
+SurveyApp/
+views/SurveyApp.js
+views/viewpanels/surveyApp-vp.js
