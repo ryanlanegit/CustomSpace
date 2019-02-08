@@ -238,14 +238,13 @@ define([
                         hasControlCenterURL = !_.isNull(session.consoleSetting.TrueControlCenterURL) && (session.consoleSetting.TrueControlCenterURL != '');
 
                     if (bIsUser) {
-                      var bisSlideOut = ((bIsWindowsComputer || bIsUser) && hasControlCenterURL) ? true : false;
-                      viewModel.set('_isSlideOut', bisSlideOut);
+                      viewModel.set('_isSlideOut', hasControlCenterURL);
                     } else {
                       // If ConfigItem is not a user then check if it is a computer
                       // Get IsWindowsComputer Result
                       vm.view.relatedItemController.isConfigItemWindowsComputer(viewModel).always(function () {
                         bIsWindowsComputer = viewModel._isWindowsComputer;
-                        var bisSlideOut = ((bIsWindowsComputer || bIsUser) && hasControlCenterURL) ? true : false;
+                        var bisSlideOut = ((bIsWindowsComputer || bIsUser) && hasControlCenterURL);
                         viewModel.set('_isSlideOut', bisSlideOut);
                       });
                     }
