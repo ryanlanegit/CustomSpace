@@ -19,7 +19,8 @@
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
-  pathToSourceMaps: '/CustomSpace/Scripts/forms/',
+  sourceMapDir: '/CustomSpace/Scripts/forms/',
+  sourceRoot: '/Scripts/',
   preserveLicenseComments: false,
   onModuleBundleComplete: function (data) {
     'use strict';

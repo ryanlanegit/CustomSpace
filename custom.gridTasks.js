@@ -20,24 +20,25 @@ Custom Grid Tasks Config
       app.custom.gridTasks.add(gridData, 'Priority', 'style', '', function () {
         // Custom Priority Style Template
         var template =
-          '# if (!_.isUndefined(Priority)) { ' +
-            'switch (Priority) { ' +
-              'case "4": ' +
-                '# # ' +
-                'break; ' +
-              'case "3": ' +
-                '# background-color:rgba(0, 255, 0, 0.25); # ' +
-                'break; ' +
-              'case "2": ' +
-              'case "Medium": ' +
-                '# background-color:rgba(255, 255, 0, 0.25); # ' +
-                'break; ' +
-              'case "1": ' +
-              'case "High": ' +
-                '# background-color:rgba(255, 0, 0, 0.25); # ' +
-                'break; ' +
-            '} ' +
+          '# if (!_.isUndefined(Priority)) {' +
+            'switch (Priority) {' +
+              'case "4":' +
+                '# #' +
+                'break;' +
+              'case "3":' +
+                '# background-color:rgba(0, 255, 0, 0.25); #' +
+                'break;' +
+              'case "2":' +
+              'case "Medium":' +
+                '# background-color:rgba(255, 255, 0, 0.25); #' +
+                'break;' +
+              'case "1":' +
+              'case "High":' +
+                '# background-color:rgba(255, 0, 0, 0.25); #' +
+                'break;' +
+            '}' +
           '} #';
+
         return template;
       });
 
@@ -45,25 +46,34 @@ Custom Grid Tasks Config
       app.custom.gridTasks.add(gridData, 'Title', 'task', 'TitleLinks', function (column, task) {
         // Custom Title Links Task Template
         var template =
-          '# var url = app.gridUtils.getLinkUrl(data, "***"); ' +
-          'if (!_.isUndefined(WorkItemType) && (WorkItemType==="System.WorkItem.Incident" || WorkItemType==="System.WorkItem.ServiceRequest")) { # ' +
-            app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
-              href: '#=url#',
-            }) +
-          '# } else if ((!_.isUndefined(WorkItemType)&& WorkItemType.indexOf("Activity") != -1)) {' +
-            'var approvalUrl = app.gridUtils.getApprovalLinkUrl(data); # ' +
-            app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
-              icon: 'fa-check',
-              href: '#=approvalUrl#',
-            }) +
-          '# } # ' +
-          app.custom.gridTasks.buildTemplate('link', column.field, task.name, {
+          '# var url = app.gridUtils.getLinkUrl(data, "***");' +
+          'if (!_.isUndefined(WorkItemType) && (WorkItemType === "System.WorkItem.Incident" || WorkItemType === "System.WorkItem.ServiceRequest")) {' +
+            '# <%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, wiLinkSettings) %> #' +
+          '} else if ((!_.isUndefined(WorkItemType) && WorkItemType.indexOf("Activity") != -1)) {' +
+            'var approvalUrl = app.gridUtils.getApprovalLinkUrl(data);' +
+            '# <%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, actLinkSettings) %> #' +
+          '} #' +
+          '<%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, defaultLinkSettings) %>';
+
+        template = _.template(template, {
+          column: column,
+          task: task,
+          wiLinkSettings: {
+            href: '#= url #',
+          },
+          actLinkSettings: {
+            icon: 'fa-check',
+            href: '#= approvalUrl #',
+          },
+          defaultLinkSettings: {
             icon: 'fa-arrow-right',
             bClickPropagation: true,
             className: 'ra-highlight-default-icon',
-            href: '#=url#',
+            href: '#= url #',
             target: '',
-          });
+          },
+        });
+
         return template;
       });
 
@@ -72,12 +82,19 @@ Custom Grid Tasks Config
         app.custom.gridTasks.add(gridData, 'AssignedUser', 'task', 'AssignToAnalystByGroup', function (column, task) {
           // Custom AssignToAnalystByGroup Task Template
           var template =
-            '# if (!_.isUndefined(WorkItemType) && (WorkItemType==="System.WorkItem.Incident" || WorkItemType==="System.WorkItem.ServiceRequest")) { #' +
-              app.custom.gridTasks.buildTemplate('task', column.field, task.name, {
-                icon: 'fa-pencil',
-                bClickPropagation: false,
-              }) +
-            '# } #';
+            '# if (!_.isUndefined(WorkItemType) && (WorkItemType === "System.WorkItem.Incident" || WorkItemType === "System.WorkItem.ServiceRequest")) {' +
+              '# <%= app.custom.gridTasks.buildTemplate("task", column.field, task.name, taskSettings) %> #' +
+            '} #';
+
+          template = _.template(template, {
+            column: column,
+            task: task,
+            taskSettings: {
+              icon: 'fa-pencil',
+              bClickPropagation: false,
+            },
+          });
+
           return template;
         }, function (data) {
           console.log('AssignToAnalystByGroup:callback', data);

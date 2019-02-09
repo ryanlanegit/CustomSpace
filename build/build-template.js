@@ -21,7 +21,8 @@
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
-  // pathToSourceMaps: '/path/to/sourceMap/',
+  // sourceMapDir: '/path/to/sourceMap/',
+  // sourceRoot: '/path/to/baseUrl/',
   preserveLicenseComments: false,
   /*
   onModuleBundleComplete: function (data) {

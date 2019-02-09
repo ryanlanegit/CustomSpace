@@ -19,7 +19,8 @@
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
-  pathToSourceMaps: '/CustomSpace/Scripts/grids/',
+  sourceMapDir: '/CustomSpace/Scripts/grids/',
+  sourceRoot: '/CustomSpace/Scripts/',
   preserveLicenseComments: false,
   onModuleBundleComplete: function (data) {
     'use strict';

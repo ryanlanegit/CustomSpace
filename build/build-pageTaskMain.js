@@ -18,6 +18,8 @@
   findNestedDependencies: true,
   optimize: 'uglify2', // none, uglify, uglify2
   generateSourceMaps: true,
+  sourceMapDir: '/CustomSpace/Scripts/page/',
+  sourceRoot: '/CustomSpace/Scripts/',
   preserveLicenseComments: false,
   onModuleBundleComplete: function (data) {
     'use strict';

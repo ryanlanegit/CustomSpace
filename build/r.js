@@ -24796,7 +24796,7 @@ exports.minify = function(files, options, name) {
     if (options.sourceMapInline) {
         stream += mappingUrlPrefix + "data:application/json;charset=utf-8;base64," + new Buffer(source_map).toString("base64");
     } else if (options.outSourceMap && typeof options.outSourceMap === "string" && options.sourceMapUrl !== false) {
-        stream += mappingUrlPrefix + options.pathToSourceMaps + (typeof options.sourceMapUrl === "string" ? options.sourceMapUrl : options.outSourceMap);
+        stream += mappingUrlPrefix + options.sourceMapDir + (typeof options.sourceMapUrl === "string" ? options.sourceMapUrl : options.outSourceMap);
     }
 
     return {
@@ -27173,7 +27173,10 @@ function (lang,   logger,   envOptimize,        file,           parse,
                 optConfig = config[optimizerName] || {};
                 if (config.generateSourceMaps) {
                     optConfig.generateSourceMaps = !!config.generateSourceMaps;
-                    optConfig.pathToSourceMaps = (typeof config.pathToSourceMaps === "undefined") ? "" : config.pathToSourceMaps;
+                    optConfig.sourceMapDir = (typeof config.sourceMapDir === "undefined") ? "" : config.sourceMapDir;
+                    if (typeof config.sourceRoot !== "undefined") {
+                      optConfig.sourceRoot = config.sourceRoot;
+                    }
                     optConfig._buildSourceMap = config._buildSourceMap;
                 }
 
