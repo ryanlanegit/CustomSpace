@@ -4,34 +4,18 @@
 
 CustomSpace Directory Contained Within a Cireson Portal Installation
 
-## IIS Customizations
+## Wiki Links
 
-### IIS Redirects
-
-The current redirects that redirect out of the box requests to our customized scripts.
-
-PSPath                                                                       | Location              | destination                                                       | exactDestination | httpResponseStatus
----------------------------------------------------------------------------- | --------------------- | ----------------------------------------------------------------- | ---------------- | ------------------
-MACHINE/WEBROOT/APPHOST/CiresonPortal/customspace                            | custom.css            | /CustomSpace/custom.min.css                                       | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts                                | viewMain.js           | /CustomSpace/Scripts/viewMain-built.min.js                        | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/app/templates/activity         | generic-activity.html | /CustomSpace/Scripts/app/templates/activity/generic-activity.html | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/app/templates/activity         | manual-activity.html  | /CustomSpace/Scripts/app/templates/activity/manual-activity.html  | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/app/templates/activity         | review-activity.html  | /CustomSpace/Scripts/app/templates/activity/review-activity.html  | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms                          | wiMain.js             | /CustomSpace/Scripts/forms/wiMain-built.min.js                    | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms                          | profileMain.js        | /CustomSpace/Scripts/forms/profileMain-built.min.js               | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms                          | wiActivityMain.js     | /CustomSpace/Scripts/forms/wiActivityMain-built.min.js            | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/affecteditems | controller.js         | /CustomSpace/Scripts/forms/predefined/affectedItems/controller.js | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | view.html             | /CustomSpace/Scripts/forms/predefined/history/view.html           | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/history       | controller.js         | /CustomSpace/Scripts/forms/predefined/history/controller.js       | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/predefined/relateditems  | controller.js         | /CustomSpace/Scripts/forms/predefined/relatedItems/controller.js  | False            | Permanent         
-MACHINE/WEBROOT/APPHOST/CiresonPortal/scripts/forms/tasks/sendemail          | controller.js         | /CustomSpace/Scripts/forms/tasks/sendEmail/controller.js          | False            | Permanent         
-
-## Custom Plugins
-
-### [History](Scripts/forms/predefined/history)
-
-### [Grid Task Builder](Scripts/grids)
-
-### [Request Offering Task Builder](Scripts/serviceCatalog)
-
-### [Work Item Task Builder](Scripts/forms)
+* [Home](https://github.com/ryanlanegit/CustomSpace/wiki/Home)
+* [Building](https://github.com/ryanlanegit/CustomSpace/wiki/Building)
+  * [Automating](https://github.com/ryanlanegit/CustomSpace/wiki/Building%3A-Automating)
+  * [Command Line](https://github.com/ryanlanegit/CustomSpace/wiki/Building%3A-Command-Line)
+  * [Template](https://github.com/ryanlanegit/CustomSpace/wiki/Building%3A-Template)
+* [Plugins](https://github.com/ryanlanegit/CustomSpace/wiki/Plugins)
+  * [Grid Task Builder](https://github.com/ryanlanegit/CustomSpace/wiki/Plugins%3A-Grid-Task-Builder)
+  * [History](https://github.com/ryanlanegit/CustomSpace/wiki/Plugins%3A-History)
+  * [Request Offering Task Builder](https://github.com/ryanlanegit/CustomSpace/wiki/Plugins%3A-Request-Offering-Task-Builder)
+  * [Work Item Task Builder](https://github.com/ryanlanegit/CustomSpace/wiki/Plugins%3A-Work-Item-Task-Builder)
+* IIS
+  * [Customizations](https://github.com/ryanlanegit/CustomSpace/wiki/IIS%3A-Customizations)
+* [FAQ](https://github.com/ryanlanegit/CustomSpace/wiki/FAQ)
