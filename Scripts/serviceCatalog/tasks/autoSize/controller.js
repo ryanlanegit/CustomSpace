@@ -5,7 +5,7 @@ Autosize Textarea
 **/
 
 define([
-  'jquery/autosize.min.js',
+  'jquery/autosize.js',
 ], function (
   autosize
 ) {
