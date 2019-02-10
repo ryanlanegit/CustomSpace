@@ -1,20 +1,22 @@
-/*global console, module */
-({
-  mainConfigFile: 'config-build-main.js',
+/*global console, module, require */
+require.config({
+  baseUrl: '../Scripts',
+  paths: {
+    'requireLib': '../../Scripts/require',
+    'text': '../../Scripts/require/text',
+    'CustomSpace': '../../CustomSpace',
+  },
   stubModules: [
     'text',
   ],
-  include: [
-    'CustomSpace/Scripts/forms/wiTaskMain',
-  ],
   excludeShallow: [
     'text',
-// 'CustomSpace/Scripts/forms/tasks/resolveIncident/controller',
   ],
-  out: '../Scripts/forms/wiTaskMain-built.min.js',
-//optimize: 'uglify2',
-//generateSourceMaps: true,
-  sourceMapDir: '/CustomSpace/Scripts/forms/',
+  findNestedDependencies: true,
+  optimize: 'uglify2', // none, uglify, uglify2
+  generateSourceMaps: true,
+  sourceRoot: '/CustomSpace/Scripts/',
+  preserveLicenseComments: false,
   onModuleBundleComplete: function (data) {
     'use strict';
     console.log('AMD Cleaning File: ' + data.path);
@@ -39,4 +41,4 @@
     fs.writeFileSync(inputFile, cleaned.code);
     fs.writeFileSync(inputSourceMap, cleaned.map);
   },
-})
+});
