@@ -31,33 +31,36 @@ require([
     console.log('roTaskMain', performance.now());
   }
 
-  var roTaskVm = kendo.observable({
-    /**
-     * Wait until Angular has finished rendering and insert callback
-     * into Angular's evalAsync queue.
-     *
-     * Asynchronous.
-     *
-     * @param {string} rootSelector The Angular element selector
-     * @param {function(string)} callback callback.
-     */
-    waitForAngular: function waitForAngular(rootSelector, callback) {
-      if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-        console.log('waitForAngular', {
-          rootSelector: rootSelector,
-          callback: callback,
-        });
-      }
+  var waitQueue = [],
+      waitQueueInit = false,
+      waitQueueReady = false;
 
-      angular.element(document).ready(function () {
-        var angularElm = angular.element(rootSelector),
-            angularScope = angularElm.scope();
-        angularScope.$evalAsync(function () {
-          callback(angularElm, angularScope);
-        });
+  function processWaitQueue() {
+    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('roTaskMain:processWaitQueue', performance.now(), {
+        waitQueueInit: waitQueueInit,
+        waitQueueReady: waitQueueReady,
+        waitQueue: waitQueue,
       });
-    },
-  });
+    }
+    if (!waitQueueInit) {
+      waitQueueInit = true;
+      angular.element(document).ready(function () {
+        waitQueueReady = true;
+        processWaitQueue();
+      });
+    } else if (waitQueueReady) {
+      waitQueueReady = false;
+      var angularElm = angular.element('#GeneralInformation'),
+          angularScope = angularElm.scope();
+      angularScope.$evalAsync(function () {
+        while (waitQueue.length > 0) {
+          (waitQueue.shift())();
+        }
+        waitQueueReady = true;
+      });
+    }
+  }
 
   function initContainerStyles() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -94,6 +97,26 @@ require([
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:initTask', performance.now());
     }
+    var roTaskVm = kendo.observable({
+      /**
+       * Wait until Angular has finished rendering and insert callback
+       * into Angular's evalAsync queue.
+       *
+       * Asynchronous.
+       *
+       * @param {string} rootSelector The Angular element selector
+       * @param {function(string)} callback callback.
+       */
+      waitForAngular: function waitForAngular(callback) {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+          console.log('waitForAngular', {
+            callback: callback,
+          });
+        }
+        waitQueue.push(callback);
+        processWaitQueue();
+      },
+    });
     // Build out custom request offering tasks
     roTaskBuilder.build(roTaskVm, roTaskBuilder.node, function () {
       app.events.publish('roTasks.Ready');

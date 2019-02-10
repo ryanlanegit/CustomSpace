@@ -41,7 +41,7 @@ define(function () {
                 targetSelector = (typeof targetOptions.selector === 'string') ? targetOptions.selector : targetOptions.selector[targetIndex];
             delete targetOptions.next;
             delete targetOptions.selector;
-            vm.waitForAngular(targetElm, function () {
+            vm.waitForAngular(function () {
               $(targetElm).find(targetSelector).data().handler.setOptions(targetOptions);
             });
           });

@@ -104,7 +104,7 @@ define([
 
               switch (questionType) {
               case 'Integer':
-                vm.waitForAngular(questionFormGroup, function () {
+                vm.waitForAngular(function () {
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     console.log('roTaskBuilder:initTask:SetDefaultOptions', performance.now(), {
                       questionType: questionType,

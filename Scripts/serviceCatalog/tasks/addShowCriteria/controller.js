@@ -50,8 +50,10 @@ define(function () {
 
         function recompileAngularElm(targetElm) {
           // Check if angular framework is ready
-          vm.waitForAngular(targetElm, function ($element, $scope) {
-            var $injector = $element.injector();
+          vm.waitForAngular(function () {
+            var $element = angular.element(targetElm),
+                $scope = $element.scope(),
+                $injector = $element.injector();
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               console.log('recompileAngularElm', performance.now(), {
@@ -166,8 +168,10 @@ define(function () {
           };
           options = $.extend({}, defaultOptions, options);
           processNext(promptElm, options.next, function (targetElm) {
-            vm.waitForAngular(targetElm, function ($element, $scope) {
-              var criteriaArray = [],
+            vm.waitForAngular(function () {
+              var $element = angular.element(targetElm),
+                  $scope = $element.scope(),
+                  criteriaArray = [],
                   criteriaGroupStack = [],
                   currentCriteriaGroup = criteriaArray,
                   promptElmNGShow = $(promptElm).attr('ng-show'),

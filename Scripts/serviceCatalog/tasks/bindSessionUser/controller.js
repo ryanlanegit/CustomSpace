@@ -6,7 +6,11 @@ Bind Session User Properties
 
 define(function () {
   'use strict';
-  var roTask = {
+
+  var initFetchDataSource = _.once(function (dataSource) {
+      dataSource.fetch();
+    }),
+    roTask = {
       Task: 'bindSessionUser',
       Type: 'RequestOffering',
       Label: 'Bind Session User Properties',
@@ -43,7 +47,7 @@ define(function () {
         function updateTextAreaField(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
-          vm.waitForAngular(targetElm, function () {
+          vm.waitForAngular(function () {
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
@@ -122,8 +126,8 @@ define(function () {
               if (session.user.hasOwnProperty(propertyKey)) {
                 updateTextAreaField(targetElm, session.user[propertyKey]);
               } else {
-                vm.userObjectPropertiesDataSource.fetch(function () {
-                  var data = this.data();
+                vm.userObjectPropertiesDataSource.bind('requestEnd', function responseHandler(event) {
+                  var data = event.response;
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     console.log('Session User Data Ready', performance.now(), {
                       data: data[0],
@@ -147,7 +151,9 @@ define(function () {
                       }
                     }
                   }
+                  vm.userObjectPropertiesDataSource.unbind('requestEnd', responseHandler);
                 });
+                initFetchDataSource(vm.userObjectPropertiesDataSource);
               }
             }
           });

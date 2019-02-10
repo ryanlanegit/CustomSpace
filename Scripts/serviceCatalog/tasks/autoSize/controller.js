@@ -42,7 +42,7 @@ define([
 
           processNext(promptElm, options.next, function (targetElm, targetIndex) {
             var targetRows = (typeof options.rows === 'string') ? options.rows : options.rows[targetIndex];
-            vm.waitForAngular(targetElm, function () {
+            vm.waitForAngular(function () {
               var targetInputELm = $(targetElm).find('textarea');
               targetInputELm.addClass('auto-size').attr('rows', targetRows);
               autosize(targetInputELm);

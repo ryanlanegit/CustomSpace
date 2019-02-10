@@ -57,7 +57,7 @@ define(function () {
           }
 
           // Check if angular framework is ready
-          vm.waitForAngular(targetElm, function () {
+          vm.waitForAngular(function () {
             var questionType = $(targetElm).find('input.question-answer-type').val(),
                 targetId = $(targetElm).find('input.question-answer-id').val();
             switch (questionType) {
