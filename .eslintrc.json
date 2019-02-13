@@ -2,23 +2,25 @@
   "rules": {
     // disable use of undefined variables
     "no-undef": "error",
-    
+
     // enable console output calls
     "no-console": [
       "error", {
         "allow": ["log", "warn", "error"]
       }
     ],
-    
+
     // set dangling commas in object definitions
     "comma-dangle": ["error", "always-multiline"],
 
     // true to allow missing `use strict` pragma
     "sloppy": "false",
-    
+
     // true to allow unused parameters
 		"unparam": "false",
-    
-    "strict": ["error", "safe"]
+
+    "strict": ["error", "safe"],
+
+    "browser": "true"
   }
 }
