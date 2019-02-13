@@ -68,7 +68,7 @@ define(function () {
                 var targetDataSourceData = targetDropdownData.dataSource.data(),
                     filteredData;
                 if (targetDataSourceData.length > 0) {
-                  filteredData = _.filter(targetDataSourceData, function (item, index) {
+                  filteredData = _.find(targetDataSourceData, function (item, index) {
                     return item.name === paramValue;
                   });
                   if (filteredData) {

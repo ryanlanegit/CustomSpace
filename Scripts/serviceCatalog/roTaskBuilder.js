@@ -1,4 +1,4 @@
-/*global _, $, app, console, define, document, performance */
+/*global _, $, app, console, define, performance */
 
 /**
 Custom Request Offering Task Builder
@@ -18,7 +18,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
-// 'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
+//'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
 ], function (
   addClassController,
@@ -34,7 +34,7 @@ define([
   setAttributeController,
   setOptionsController,
   singleLineEntryController,
-//  externalFileAttachmentsDragDropController,
+//externalFileAttachmentsDragDropController,
   summaryController
 ) {
   'use strict';
@@ -61,13 +61,13 @@ define([
         }
         /* BEGIN Functions */
         function buildAndRender(taskName, promptElm, options) {
-          var roTask = _.filter(roTaskModules, function (roTask) {
+          var roTask = _.find(roTaskModules, function (roTask) {
             if (_.isUndefined(roTask.task)) {
               return false;
             } else {
               return (roTask.task.Task.toLowerCase() === taskName.toLowerCase());
             }
-          })[0];
+          });
 
           if (!_.isUndefined(roTask)) {
             roTask.build(vm, promptElm, options);
@@ -108,7 +108,7 @@ define([
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     console.log('roTaskBuilder:initTask:SetDefaultOptions', performance.now(), {
                       questionType: questionType,
-                      options: {format: '#', decimals: 0 },
+                      options: { format: '#', decimals: 0 },
                     });
                   }
                   questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });

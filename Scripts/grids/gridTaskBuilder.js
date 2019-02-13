@@ -30,9 +30,9 @@ define([
             'add': function add(gridData, field, type, name, template, callback) {
               var that = this,
                 // Look for provided column in grid by field name
-                taskColumn = _.filter(gridData.columns, function (colValue) {
+                taskColumn = _.find(gridData.columns, function (colValue) {
                   return colValue.field === field;
-                })[0];
+                });
 
               if (!_.isUndefined(taskColumn)) {
                 if (_.isUndefined(taskColumn._style)) {
@@ -89,9 +89,9 @@ define([
             },
             'get': function get(gridData, field, name) {
               // Look for provided column in grid by field name
-              var taskColumn = _.filter(gridData.columns, function (colValue) {
+              var taskColumn = _.find(gridData.columns, function (colValue) {
                 return colValue.field === field;
-              })[0];
+              });
 
               if (!_.isUndefined(taskColumn)) {
                 if (_.isUndefined(name)) {
@@ -99,9 +99,9 @@ define([
                   return taskColumn._tasks;
                 } else {
                   // Look for the specific task named in the provided field
-                  var gridTask = _.filter(taskColumn._tasks, function (taskValue) {
+                  var gridTask = _.find(taskColumn._tasks, function (taskValue) {
                     return taskValue.name === name;
-                  })[0];
+                  });
 
                   if (!_.isUndefined(gridTask)) {
                     // Return the specific task in the provided field
@@ -173,13 +173,13 @@ define([
               }
             },
             'buildTemplate': function buildTemplate(taskName, field, task, options) {
-              var gridTask = _.filter(gridTaskModules, function (gridTask) {
+              var gridTask = _.find(gridTaskModules, function (gridTask) {
                 if (_.isUndefined(gridTask.task)) {
                   return false;
                 } else {
                   return (gridTask.task.Task.toLowerCase() === taskName.toLowerCase());
                 }
-              })[0];
+              });
 
               if (!_.isUndefined(gridTask)) {
                 return gridTask.build(field, task, options);

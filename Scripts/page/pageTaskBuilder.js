@@ -37,13 +37,13 @@ define([
               options: options,
             });
           }
-          var pageTask = _.filter(pageTaskModules, function (pageTask) {
+          var pageTask = _.find(pageTaskModules, function (pageTask) {
             if (_.isUndefined(pageTask.task)) {
               return false;
             } else {
               return (pageTask.task.Task.toLowerCase() === taskName.toLowerCase());
             }
-          })[0];
+          });
 
           if (!_.isUndefined(pageTask)) {
             pageTask.build(promptElm, options);

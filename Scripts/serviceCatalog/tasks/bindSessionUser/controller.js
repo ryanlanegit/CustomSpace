@@ -141,11 +141,11 @@ define(function () {
                     } else {
                       switch (propertyKey) {
                       case 'EmailAddress':
-                        var SMTPFilter = _.filter(data[0].Preference, function (item, index) {
+                        var SMTPFilter = _.find(data[0].Preference, function (item, index) {
                           return item.ChannelName === 'SMTP';
                         });
                         if (SMTPFilter) {
-                          updateTextAreaField(targetElm, SMTPFilter[0].TargetAddress);
+                          updateTextAreaField(targetElm, SMTPFilter.TargetAddress);
                         }
                         break;
                       }
