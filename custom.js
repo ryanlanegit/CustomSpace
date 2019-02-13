@@ -1,4 +1,4 @@
-/*global $, _, app, console, performance, session, store, transformRO, window */
+/*global $, _, app, console, localization, performance, session, store, transformRO, window */
 
 /**
 Custom
@@ -114,16 +114,6 @@ app.custom.utils = {
     }
     return format;
   },
-
-  isAngularReady: function isAngularReady() {
-    'use strict';
-    var ready = false;
-
-    if (!_.isUndefined(window.angular)) {
-      ready = true;
-    }
-    return ready;
-  },
 };
 
 /*
@@ -146,7 +136,6 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'sessionStorageReady',
       'dynamicPageReady',
       'sessionUserData.Ready',
-      'angular.Ready',
       'gridTasks.Ready',
       'roTasks.Ready',
       'pageTasks.Ready',
@@ -236,21 +225,31 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
 }
 
 /*
-  Javascript Library Monitoring
+  Set Header Search Defaults
 */
-if (!app.custom.utils.isAngularReady()) {
-  Object.defineProperty(window, 'angular', {
-    configurable: true,
-    enumerable: true,
-    writeable: true,
-    get: function () {
-      'use strict';
-      return this._angular;
-    },
-    set: function (val) {
-      'use strict';
-      this._angular = val;
-      app.events.publish('angular.Ready');
-    },
+if (
+  (window.location.href.indexOf('ServiceCatalog') > -1) ||
+  (window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1) ||
+  (window.location.href.indexOf('02efdc70-55c7-4ba8-9804-ca01631c1a54') > -1)
+) {
+  $(function () {
+    'use strict';
+    $(function () {
+      function headerSearchSetType(searchParamVal, searchConceptHTML, searchInputPlaceholder) {
+        searchParamVal = searchParamVal || 'WorkItem';
+        searchConceptHTML = searchConceptHTML || localization.WorkItems;
+        searchInputPlaceholder = searchInputPlaceholder || localization.SearchWorkItem;
+
+        var searchParam = $('input#search_param'),
+            searchConcept = $('span#search_concept'),
+            searchInput = $('input[name="searchText"]');
+
+        searchParam.val(searchParamVal);
+        searchConcept.html(searchConceptHTML);
+        searchInput.attr('placeholder', searchInputPlaceholder);
+      }
+
+      headerSearchSetType();
+    });
   });
 }
