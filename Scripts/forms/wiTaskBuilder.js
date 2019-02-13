@@ -27,8 +27,6 @@ define([
         }
 
         _.each(taskModules, function (taskModule) {
-          // vm.taskTemplate.tasks.push(taskModule.task);
-
           if (taskModule.task.Access && taskModule.task.Type.indexOf(vm.type) !== -1) {
             taskModule.build(vm, taskModule.task, function (view) {
               taskCallback(view);
@@ -36,7 +34,7 @@ define([
           }
         });
 
-        //send back <ul> with <li> of each task
+        // Send back <ul> with <li> of each task
         if (typeof callback === 'function') {
           callback(ulElement);
         }
