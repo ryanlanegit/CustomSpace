@@ -1,9 +1,9 @@
 /*global _, $, app, console, define, performance */
 
 /**
-Custom Request Offering Task Builder
-**/
-
+ * Custom Request Offering Task Builder
+ * @module roTaskBuilder
+ */
 define([
   'CustomSpace/Scripts/serviceCatalog/tasks/addClass/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/addInformation/controller',

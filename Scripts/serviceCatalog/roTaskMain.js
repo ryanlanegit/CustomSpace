@@ -35,6 +35,10 @@ require([
       waitQueueInit = false,
       waitQueueReady = false;
 
+  /**
+   * Wait until Angular has finished rendering and insert callback functions
+   * from waitQueue into Angular's evalAsync queue.
+   */
   function processWaitQueue() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:processWaitQueue', performance.now(), {
@@ -62,50 +66,57 @@ require([
     }
   }
 
+  /**
+   * Initialize Request Offering Question/Task Default Container Classes
+   * @returns {boolean} DOM has been modified.
+   */
   function initContainerStyles() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:initContainerStyles', performance.now());
     }
     var roPages = $('div.page-panel');
-    roPages.each(function () {
-      var roPage = $(this),
-          roTaskElms = roPage.find('div.row').filter(function (index) {
-            return app.custom.utils.isValidJSON($(this).text());
-          }),
-          roQuestionElms = roPage.find('div.question-container');
+    if (roPages.length > 0) {
+      roPages.each(function () {
+        var roPage = $(this),
+            roTaskElms = roPage.find('div.row').filter(function (index) {
+              return app.custom.utils.isValidJSON($(this).text());
+            }),
+            roQuestionElms = roPage.find('div.question-container');
 
-      // Add 'task-container' class to rows contains task JSON
-      roTaskElms.addClass('task-container').children().addClass('task-container-content');
+        // Add 'task-container' class to rows contains task JSON
+        roTaskElms.addClass('task-container').children().addClass('task-container-content');
 
-      // Set 100% Width for Display Rows
-      roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
+        // Set 100% Width for Display Rows
+        roPage.find('.row:not(.question-container) .col-xs-12').removeClass('col-md-8').addClass('col-md-12');
 
-      // Set 50% Width for Question Rows
-      roQuestionElms.each(function () {
-        var questionElm = $(this),
-            questionContainer = questionElm.find('div.col-xs-12');
-        if (questionContainer.hasClass('col-md-4') || questionContainer.hasClass('col-md-8')) {
-          questionContainer.removeClass('col-md-4 col-md-8').addClass('col-md-6');
-        }
+        // Set 50% Width for Question Rows
+        roQuestionElms.each(function () {
+          var questionElm = $(this),
+              questionContainer = questionElm.find('div.col-xs-12');
+          if (questionContainer.hasClass('col-md-4') || questionContainer.hasClass('col-md-8')) {
+            questionContainer.removeClass('col-md-4 col-md-8').addClass('col-md-6');
+          }
+        });
       });
-    });
-    // Return true if DOM was modified
-    return (roPages.length > 0);
+      return true;
+    } else {
+      return false;
+    }
   }
 
+  /**
+   * Initialize Request Offering Tasks using roTaskBuilder.
+   */
   function initTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('roTaskMain:initTask', performance.now());
     }
     var roTaskVm = kendo.observable({
       /**
-       * Wait until Angular has finished rendering and insert callback
-       * into Angular's evalAsync queue.
-       *
-       * Asynchronous.
-       *
-       * @param {string} rootSelector The Angular element selector
-       * @param {function(string)} callback callback.
+       * Add callback to waitQueue and run processWaitQueue to wait until
+       * Angular has finished rendering and insert callback function into
+       * Angular's evalAsync queue.
+       * @param {function(string)} callback - Callback function.
        */
       waitForAngular: function waitForAngular(callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {

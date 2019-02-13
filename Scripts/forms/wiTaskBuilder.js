@@ -1,9 +1,9 @@
 /*global $, _, app, console, define, performance */
 
 /**
-Custom Work Item Task Builder
-**/
-
+ * Custom Work Item Task Builder
+ * @module wiTaskBuilder
+ */
 define([
   'CustomSpace/Scripts/forms/tasks/resolveIncident/controller',
 ], function (

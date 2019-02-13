@@ -1,9 +1,9 @@
 /*global _, $, app, console, define, kendo, performance */
 
 /**
-Custom Grid Task Builder
-**/
-
+ * Custom Grid Task Builder
+ * @module gridTaskBuilder
+ */
 define([
   'CustomSpace/Scripts/grids/tasks/anchor/controller',
   'CustomSpace/Scripts/grids/tasks/link/controller',

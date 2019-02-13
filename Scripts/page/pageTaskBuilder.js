@@ -1,9 +1,9 @@
 /*global _, $, app, console, define, performance */
 
 /**
-Custom Page Task Builder
-**/
-
+ * Custom Page Task Builder
+ * @module pageTaskBuilder
+ */
 define([
   'CustomSpace/Scripts/page/tasks/groupPicker/controller',
 ], function (
