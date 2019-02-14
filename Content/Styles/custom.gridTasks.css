@@ -82,7 +82,8 @@ a.ra-grid-task-icon i:hover {
     float:right;
     text-align:right;
     margin:-5px -5px -4px -6px;
-    padding-right: 3px;
+    padding: 0px 3px 0px 0px;
+    font-size: 0px;
 }
 
 .k-grid .ra-grid-task-item {
@@ -91,7 +92,8 @@ a.ra-grid-task-icon i:hover {
 
 .k-grid .ra-grid-task-icon {
     display: inherit;
-    padding: 5px 3px 4px 3px;
+    height: 24px;
+    padding: 5px 4px 4px 4px;
     vertical-align: middle;
     text-align: center;
     box-sizing: border-box;
