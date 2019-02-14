@@ -52,6 +52,7 @@ Custom Grid Tasks Config
           '} else if ((!_.isUndefined(WorkItemType) && WorkItemType.indexOf("Activity") != -1)) {' +
             'var approvalUrl = app.gridUtils.getApprovalLinkUrl(data);' +
             '# <%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, actLinkSettings) %> #' +
+            '# <%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, wiLinkSettings) %> #' +
           '} #' +
           '<%= app.custom.gridTasks.buildTemplate("link", column.field, task.name, defaultLinkSettings) %>';
 
