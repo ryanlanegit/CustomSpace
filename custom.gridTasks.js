@@ -79,32 +79,34 @@ Custom Grid Tasks Config
       });
 
       if (session.user.Analyst === 1) {
-        // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
-        app.custom.gridTasks.add(gridData, 'AssignedUser', 'task', 'AssignToAnalystByGroup', function (column, task) {
-          // Custom AssignToAnalystByGroup Task Template
-          var template =
-            '# if (!_.isUndefined(WorkItemType) && (WorkItemType === "System.WorkItem.Incident" || WorkItemType === "System.WorkItem.ServiceRequest")) {' +
-              '# <%= app.custom.gridTasks.buildTemplate("task", column.field, task.name, taskSettings) %> #' +
-            '} #';
+        var assignToAnalystByGroupButton = $('li[data-bind*="click: analystByGroup"]:first');
+        if (assignToAnalystByGroupButton.length > 0) {
+          // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
+          app.custom.gridTasks.add(gridData, 'AssignedUser', 'task', 'AssignToAnalystByGroup', function (column, task) {
+            // Custom AssignToAnalystByGroup Task Template
+            var template =
+              '# if (!_.isUndefined(WorkItemType) && (WorkItemType === "System.WorkItem.Incident" || WorkItemType === "System.WorkItem.ServiceRequest")) {' +
+                '# <%= app.custom.gridTasks.buildTemplate("task", column.field, task.name, taskSettings) %> #' +
+              '} #';
 
-          template = _.template(template, {
-            column: column,
-            task: task,
-            taskSettings: {
-              icon: 'fa-pencil',
-              bClickPropagation: false,
-            },
+            template = _.template(template, {
+              column: column,
+              task: task,
+              taskSettings: {
+                icon: 'fa-pencil',
+                bClickPropagation: false,
+              },
+            });
+
+            return template;
+          }, function (data) {
+            console.log('AssignToAnalystByGroup:callback', data);
+            data.gridData.clearSelection();
+            data.gridData.select(data.itemRowEle);
+
+            assignToAnalystByGroupButton.click();
           });
-
-          return template;
-        }, function (data) {
-          console.log('AssignToAnalystByGroup:callback', data);
-          data.gridData.clearSelection();
-          data.gridData.select(data.itemRowEle);
-
-          var assignToAnalystByGroupButton = $('li[data-bind*="click: analystByGroup"]').first();
-          assignToAnalystByGroupButton.click();
-        });
+        }
       }
 
       app.custom.gridTasks.updateGrid(gridData);
