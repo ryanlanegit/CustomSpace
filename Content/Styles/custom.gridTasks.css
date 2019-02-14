@@ -32,10 +32,6 @@ a.ra-grid-task-icon i:hover {
 .k-grid .grid-highlight-column-title .ra-grid-task-menu,
 .k-grid .grid-highlight-column-last .ra-grid-task-menu {
     visibility: hidden;
-}
-
-.k-grid .grid-highlight-column-title .ra-grid-task-menu,
-.k-grid .grid-highlight-column-last .ra-grid-task-menu {
     margin-right: -20px;
 }
 
