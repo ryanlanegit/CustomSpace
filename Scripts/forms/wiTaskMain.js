@@ -1,4 +1,4 @@
-/*global _, app, console, pageForm, performance, require, session */
+/*global $, _, app, console, pageForm, performance, require, session */
 
 /**
 Load Custom Work Item Task Builder
@@ -31,6 +31,21 @@ require([
     console.log('wiTaskMain', performance.now());
   }
 
+  function sortList(ulElement) {
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      console.log('wiTaskMain:sortList', ulElement);
+    }
+    ulElement = $(ulElement);
+
+    var listitems = ulElement.children('li').get();
+    listitems.sort(function (a, b) {
+      return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
+    });
+    _.each(listitems, function (listItem) {
+      ulElement.append(listItem);
+    });
+  }
+
   function initTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       console.log('wiTaskMain:initTasks', performance.now());
@@ -48,7 +63,7 @@ require([
     if (pageForm.newWI || closedStatusIds.indexOf(pageForm.viewModel.Status.Id) === -1) {
       // Build out custom Work Item tasks
       wiTaskBuilder.build(pageForm, function (view) {
-        app.custom.utils.sortList(view);
+        sortList(view);
         app.events.publish('wiTasks.Ready');
       });
     }

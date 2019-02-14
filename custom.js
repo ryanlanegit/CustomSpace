@@ -86,20 +86,6 @@ app.custom.utils = {
     );
   },
 
-  sortList: function sortList(ulElement) {
-    'use strict';
-    if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('sortList', ulElement);
-    }
-    ulElement = $(ulElement);
-
-    var listitems = ulElement.children('li').get();
-    listitems.sort(function (a, b) {
-      return $(a).text().toUpperCase().localeCompare($(b).text().toUpperCase());
-    });
-    _.each(listitems, function (listItem) { ulElement.append(listItem); });
-  },
-
   stringFormat: function stringFormat(format) {
     'use strict';
     format = format.toString();
