@@ -77,7 +77,7 @@ a.ra-grid-task-icon i:hover {
     list-style: none;
     float:right;
     text-align:right;
-    margin:-5px -5px -4px -6px;
+    margin:-5px -5px -4px 4px;
     padding: 0px 3px 0px 0px;
     font-size: 0px;
 }
