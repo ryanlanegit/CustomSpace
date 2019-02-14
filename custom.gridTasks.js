@@ -116,6 +116,9 @@ Custom Grid Tasks Config
   } else {
     app.events.subscribe('gridTasks.Ready', function execUpdateGrid(event) {
       populateGridTasks();
+      app.events.subscribe('queryBuilderGridReady', function (event) {
+        populateGridTasks();
+      });
       // Unsubscribe from further gridTasks events
       app.events.unsubscribe(event.type + '.' + event.namespace, execUpdateGrid);
     });

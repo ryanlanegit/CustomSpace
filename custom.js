@@ -121,6 +121,7 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
       'window.hashChange',
       'sessionStorageReady',
       'dynamicPageReady',
+      'queryBuilderGridReady',
       'sessionUserData.Ready',
       'gridTasks.Ready',
       'roTasks.Ready',
