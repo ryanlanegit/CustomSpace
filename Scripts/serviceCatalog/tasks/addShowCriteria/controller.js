@@ -1,4 +1,4 @@
-/*global $, _, app, console, define, performance */
+/*global $, _, angular, app, console, define, performance */
 
 /**
 Add Show Criteria
@@ -53,7 +53,13 @@ define(function () {
           vm.waitForAngular(function () {
             var $element = angular.element(targetElm),
                 $scope = $element.scope(),
-                $injector = $element.injector();
+                $injector = $element.injector(),
+                watchers = $scope.$$watchers,
+                targetElmNGShow = $(targetElm).attr('ng-show'),
+                targetElmNGOriginalShow = $(targetElm).attr('ng-original-show'),
+                relatedElements,
+                targetIndex,
+                filteredWatchers;
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               console.log('recompileAngularElm', performance.now(), {
@@ -62,7 +68,48 @@ define(function () {
                 '$element': $element,
               });
             }
+
             if (typeof $injector !== 'undefined') {
+
+              /*
+                Remove Existing Watchers for Ng-Show
+              */
+              relatedElements = $('.row[ng-show="' + targetElmNGShow + '"], .row[ng-show="' + targetElmNGOriginalShow + '"]');
+              targetIndex = relatedElements.index(targetElm)*2;
+              filteredWatchers = _.filter(watchers, function (watcher) {
+                if (
+                  watcher.exp === targetElmNGOriginalShow &&
+                  typeof watcher.fn === 'function' && (
+                    watcher.fn.name === '' ||
+                    watcher.fn.name === 'ngShowWatchAction'
+                  )
+                ) {
+                  return true;
+                  } else {
+                  return false;
+                }
+              }).reverse();
+
+              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                console.log('recompileAngularElm:calling arrayRemove', {
+                  targetElm: targetElm,
+                  relatedElements: relatedElements,
+                  filteredWatchers: filteredWatchers,
+                  targetIndex: targetIndex,
+                });
+              }
+              if (
+                targetIndex > -1 &&
+                typeof filteredWatchers[targetIndex] !== 'undefined' &&
+                typeof filteredWatchers[targetIndex+1] !== 'undefined'
+              ) {
+                arrayRemove(watchers, filteredWatchers[targetIndex]);
+                arrayRemove(watchers, filteredWatchers[targetIndex+1]);
+              }
+
+              /*
+                Recompile Angular Element
+              */
               $injector.invoke(['$compile', function ($compile) {
                 $compile($element)($scope);
               }]);
@@ -159,6 +206,14 @@ define(function () {
           return promptElmNGShow;
         }
 
+        function arrayRemove(array, value) {
+          var index = array.indexOf(value);
+          if (index >= 0) {
+            array.splice(index, 1);
+          }
+          return value;
+        }
+
         /* Initialization code */
         function initROTask() {
           var defaultOptions = {
@@ -239,7 +294,7 @@ define(function () {
               if (flattenCriteria(criteriaArray) !== targetElmNGShow) {
                 flattenedCriteria = flattenCriteria(criteriaArray);
                 $(targetElm).attr('ng-show', flattenedCriteria);
-                $(targetElm).attr('ng-original-show', flattenedCriteria);
+                $(targetElm).attr('ng-original-show', targetElmNGShow);
                 recompileAngularElm(targetElm);
               }
             });
