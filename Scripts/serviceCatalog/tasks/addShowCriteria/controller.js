@@ -55,9 +55,9 @@ define(function () {
                 $scope = $element.scope(),
                 $injector = $element.injector(),
                 watchers = $scope.$$watchers,
-                targetElmNGShow = $(targetElm).attr('ng-show'),
                 targetElmNGOriginalShow = $(targetElm).attr('ng-original-show'),
-                relatedElements,
+                relatedElms,
+                sortedRelatedElms,
                 targetIndex,
                 filteredWatchers;
 
@@ -74,8 +74,11 @@ define(function () {
               /*
                 Remove Existing Watchers for Ng-Show
               */
-              relatedElements = $('.row[ng-show="' + targetElmNGShow + '"], .row[ng-show="' + targetElmNGOriginalShow + '"]');
-              targetIndex = relatedElements.index(targetElm)*2;
+              relatedElms = $('.row[ng-show="' + targetElmNGOriginalShow + '"]').add(targetElm);
+              sortedRelatedElms = _.sortBy(relatedElms, function (relatedElm) {
+                return $(relatedElm).find('input[ng-model]').attr('ng-model');
+              }).reverse();
+              targetIndex = _.indexOf(sortedRelatedElms, targetElm)*2;
               filteredWatchers = _.filter(watchers, function (watcher) {
                 if (
                   watcher.exp === targetElmNGOriginalShow &&
@@ -85,15 +88,16 @@ define(function () {
                   )
                 ) {
                   return true;
-                  } else {
+                } else {
                   return false;
                 }
-              }).reverse();
+              });
 
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 console.log('recompileAngularElm:calling arrayRemove', {
                   targetElm: targetElm,
-                  relatedElements: relatedElements,
+                  relatedElms: relatedElms,
+                  sortedRelatedElms: sortedRelatedElms,
                   filteredWatchers: filteredWatchers,
                   targetIndex: targetIndex,
                 });
