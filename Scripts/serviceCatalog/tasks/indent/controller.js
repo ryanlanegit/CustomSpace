@@ -5,7 +5,7 @@
  * @module indentController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define(function () {
   'use strict';
   var roTask = {
@@ -18,7 +18,7 @@ define(function () {
 
     /**
      * @exports indentController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -39,14 +39,14 @@ define(function () {
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
          * @param {Number} targetIndex - Target Index.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
@@ -56,7 +56,7 @@ define(function () {
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           options.next = options.next || 1;
           options.level = options.level || '1';

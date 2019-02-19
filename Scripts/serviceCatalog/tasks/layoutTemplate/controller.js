@@ -5,7 +5,7 @@
  * @module layoutTemplateController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define(function () {
   'use strict';
   var roTask = {
@@ -18,7 +18,7 @@ define(function () {
 
     /**
      * @exports layoutTemplateController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -37,7 +37,7 @@ define(function () {
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           if (!options.template) {
             return;

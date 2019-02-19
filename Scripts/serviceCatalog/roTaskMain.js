@@ -1,8 +1,8 @@
 /* global $, _, angular, app, document, kendo, require, session */
 
-/**
+/*
  * Uncomment when loading gridTaskmain directly through client unoptimized
-**/
+ */
 /*
 if (typeof require !== 'undefined') {
   require.config({

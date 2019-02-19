@@ -5,7 +5,7 @@
  * @module addShowCriteriaController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define(function () {
   'use strict';
   var roTask = {
@@ -18,7 +18,7 @@ define(function () {
 
     /**
      * @exports addShowCriteriaController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -28,7 +28,7 @@ define(function () {
        * @param {Object} vm - View Model of the base roTask plugin.
        * @param {Object} roTaskElm - Source task container element.
        * @param {Object} options - Parsed options from roTaskElm's JSON contents
-      **/
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -45,14 +45,14 @@ define(function () {
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
@@ -66,7 +66,7 @@ define(function () {
           *
           * @param {(function|string)} fn - Function Call String
           * @returns {string} Function name
-        **/
+         */
         function getfnCallName(fn) {
           var fnString = (typeof fn === 'function') ? fn.toString() : fn,
               FN_NAME = /^\s*([^\(\s]*)/g,
@@ -83,7 +83,7 @@ define(function () {
          *
          * @param {(function|string)} fn - Function Call String
          * @returns {string[]} Argument List
-        **/
+         */
         function getfnCallArgList(fn) {
           var fnString = (typeof fn === 'function') ? fn.toString() : fn,
               FN_ARGS = /^[^\(]*\(\s*([^\)]*)\)/m,
@@ -109,7 +109,7 @@ define(function () {
          *
          * @param {(function|string)} fn - Function definition String or Object
          * @returns {string} Function name
-        **/
+         */
         function getfnDefinitionName(fn) {
           var fnString = (typeof fn === 'function') ? fn.toString() : fn,
               FN_NAME = /^\s*function\s*([^\(\s]*)/mi,
@@ -126,7 +126,7 @@ define(function () {
          *
          * @param {(function|string)} fn - Function definition String or Object
          * @returns {string} Function name
-        **/
+         */
         function getfnDefinitionArgList(fn) {
           var fnString = (typeof fn === 'function') ? fn.toString() : fn,
               FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/mi,
@@ -154,7 +154,7 @@ define(function () {
          * @param {Object[]} array - Source array to be modified.
          * @param {Object} value - Value to be removed.
          * @returns {Object} Return removed value.
-        **/
+         */
         function arrayRemove(array, value) {
           var index = array.indexOf(value);
           if (index >= 0) {
@@ -176,7 +176,7 @@ define(function () {
          *
          * @param {Object} targetElm - Target elmement to be recompiled.
          * @returns {String} Flattened criteria array
-        **/
+         */
         function flattenCriteria(criteria) {
           if (typeof criteria === 'object') {
             var criteriaArray = [],
@@ -200,7 +200,7 @@ define(function () {
          * Update related $$watchers list entries and recompile Angular element.
          *
          * @param {Object} targetElm - Target elmement to be recompiled.
-        **/
+         */
         function recompileAngularElm(targetElm) {
           // Async wait for Angular framework to be ready
           vm.waitForAngular(function () {
@@ -279,7 +279,7 @@ define(function () {
          * @param {Object} $scope - Angular scope of target elmement.
          * @param {Object} criteriaOptions - Options object.
          * @param {String} ngShowAttr - Target elmement's ng-show attribute value.
-        **/
+         */
         function patchCriteriafn($scope, criteriaOptions, ngShowAttr) {
           if (criteriaOptions.hasOwnProperty('ng-show')) {
             var fnName = getfnCallName(ngShowAttr);
@@ -326,7 +326,7 @@ define(function () {
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           var defaultOptions = {
             next: 1,

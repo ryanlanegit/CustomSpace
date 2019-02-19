@@ -1,14 +1,11 @@
 /* global $, _, app, define */
 
 /**
-Row Container
-**/
-/**
  * 'Row Container' Request Offering Task
  * @module rowContainerController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/view.html',
 ], function (
@@ -25,7 +22,7 @@ define([
 
     /**
      * @exports rowContainerController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -45,14 +42,14 @@ define([
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var lastTargetElm = $(roTaskElm).nextAll(':not(.task-container):not(.row-container)').slice(0, next).slice(-1),
               targetElms = $(roTaskElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
@@ -66,7 +63,7 @@ define([
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           options.next = options.next || 1;
           options.next = (options.next <= 2 ) ? options.next : 2;

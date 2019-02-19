@@ -5,7 +5,7 @@
  * @module addInformationController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/addInformation/view.html',
 ], function (
@@ -22,7 +22,7 @@ define([
 
     /**
      * @exports addInformationController
-    **/
+     */
     definition = {
       template: addInformationTemplate,
       task: roTask,
@@ -42,14 +42,14 @@ define([
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
@@ -59,7 +59,7 @@ define([
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           options.next = options.next || 1;
 

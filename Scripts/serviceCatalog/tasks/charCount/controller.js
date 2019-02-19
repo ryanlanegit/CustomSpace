@@ -5,7 +5,7 @@
  * @module charCountController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/charCount/view.html',
 ], function (
@@ -22,7 +22,7 @@ define([
 
     /**
      * @exports charCountController
-    **/
+     */
     definition = {
       template: charCountTemplate,
       task: roTask,
@@ -42,14 +42,14 @@ define([
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
@@ -60,7 +60,7 @@ define([
          *
          * @param {Object} targetTextArea - Target TextArea element
          * @param {Object} options - TextArea options
-        **/
+         */
         function createCharacterCount(targetTextArea, options) {
           $(targetTextArea).parent().find('span.charCount').remove();
           var currentLength = $(targetTextArea).val().length,
@@ -76,7 +76,7 @@ define([
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           var defaultOptions = {
             next: 1,

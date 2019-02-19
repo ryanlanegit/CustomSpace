@@ -5,7 +5,7 @@
  * @module bindSessionController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define(function () {
   'use strict';
 
@@ -24,7 +24,7 @@ define(function () {
 
     /**
      * @exports bindSessionController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -44,14 +44,14 @@ define(function () {
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           if (app.isSessionStored()) {
@@ -70,7 +70,7 @@ define(function () {
          *
          * @param {Object} targetElm - Target textarea container.
          * @param {String} value - New textarea text value.
-        **/
+         */
         function updateTextAreaField(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
@@ -88,7 +88,7 @@ define(function () {
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initROTask() {
           options.next = options.next || 1;
 

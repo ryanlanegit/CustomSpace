@@ -53,7 +53,7 @@ define([
 
     /**
      * @exports roTaskBuilder
-    **/
+     */
     definition = {
       node: nodeConfig,
       build: function build(vm, node, callback) {
@@ -73,7 +73,7 @@ define([
          * @param {String} taskName - Task Name
          * @param {Object} roTaskElm - Task Container
          * @param {Object} options - Number
-        **/
+         */
         function buildAndRender(taskName, roTaskElm, options) {
           var roTask = _.find(roTaskModules, function (roTask) {
             if (_.isUndefined(roTask.task)) {
@@ -96,7 +96,7 @@ define([
 
         /**
          * Request Offering Task initialization script
-        **/
+         */
         function initTask() {
           $('div.page-panel').each(function () {
             var roPage = $(this),

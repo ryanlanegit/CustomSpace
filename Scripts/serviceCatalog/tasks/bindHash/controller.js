@@ -5,7 +5,7 @@
  * @module bindHashController
  * @see module:roTaskMain
  * @see module:roTaskBuilder
-**/
+ */
 define(function () {
   'use strict';
   /*
@@ -35,7 +35,7 @@ define(function () {
 
     /**
      * @exports bindHashController
-    **/
+     */
     definition = {
       template: null,
       task: roTask,
@@ -55,14 +55,14 @@ define(function () {
          *
          * @callback processNextCallback
          * @param {Object} targetElm - Target question or display container.
-        **/
+         */
 
         /**
          * Processes the next N non-task containers.
          *
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
-        **/
+         */
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
