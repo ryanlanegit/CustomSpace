@@ -9,13 +9,11 @@
             <div id="resolveIncidentErrorWin" class="error"></div>
             <button data-role="button"
                     class="btn btn-primary"
-                    data-bind="enabled: okEnabled, events: { click: okClick }">
-                <%= localization.OK %>
+                    data-bind="text: localization.OK, enabled: okEnabled, events: { click: okClick }">
             </button>
             <button data-role="button"
                     class="btn btn-default"
-                    data-bind="events: { click: cancelClick }">
-                <%= localization.Cancel %>
+                    data-bind="text: localization.Cancel, events: { click: cancelClick }">
             </button>
         </div>
     </div>
