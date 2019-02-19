@@ -1,8 +1,9 @@
-/*global _, $, app, console, define, performance */
+/* global $, _, app, define */
 
 /**
  * Custom Request Offering Task Builder
  * @module roTaskBuilder
+ * @see module:roTaskMain
  */
 define([
   'CustomSpace/Scripts/serviceCatalog/tasks/addClass/controller',
@@ -13,7 +14,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/charCount/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/indent/controller',
-  'CustomSpace/Scripts/serviceCatalog/tasks/layoutTemplate/controller',
+//'CustomSpace/Scripts/serviceCatalog/tasks/layoutTemplate/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
@@ -29,7 +30,7 @@ define([
   bindSessionUserController,
   charCountController,
   indentController,
-  layoutTemplateController,
+//layoutTemplateController,
   rowContainerController,
   setAttributeController,
   setOptionsController,
@@ -39,7 +40,7 @@ define([
 ) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('roTaskBuilder:define', performance.now());
+    app.custom.utils.log('roTaskBuilder:define');
   }
   var roTaskModules = arguments,
     nodeConfig = {
@@ -49,18 +50,31 @@ define([
       Access: true,
       Configs: {},
     },
+
+    /**
+     * @exports roTaskBuilder
+    **/
     definition = {
       node: nodeConfig,
       build: function build(vm, node, callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTaskBuilder:build', performance.now(), {
+          app.custom.utils.log('roTaskBuilder:build', {
             vm: vm,
             node: node,
             callback: callback,
           });
         }
-        /* BEGIN Functions */
-        function buildAndRender(taskName, promptElm, options) {
+
+        // #region Utility functions
+
+        /**
+         * Build and render a Request Offerin Task
+         *
+         * @param {String} taskName - Task Name
+         * @param {Object} roTaskElm - Task Container
+         * @param {Object} options - Number
+        **/
+        function buildAndRender(taskName, roTaskElm, options) {
           var roTask = _.find(roTaskModules, function (roTask) {
             if (_.isUndefined(roTask.task)) {
               return false;
@@ -70,16 +84,19 @@ define([
           });
 
           if (!_.isUndefined(roTask)) {
-            roTask.build(vm, promptElm, options);
+            roTask.build(vm, roTaskElm, options);
           } else {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              console.log('Property Not Found For Rendering:', taskName);
+              app.custom.utils.log(2, 'Property Not Found For Rendering:', taskName);
             }
           }
         }
-        /* END functions */
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script
+        **/
         function initTask() {
           $('div.page-panel').each(function () {
             var roPage = $(this),
@@ -88,7 +105,7 @@ define([
               }),
               roQuestionElms = roPage.find('div.question-container');
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              console.log('roTaskBuilder:initTask', performance.now(), {
+              app.custom.utils.log('roTaskBuilder:initTask', {
                 roPage: roPage,
                 roTaskElms: roTaskElms,
                 roQuestionElms: roQuestionElms,
@@ -106,7 +123,7 @@ define([
               case 'Integer':
                 vm.waitForAngular(function () {
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('roTaskBuilder:initTask:SetDefaultOptions', performance.now(), {
+                    app.custom.utils.log('roTaskBuilder:initTask:SetDefaultOptions', {
                       questionType: questionType,
                       options: { format: '#', decimals: 0 },
                     });
@@ -129,7 +146,7 @@ define([
               for (propName in parsedProperties) {
                 if (parsedProperties.hasOwnProperty(propName)) {
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('roTaskElm.property', {
+                    app.custom.utils.log('roTaskElm.property', {
                       name: propName,
                       value: parsedProperties[propName],
                     });

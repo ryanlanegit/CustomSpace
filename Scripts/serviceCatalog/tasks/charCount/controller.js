@@ -1,9 +1,11 @@
-/*global _, $, app, console, define, setTimeout */
+/* global _, $, app, define, setTimeout */
 
 /**
-Character Count
+ * 'Character Count' Request Offering Task
+ * @module charCountController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
 **/
-
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/charCount/view.html',
 ], function (
@@ -18,24 +20,47 @@ define([
       Access: true,
     },
 
+    /**
+     * @exports charCountController
+    **/
     definition = {
       template: charCountTemplate,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(targetElm, next, func) {
-          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
         }
 
-        // Add the Minimum / Maximum required text to the page
+        /**
+         * Add the Minimum / Maximum required text to the page.
+         *
+         * @param {Object} targetTextArea - Target TextArea element
+         * @param {Object} options - TextArea options
+        **/
         function createCharacterCount(targetTextArea, options) {
           $(targetTextArea).parent().find('span.charCount').remove();
           var currentLength = $(targetTextArea).val().length,
@@ -47,7 +72,11 @@ define([
           $(targetTextArea).parent().append(builtCharCount(options));
         }
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script
+        **/
         function initROTask() {
           var defaultOptions = {
             next: 1,
@@ -59,7 +88,7 @@ define([
           }
           options = $.extend(defaultOptions, options);
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(options.next, function (targetElm) {
             var targetTextAreaElm = $(targetElm).find('textarea'),
                 targetOptions = $.extend({}, options, {
                   charMin: $(targetTextAreaElm).siblings('input').attr('minlength') || 0,

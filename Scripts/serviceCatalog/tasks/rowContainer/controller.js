@@ -1,9 +1,14 @@
-/*global $, _, app, console, define */
+/* global $, _, app, define */
 
 /**
 Row Container
 **/
-
+/**
+ * 'Row Container' Request Offering Task
+ * @module rowContainerController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
+**/
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/view.html',
 ], function (
@@ -18,28 +23,50 @@ define([
       Access: true,
     },
 
+    /**
+     * @exports rowContainerController
+    **/
     definition = {
       template: null,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(promptElm, next, func) {
-          var lastTargetElm = $(promptElm).nextAll(':not(.task-container):not(.row-container)').slice(0, next).slice(-1),
-              targetElms = $(promptElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var lastTargetElm = $(roTaskElm).nextAll(':not(.task-container):not(.row-container)').slice(0, next).slice(-1),
+              targetElms = $(roTaskElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
               builtRowContainer = _.template(rowContainerTemplate);
 
           targetElms.wrapAll(builtRowContainer());
           _.each(targetElms, func);
         }
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script
+        **/
         function initROTask() {
           options.next = options.next || 1;
           options.next = (options.next <= 2 ) ? options.next : 2;
@@ -52,7 +79,7 @@ define([
             options.colspan = columnSpanMap[options.next];
           }
 
-          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+          processNext(options.next, function (targetElm, targetIndex) {
             var targetColSpan = (typeof options.colspan === 'string') ? options.colspan : options.colspan[targetIndex];
             targetElm = $(targetElm);
             // Remove row class and column classes

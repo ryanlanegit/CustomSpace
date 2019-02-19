@@ -1,9 +1,11 @@
-/*global $, _, app, console, define, matchValues */
+/*global $, _, app, define, matchValues */
 
 /**
-Single Line Entry
+ * 'Single Line Entry' Request Offering Task
+ * @module singleLineEntryController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
 **/
-
 define(function () {
   'use strict';
   var roTask = {
@@ -14,29 +16,57 @@ define(function () {
       Access: true,
     },
 
+    /**
+     * @exports singleLineEntryController
+    **/
     definition = {
       template: null,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(targetElm, next, func) {
-          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
         }
 
+        /**
+         * Handle TextArea input field pasting entry, removing new lines if entered.
+         *
+         * @param {String} textInputId - Id of TextArea element.
+        **/
         function singleLinePasteValue(textInputId) {
           _.defer(function () {
             singleLneMatchValues(textInputId);
           });
         }
 
+        /**
+         * Handle TextArea input field manual entry, removing new lines if entered.
+         *
+         * @param {String} textInputId - Id of TextArea element.
+        **/
         function singleLneMatchValues(textInputId) {
           var targetTextAreaElm = $('#textArea' + textInputId),
               areaVal = targetTextAreaElm.val()
@@ -46,11 +76,15 @@ define(function () {
           matchValues(textInputId);
         };
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script
+        **/
         function initROTask() {
           options.next = options.next || 1;
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(options.next, function (targetElm) {
             targetElm = $(targetElm);
             var textInputId = targetElm.find('input.question-answer-id').val(),
                 targetTextAreaElm = targetElm.find('textArea');

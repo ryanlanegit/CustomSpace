@@ -50,9 +50,8 @@ define(function () {
         /**
          * Processes the next N non-task containers.
          *
-         * @param {Object} promptElm - The source task container
          * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container
+         * @param {processNextCallback} func - Callback function to process next question or display container.
         **/
         function processNext(next, func) {
           var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);

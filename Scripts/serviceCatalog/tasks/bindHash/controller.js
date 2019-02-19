@@ -1,9 +1,11 @@
-/*global $, _, app, console, define, window */
+/* global $, _, app, define, window */
 
 /**
-Bind Hash
+ * 'Bind Hash' Request Offering Task
+ * @module bindHashController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
 **/
-
 define(function () {
   'use strict';
   /*
@@ -31,26 +33,44 @@ define(function () {
       Access: true,
     },
 
+    /**
+     * @exports bindHashController
+    **/
     definition = {
       template: null,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(targetElm, next, func) {
-          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
         }
 
         function processParam(targetElm, paramValue) {
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-            console.log('roTask:build:processParam', {
+            app.custom.utils.log('roTask:build:processParam', {
               targetElm: targetElm,
               paramValue: paramValue,
             });
@@ -81,9 +101,9 @@ define(function () {
               }
               break;
             default:
-              console.log('Unable to determine Question Type', {
+              app.custom.utils.log(2, 'Unable to determine Question Type', {
                 task: roTask,
-                promptElm: promptElm,
+                roTaskElm: roTaskElm,
                 targetElm: targetElm,
                 options: options,
               });
@@ -99,7 +119,7 @@ define(function () {
             return;
           }
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(options.next, function (targetElm) {
             var targetId = $(targetElm).find('input.question-answer-id').val(),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),
@@ -114,7 +134,7 @@ define(function () {
             // Update URL HASH on Input Change
             onInputChange = _.debounce(function(event) {
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                console.log(event.type + ':onInputChange', {
+                app.custom.utils.log(event.type + ':onInputChange', {
                   targetElm: targetElm,
                   event: event,
                 });
@@ -137,7 +157,7 @@ define(function () {
             // Update Input on HASH Change
             app.events.subscribe('window.hashChange', function onHashChange(event, data) {
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                console.log(event.type + '.' + event.namespace + ':onHashChange', {
+                app.custom.utils.log(event.type + '.' + event.namespace + ':onHashChange', {
                   targetElm: targetElm,
                   event: event,
                   data: data,

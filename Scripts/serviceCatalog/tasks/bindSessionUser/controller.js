@@ -1,9 +1,11 @@
-/*global $, _, app, console, define, kendo, performance, session, window */
+/* global $, _, app, define, kendo, session, window */
 
 /**
-Bind Session User Properties
+ * 'Bind Session' Request Offering Task
+ * @module bindSessionController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
 **/
-
 define(function () {
   'use strict';
 
@@ -19,20 +21,39 @@ define(function () {
       },
       Access: true,
     },
+
+    /**
+     * @exports bindSessionController
+    **/
     definition = {
       template: null,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(targetElm, next, func) {
-          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           if (app.isSessionStored()) {
             _.each(targetElms, func);
           } else {
@@ -44,6 +65,12 @@ define(function () {
           }
         }
 
+        /**
+         * Update textarea field value.
+         *
+         * @param {Object} targetElm - Target textarea container.
+         * @param {String} value - New textarea text value.
+        **/
         function updateTextAreaField(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
@@ -57,7 +84,11 @@ define(function () {
           });
         }
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script
+        **/
         function initROTask() {
           options.next = options.next || 1;
 
@@ -88,7 +119,7 @@ define(function () {
             });
           }
 
-          processNext(promptElm, options.next, function (targetElm, targetIndex) {
+          processNext(options.next, function (targetElm, targetIndex) {
             // Update Input If HASH exists on Load
             var targetType = $(targetElm).find('input.question-answer-type').val(),
                 targetInputElm,
@@ -96,9 +127,9 @@ define(function () {
                 currentValue,
                 bUpdateValue = false;
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              console.log('roTask:processNext', {
+              app.custom.utils.log('roTask:processNext', {
                 task: roTask,
-                promptElm: promptElm,
+                roTaskElm: roTaskElm,
                 targetElm: targetElm,
                 propertyKey: propertyKey,
                 options: options,
@@ -129,7 +160,7 @@ define(function () {
                 vm.userObjectPropertiesDataSource.bind('requestEnd', function responseHandler(event) {
                   var data = event.response;
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('Session User Data Ready', performance.now(), {
+                    app.custom.utils.log('Session User Data Ready', {
                       data: data[0],
                       dataLength: data.length,
                       propertKey: propertyKey,

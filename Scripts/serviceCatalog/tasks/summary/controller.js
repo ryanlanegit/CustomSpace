@@ -1,9 +1,11 @@
-/*global $, _, app, console, define, kendo */
+/* global $, _, app, define, kendo */
 
 /**
-Summary
+ * 'Summary' Request Offering Task
+ * @module summaryController
+ * @see module:roTaskMain
+ * @see module:roTaskBuilder
 **/
-
 define([
   'text!CustomSpace/Scripts/serviceCatalog/tasks/summary/view.html',
 ], function (
@@ -18,23 +20,48 @@ define([
       Access: true,
     },
 
+    /**
+     * @exports summaryController
+    **/
     definition = {
       template: summaryTemplate,
       task: roTask,
-      build: function build(vm, promptElm, options) {
+      build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('roTask:build', {
+          app.custom.utils.log('roTask:build', {
             task: roTask,
-            promptElm: promptElm,
+            roTaskElm: roTaskElm,
             options: options,
           });
         }
 
-        function processNext(targetElm, next, func) {
-          var targetElms = $(targetElm).nextAll(':not(.task-container)').slice(0, next);
+        // #region Utility functions
+
+        /**
+         * This callback type is called `processCallback` and is run on a target container.
+         *
+         * @callback processNextCallback
+         * @param {Object} targetElm - Target question or display container.
+        **/
+
+        /**
+         * Processes the next N non-task containers.
+         *
+         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {processNextCallback} func - Callback function to process next question or display container.
+        **/
+        function processNext(next, func) {
+          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
           _.each(targetElms, func);
         }
 
+        // #endregion Utility functions
+
+        /**
+         * Create Request offering Summary grid in target element.
+         *
+         * @param {Object} targetEle - Target container.
+        **/
         function createSummary(targetEle) {
           if (!targetEle) {
             app.controls.exception('targetEle missing - roTaskBuilder.createSumary');
@@ -48,7 +75,7 @@ define([
                   var roQuestionElms = $('div.question-container').filter(':not(.ng-hide)'),
                     userInput = [];
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    console.log('roTaskBuilder:createSummary.getUserInput', {
+                    app.custom.utils.log('roTaskBuilder:createSummary.getUserInput', {
                       'roQuestionElms': roQuestionElms,
                     });
                   }
@@ -157,12 +184,14 @@ define([
           return kendoGrid;
         }
 
-        /* Initialization code */
+        /**
+         * Request Offering Task initialization script
+        **/
         function initROTask() {
           //var target = promptElm.next().find('div.col-xs-12'),
           var builtSummary = _.template(summaryTemplate);
 
-          processNext(promptElm, options.next, function (targetElm) {
+          processNext(options.next, function (targetElm) {
             $(targetElm).removeClass('col-md-8').addClass('col-md-12');
             $(targetElm).html(builtSummary());
             createSummary($(targetElm).find('div[data-control-bind]'));

@@ -1,8 +1,4 @@
-/*global $, _, angular, app, console, document, kendo, performance, require, session */
-
-/**
-Load Custom Request Offering Task Builder
-**/
+/* global $, _, angular, app, document, kendo, require, session */
 
 /**
  * Uncomment when loading gridTaskmain directly through client unoptimized
@@ -21,6 +17,11 @@ if (typeof require !== 'undefined') {
 }
 */
 
+/**
+ * Load Custom Request Offering Task Builder
+ * @module roTaskMain
+ * @see module:roTaskBuilder
+ */
 require([
   'CustomSpace/Scripts/serviceCatalog/roTaskBuilder',
 ], function (
@@ -28,7 +29,7 @@ require([
 ) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('roTaskMain', performance.now());
+    app.custom.utils.log('roTaskMain');
   }
 
   var waitQueue = [],
@@ -41,7 +42,7 @@ require([
    */
   function processWaitQueue() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('roTaskMain:processWaitQueue', performance.now(), {
+      app.custom.utils.log('roTaskMain:processWaitQueue', {
         waitQueueInit: waitQueueInit,
         waitQueueReady: waitQueueReady,
         waitQueue: waitQueue,
@@ -68,11 +69,11 @@ require([
 
   /**
    * Initialize Request Offering Question/Task Default Container Classes
-   * @returns {boolean} DOM has been modified.
+   * @returns {boolean} - DOM has been modified.
    */
   function initContainerStyles() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('roTaskMain:initContainerStyles', performance.now());
+      app.custom.utils.log('roTaskMain:initContainerStyles');
     }
     var roPages = $('div.page-panel');
     if (roPages.length > 0) {
@@ -109,7 +110,7 @@ require([
    */
   function initTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('roTaskMain:initTask', performance.now());
+      app.custom.utils.log('roTaskMain:initTask');
     }
     var roTaskVm = kendo.observable({
       /**
@@ -120,7 +121,7 @@ require([
        */
       waitForAngular: function waitForAngular(callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('waitForAngular', {
+          app.custom.utils.log('waitForAngular', {
             callback: callback,
           });
         }
