@@ -12,6 +12,14 @@
     top: inherit !important;
 }
 
+/*
+  Page Bar Remove Indentation
+*/
+.page_bar>div [class*=col-md] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .editor-field > .searchGroup {
 	display: none;
 }
