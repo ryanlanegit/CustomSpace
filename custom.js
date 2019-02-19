@@ -1,4 +1,6 @@
-/*global $, _, app, console, localization, performance, session, store, transformRO, window */
+/* global $, _, app, console, localization, performance, session, store, transformRO, window */
+/* eslint "no-console": [ "error", { "allow": [ "log", "trace"] } ] */
+
 
 /**
 Custom
@@ -10,7 +12,7 @@ Custom
 app.custom.utils = {
   setDebugMode: function setDebugMode(enabled) {
     'use strict';
-    console.log('setDebugMode', {enabled: enabled, this: this});
+    app.custom.utils.log('setDebugMode', {enabled: enabled, this: this});
     app.storage.custom.set('DEBUG_ENABLED', enabled);
     if (enabled) {
       app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
@@ -19,10 +21,23 @@ app.custom.utils = {
     }
   },
 
+  log: function log(trace, content) {
+    'use strict';
+    var args = arguments;
+    if (arguments.length > 1 && typeof arguments[0] === 'boolean') {
+      args = Array.prototype.slice.call(arguments, 1);
+      if (trace) {
+        console.trace();
+      }
+    }
+    Array.prototype.splice.call(arguments, 1, 0, performance.now());
+    console.log.apply(this, arguments);
+  },
+
   getCachedScript: function getCachedScript(url, options) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('getCachedScript', performance.now(), url);
+      app.custom.utils.log('getCachedScript', url);
     }
     options = $.extend(options || {}, {
       dataType: 'script',
@@ -36,7 +51,7 @@ app.custom.utils = {
   getCSS: function getCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('getCSS', performance.now(), url);
+      app.custom.utils.log('getCSS', performance.now(), url);
     }
     return $('<link>', {
       type: 'text/css',
@@ -48,7 +63,7 @@ app.custom.utils = {
   removeCSS: function removeCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('removeCSS', url);
+      app.custom.utils.log('removeCSS', url);
     }
 
     if (url !== null && url.length > 0 && url !== ' ') {
@@ -59,7 +74,7 @@ app.custom.utils = {
   isValidGUID: function isValidGUID(content) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('isValidGUID', content);
+      app.custom.utils.log('isValidGUID', content);
     }
     content = content.toString();
     var rx_one = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi,
@@ -110,7 +125,7 @@ app.storage.custom = store.namespace('custom');
 // app.storage.custom.set('DEBUG_ENABLED', true); // Enable DEBUG Mode via Console/Script/Plugin
 // app.storage.custom.set('DEBUG_ENABLED', false); // Disable DEBUG Mode via Console/Script/Plugin
 if (app.storage.custom.get('DEBUG_ENABLED')) {
-  console.log('DEBUG Mode Enabled', performance.now());
+  app.custom.utils.log('DEBUG Mode Enabled');
   // Load Debug CSS File
   app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
 
@@ -130,7 +145,7 @@ if (app.storage.custom.get('DEBUG_ENABLED')) {
     ];
 
     app.events.subscribe(debugEvents.join(' '), function debugEventSubscriber(e, data) {
-      console.log('EVENT ' + e.type + '.' + e.namespace, performance.now(), {
+      app.custom.utils.log('EVENT ' + e.type + '.' + e.namespace, {
         event: e,
         data: data,
       });
@@ -147,7 +162,7 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   function loadROToolbox(event) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('loadROToolbox', performance.now(), arguments);
+      app.custom.utils.log('loadROToolbox', arguments);
     }
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
       app.lib.mask.apply('Applying Request Offering Template');

@@ -4,10 +4,9 @@
     "no-undef": "error",
 
     // enable console output calls
+    // ["log", "warn", "error", "trace"]
     "no-console": [
-      "error", {
-        "allow": ["log", "warn", "error"]
-      }
+      "error"
     ],
 
     // set dangling commas in object definitions
