@@ -56,6 +56,13 @@ define([
      */
     definition = {
       node: nodeConfig,
+      /**
+       * Build Request Offering Tasks.
+       *
+       * @param {object} vm - View Model of the base roTask plugin.
+       * @param {object} node - Module configuration.
+       * @param {function} [callback] - callback function once build is complete
+       */
       build: function build(vm, node, callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTaskBuilder:build', {
@@ -70,9 +77,9 @@ define([
         /**
          * Build and render a Request Offerin Task
          *
-         * @param {String} taskName - Task Name
-         * @param {Object} roTaskElm - Task Container
-         * @param {Object} options - Number
+         * @param {string} taskName - Task Name
+         * @param {object} roTaskElm - Task Container
+         * @param {object} options - Number
          */
         function buildAndRender(taskName, roTaskElm, options) {
           var roTask = _.find(roTaskModules, function (roTask) {

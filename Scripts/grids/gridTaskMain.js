@@ -1,12 +1,12 @@
-/*global _, app, console, performance, require, session */
+/* global _, app, require, session */
 
-/**
-Load Custom Grid Task Builder
-**/
+/*
+ * Load Custom Grid Task Builder
+ */
 
 /**
  * Uncomment when loading gridTaskmain directly through client unoptimized
-**/
+ */
 /*
 if (typeof require !== 'undefined') {
   require.config({
@@ -21,6 +21,11 @@ if (typeof require !== 'undefined') {
 }
 */
 
+/**
+ * Load Custom Grid Tasks Builder
+ * @module gridTaskMain
+ * @see module:gridTaskBuilder
+ */
 require([
   'CustomSpace/Scripts/grids/gridTaskBuilder',
 ], function (
@@ -28,12 +33,15 @@ require([
 ) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('gridTaskMain:define', performance.now());
+    app.custom.utils.log('gridTaskMain:define');
   }
 
+  /**
+   * Initialize Grid Tasks using gridTaskBuilder.
+   */
   function initGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('gridTaskMain:initGridTasks', performance.now());
+      app.custom.utils.log('gridTaskMain:initGridTasks');
     }
 
     gridTaskBuilder.build(function () {
