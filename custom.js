@@ -1,5 +1,5 @@
 /* global $, _, app, console, localization, performance, session, store, transformRO, window */
-/* eslint "no-console": [ "error", { "allow": [ "log", "trace"] } ] */
+/* eslint "no-console": [ "error", { "allow": [ "log", "warn", "error"] } ] */
 
 
 /**
@@ -21,17 +21,35 @@ app.custom.utils = {
     }
   },
 
-  log: function log(trace, content) {
+  /**
+   * Log content to console.
+   *
+   * @param {Integer} level - Level of log [1/2/3]=>[Log, Warning, Error]
+   * @param {Object} criteriaOptions - Options object.
+   * @param {String} ngShowAttr - Target elmement's ng-show attribute value.
+  **/
+  log: function log(level, content) {
     'use strict';
-    var args = arguments;
-    if (arguments.length > 1 && typeof arguments[0] === 'boolean') {
+    var args = arguments,
+        outLevel = (typeof level === 'number') ? level : 1;
+    if (arguments.length > 1 && typeof arguments[0] === 'number') {
       args = Array.prototype.slice.call(arguments, 1);
-      if (trace) {
-        console.trace();
-      }
     }
-    Array.prototype.splice.call(arguments, 1, 0, performance.now());
-    console.log.apply(this, arguments);
+    Array.prototype.splice.call(args, 1, 0, performance.now());
+
+    switch(outLevel) {
+    case 1:
+      console.log.apply(this, args);
+      break;
+    case 2:
+      console.warn.apply(this, args);
+      break;
+    case 3:
+      console.error.apply(this, args);
+      break;
+    default:
+      console.log.apply(this, args);
+    }
   },
 
   getCachedScript: function getCachedScript(url, options) {

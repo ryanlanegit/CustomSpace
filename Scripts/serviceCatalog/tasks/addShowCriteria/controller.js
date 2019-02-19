@@ -244,23 +244,23 @@ define(function () {
                 return false;
               });
 
-              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                app.custom.utils.log('recompileAngularElm', 'watcher data', {
-                  targetElm: targetElm,
-                  targetElmNGOriginalShow: targetElmNGOriginalShow,
-                  sortedRelatedElms: sortedRelatedElms,
-                  filteredWatchers: filteredWatchers,
-                  targetIndex: targetIndex,
-                  relatedElms: relatedElms,
-                });
-              }
-
               if (
                 typeof filteredWatchers[targetIndex] !== 'undefined' &&
                 typeof filteredWatchers[targetIndex+1] !== 'undefined'
               ) {
                 arrayRemove($$watchers, filteredWatchers[targetIndex]);
                 arrayRemove($$watchers, filteredWatchers[targetIndex+1]);
+              } else {
+                app.custom.utils.log(3, 'recompileAngularElm',
+                  'Angular App watchers modification failure', {
+                  targetElm: targetElm,
+                  targetElmNGOriginalShow: targetElmNGOriginalShow,
+                  sortedRelatedElms: sortedRelatedElms,
+                  filteredWatchers: filteredWatchers,
+                  targetIndex: targetIndex,
+                  relatedElms: relatedElms,
+                  $$watchers: $$watchers,
+                });
               }
 
               /*
@@ -312,14 +312,14 @@ define(function () {
                     }
                     fnCallArgList[argIndex] = propValue;
                   } else {
-                    app.custom.utils.log('addShowCriteriaController:build:patchCriteriafn', 'Unable to find function argument "' + propName + '".');
+                    app.custom.utils.log(2, 'addShowCriteriaController:build:patchCriteriafn', 'Unable to find function argument "' + propName + '".');
                   }
                 }
               }
 
               ngShowAttr = fnName + '(' + fnCallArgList.join(', ') + ')';
             } else {
-              app.custom.utils.log('addShowCriteriaController:build:patchCriteriafn', 'Unable to find function "' + fnName + '" in scope.');
+              app.custom.utils.log(2, 'addShowCriteriaController:build:patchCriteriafn', 'Unable to find function "' + fnName + '" in scope.');
             }
           }
           return ngShowAttr;
@@ -373,30 +373,30 @@ define(function () {
               _.each(subTaskElms, function (subTaskElm) {
                   subTaskElm = $(subTaskElm);
                   var parsedProperties = JSON.parse(subTaskElm.text()),
-                      subTaskElmNGShow = subTaskElm.attr('ng-show'),
+                      subTaskNGShowAttr = subTaskElm.attr('ng-show'),
                       criteriaOptions = {},
                       criteriaPropertyName = roTask.Task + '.criteria';
                   if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
                     $.extend(criteriaOptions, defaultOptions, parsedProperties[criteriaPropertyName]);
                     currentCriteriaGroup.push(criteriaOptions.operator);
                     // Return true if ng-show for task-container is empty or blank (Always Display)
-                    if (!subTaskElmNGShow) {
-                      subTaskElmNGShow = 'true';
+                    if (!subTaskNGShowAttr) {
+                      subTaskNGShowAttr = 'true';
                     } else if (criteriaOptions.hasOwnProperty('ng-show')) {
-                      subTaskElmNGShow = patchCriteriafn($scope, criteriaOptions, subTaskElmNGShow);
+                      subTaskNGShowAttr = patchCriteriafn($scope, criteriaOptions, subTaskNGShowAttr);
                     }
 
                     switch (criteriaOptions.group) {
                     case 'start':
-                      currentCriteriaGroup.push([subTaskElmNGShow]);
+                      currentCriteriaGroup.push([subTaskNGShowAttr]);
                       currentCriteriaGroup = currentCriteriaGroup.slice(-1)[0];
                       criteriaGroupStack.push(currentCriteriaGroup);
                       break;
                     case 'continue':
-                      currentCriteriaGroup.push(subTaskElmNGShow);
+                      currentCriteriaGroup.push(subTaskNGShowAttr);
                       break;
                     case 'end':
-                      currentCriteriaGroup.push(subTaskElmNGShow);
+                      currentCriteriaGroup.push(subTaskNGShowAttr);
                       criteriaGroupStack.pop();
                       currentCriteriaGroup = criteriaGroupStack.slice(-1)[0];
                       break;
