@@ -1,33 +1,68 @@
 /* global $, _, app, console, localization, performance, session, store, transformRO, window */
 /* eslint "no-console": [ "error", { "allow": [ "log", "warn", "error"] } ] */
 
+/*
+ * Custom Script utilties and dynamically loading modules.
+ */
 
 /**
-Custom
-**/
-
-/*
-  Custom Utilities
-*/
+ * Custom Script Utilities
+ * @namespace utils
+ * @property {string} utils.debugCSSPath - The default path of the Debug CSS file.
+ */
 app.custom.utils = {
+  debugCSSPath: '/CustomSpace/Content/Styles/custom.debug.css',
+  /**
+   * Enable or Disable Debug mode for custom scripts.
+   *
+   * @param {boolean} enabled - Level of logging [1/2/3] => [Log, Warning, Error]
+   */
   setDebugMode: function setDebugMode(enabled) {
     'use strict';
     app.custom.utils.log('setDebugMode', {enabled: enabled, this: this});
     app.storage.custom.set('DEBUG_ENABLED', enabled);
+
+    var debugEvents = [
+          'window.hashChange',
+          'sessionStorageReady',
+          'dynamicPageReady',
+          'queryBuilderGridReady',
+          'sessionUserData.Ready',
+          'gridTasks.Ready',
+          'roTasks.Ready',
+          'pageTasks.Ready',
+          'wiTasks.Ready',
+        ],
+        flattenedDebugEvents = debugEvents.join(' ');
+
+    /**
+     * Debug events subcriber to log when events are triggered.
+     *
+     * @param {object} event - Event object.
+     * @param {object} data - Event data.
+     */
+    function debugEventSubscriber(event, data) {
+      app.custom.utils.log('EVENT ' + event.type + '.' + event.namespace, {
+        event: event,
+        data: data,
+      });
+    }
+
+    app.events.unsubscribe(flattenedDebugEvents, debugEventSubscriber);
     if (enabled) {
-      app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
+      app.custom.utils.getCSS(app.custom.utils.debugCSSPath);
+      app.events.subscribe(flattenedDebugEvents, debugEventSubscriber);
     } else {
-      app.custom.utils.removeCSS('/CustomSpace/Content/Styles/custom.debug.css');
+      app.custom.utils.removeCSS(app.custom.utils.debugCSSPath);
     }
   },
 
   /**
    * Log content to console.
    *
-   * @param {Integer} level - Level of log [1/2/3]=>[Log, Warning, Error]
-   * @param {Object} criteriaOptions - Options object.
-   * @param {String} ngShowAttr - Target elmement's ng-show attribute value.
-  **/
+   * @param {number} [level=1] - Level of logging [1/2/3] => [Log, Warning, Error]
+   * @param {...object} content - Log contents
+   */
   log: function log(level, content) {
     'use strict';
     var args = arguments,
@@ -52,6 +87,13 @@ app.custom.utils = {
     }
   },
 
+  /**
+   * Load a JavaScript file with cache enabled from the provided url.
+   *
+   * @param {string} url - URL of JavaScript file to load.
+   * @param {object} [options] - Optional additional Ajax options.
+   * @returns {jqXHR} jQuery Ajax object.
+   */
   getCachedScript: function getCachedScript(url, options) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -66,6 +108,11 @@ app.custom.utils = {
     return $.ajax(options);
   },
 
+  /**
+   * Load a CSS file from the provided url.
+   *
+   * @param {string} url - URL of file to load.
+   */
   getCSS: function getCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -78,6 +125,11 @@ app.custom.utils = {
     }).appendTo('head');
   },
 
+  /**
+   * Unload a CSS file based on the provided url.
+   *
+   * @param {string} url - URL of file to unload.
+   */
   removeCSS: function removeCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -89,6 +141,16 @@ app.custom.utils = {
     }
   },
 
+  /**
+   * Validate if a given string is a valid GUID.
+   *
+   * @example
+   * // returns true
+   * isValidGUID('12604183-1B96-908C-DADE-B46EB8CDF4F9');
+   *
+   * @param {object|string} content - GUID string to validate.
+   * @returns {boolean} Provided string is a valid GUID.
+   */
   isValidGUID: function isValidGUID(content) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -103,6 +165,16 @@ app.custom.utils = {
     );
   },
 
+  /**
+   * Validate if a given string is a valid GUID.
+   * @see {@link https://github.com/douglascrockford/JSON-js/blob/master/json2.js|JSON-js}
+   * @example
+   * // returns true
+   * isValidJSON('{"bindHash": {"param" : "request"}}');
+   *
+   * @param {object|string} content - JSON string to validate.
+   * @returns {boolean} Provided string is a valid JSON string.
+   */
   isValidJSON: function isValidJSON(content) {
     // Regex Check For Valid JSON based on https://github.com/douglascrockford/JSON-js/blob/master/json2.js
     'use strict';
@@ -119,11 +191,28 @@ app.custom.utils = {
     );
   },
 
-  stringFormat: function stringFormat(format) {
+  /**
+   * Format a string expression with
+   *
+   * @example
+   * // returns '1: String'
+   * stringFormat('{0}: {1}', '1', 'String');
+   * @example
+   * // returns '2: Array'
+   * stringFormat('{0}: {1}', ['2', 'Array']);
+   * @example
+   * // returns '3: Object'
+   * stringFormat('{key1}: {key2}', {key1: '3', key2: 'Object'});
+   *
+   * @param {string} format - String expression with placeholders.
+   * @param {...string|string[]|object} content - Placeholder values.
+   * @returns {string} Formatted string.
+   */
+  stringFormat: function stringFormat(format, content) {
     'use strict';
     format = format.toString();
     if (arguments.length > 1) {
-      var args = (typeof arguments[1] === 'string' || typeof arguments[1] === 'number') ? Array.prototype.slice.call(arguments, 1) : arguments[1],
+      var args = (typeof content === 'string' || typeof content === 'number') ? Array.prototype.slice.call(arguments, 1) : content,
         key;
       for (key in args) {
         if (args.hasOwnProperty(key)) {
@@ -135,48 +224,30 @@ app.custom.utils = {
   },
 };
 
-/*
-  Custom Session Debugging
-*/
+/**
+ * Custom Session Storage
+ */
 app.storage.custom = store.namespace('custom');
-
 // app.storage.custom.set('DEBUG_ENABLED', true); // Enable DEBUG Mode via Console/Script/Plugin
 // app.storage.custom.set('DEBUG_ENABLED', false); // Disable DEBUG Mode via Console/Script/Plugin
+
+// Enable Debug Mode to match enabled state from session storage.
 if (app.storage.custom.get('DEBUG_ENABLED')) {
-  app.custom.utils.log('DEBUG Mode Enabled');
-  // Load Debug CSS File
-  app.custom.utils.getCSS('/CustomSpace/Content/Styles/custom.debug.css');
-
-  // Debug subscribtion to out of the box and custom events
-  (function () {
-    'use strict';
-    var debugEvents = [
-      'window.hashChange',
-      'sessionStorageReady',
-      'dynamicPageReady',
-      'queryBuilderGridReady',
-      'sessionUserData.Ready',
-      'gridTasks.Ready',
-      'roTasks.Ready',
-      'pageTasks.Ready',
-      'wiTasks.Ready',
-    ];
-
-    app.events.subscribe(debugEvents.join(' '), function debugEventSubscriber(e, data) {
-      app.custom.utils.log('EVENT ' + e.type + '.' + e.namespace, {
-        event: e,
-        data: data,
-      });
-    });
-  }());
+  app.custom.utils.setDebugMode(true);
 }
 
 if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   /*
-    Custom Request Offering Tasks
-  */
+   * Load Custom Request Offering Tasks
+   */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
 
+  /**
+   * Load ROToolbox community scripts.
+   * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
+   *
+   * @param {object} [event] - Object event object to unsubscribe from.
+   */
   function loadROToolbox(event) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -203,13 +274,13 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     // app.events.subscribe('wiTasks.Ready', function () { 'use strict'; window.location.reload(); });
 
     /*
-      Custom Work Item Tasks
-    */
+     *  Load Custom Work Item Tasks
+     */
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
 
     /*
-      Check Is Private In Action Log By Default
-    */
+     * Check Is Private In Action Log By Default
+     */
     app.custom.formTasks.add('ServiceRequest', null, function (formObj) {
       'use strict';
       formObj.boundReady(function () {
@@ -233,20 +304,20 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   }
 } else if (window.location.pathname.indexOf('/Page/') > -1) {
   /*
-    Custom Page Tasks
-  */
+   * Load Custom Page Tasks
+   */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
 } else if (window.location.pathname.indexOf('/View/') > -1) {
   /*
-    Custom Grid Tasks
-  */
+   *  Load Custom Grid Tasks
+   */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
   app.custom.utils.getCachedScript('/CustomSpace/custom.gridTasks.js');
 }
 
 /*
-  Set Header Search Defaults
-*/
+ * Set Header Search Defaults
+ */
 if (
   (window.location.href.indexOf('ServiceCatalog') > -1) ||
   (window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1) ||
@@ -255,6 +326,13 @@ if (
   $(function () {
     'use strict';
     $(function () {
+      /**
+       * Set NavBar Search dropdown selection and placeholder.
+       *
+       * @param {string} [searchParamVal=WorkItem] - Search type.
+       * @param {string} [searchConceptHTML=localization.WorkItems] - Display text of selected type.
+       * @param {string} [searchInputPlaceholder=localization.SearchWorkItem] - Placeholder text in Search input field.
+       */
       function headerSearchSetType(searchParamVal, searchConceptHTML, searchInputPlaceholder) {
         searchParamVal = searchParamVal || 'WorkItem';
         searchConceptHTML = searchConceptHTML || localization.WorkItems;

@@ -1,19 +1,23 @@
-/*global _, $, app, console, kendo, performance, session */
+/* global _, $, app, kendo, session */
 
-/**
-Custom Grid Tasks Config
-**/
+/*
+ * Custom Grid Tasks Config
+ */
 
 (function () {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('custom.gridTasks', performance.now());
+    app.custom.utils.log('custom.gridTasks');
   }
 
+  /**
+   * Populate the grid tasks of the first Kendo Grid found.
+   */
   function populateGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('custom.gridTasks:populateGridTasks', performance.now());
+      app.custom.utils.log('custom.gridTasks:populateGridTasks');
     }
+    // Find first kendoGrid on page.
     var gridData = $('div[data-role="grid"]:first').data('kendoGrid');
     if (!_.isUndefined(gridData)) {
       // Adding background colors to the Priority column based on value.
@@ -44,7 +48,7 @@ Custom Grid Tasks Config
 
       // Adding custom internal and external links to the Title column with dynamic template and no callback.
       app.custom.gridTasks.add(gridData, 'Title', 'task', 'TitleLinks', function (column, task) {
-        // Custom Title Links Task Template
+        // Custom Title Links Task Template generated using Underscore templating
         var template =
           '# var url = app.gridUtils.getLinkUrl(data, "***");' +
           'if (!_.isUndefined(WorkItemType) && (WorkItemType === "System.WorkItem.Incident" || WorkItemType === "System.WorkItem.ServiceRequest")) {' +
@@ -78,7 +82,9 @@ Custom Grid Tasks Config
         return template;
       });
 
+      // If user is an analyst then add 'AssignToAnalystByGroup' grid task to AssignedUser column.
       if (session.user.Analyst === 1) {
+        // Check if page includes the 'analystByGroup' button before adding task.
         var assignToAnalystByGroupButton = $('li[data-bind*="click: analystByGroup"]:first');
         if (assignToAnalystByGroupButton.length > 0) {
           // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
@@ -100,7 +106,7 @@ Custom Grid Tasks Config
 
             return template;
           }, function (data) {
-            console.log('AssignToAnalystByGroup:callback', data);
+            app.custom.utils.log('AssignToAnalystByGroup:callback', data);
             data.gridData.clearSelection();
             data.gridData.select(data.itemRowEle);
 
@@ -109,20 +115,31 @@ Custom Grid Tasks Config
         }
       }
 
+      // Update grid with pending grid task changes.
       app.custom.gridTasks.updateGrid(gridData);
     }
   }
 
-  if (typeof app.custom.gridTasks !== 'undefined' && app.custom.gridTasks.isReady()) {
+  /**
+   * Initialize Custom Grid Tasks.
+   *
+   * @param {object} [event] - Object event object to unsubscribe from.
+   */
+  function initGridTasks(event) {
+    // Immediately attempt to populate grid tasks.
     populateGridTasks();
+    // Subscribe to queryBuilderGridReady to populate grid tasks dynamically.
+    app.events.subscribe('queryBuilderGridReady', populateGridTasks);
+
+    if (typeof event !== 'undefined') {
+      // Unsubscribe from further sessionStorage events
+      app.events.unsubscribe(event.type, initGridTasks);
+    }
+  }
+
+  if (typeof app.custom.gridTasks !== 'undefined' && app.custom.gridTasks.isReady()) {
+    initGridTasks();
   } else {
-    app.events.subscribe('gridTasks.Ready', function execUpdateGrid(event) {
-      populateGridTasks();
-      app.events.subscribe('queryBuilderGridReady', function (event) {
-        populateGridTasks();
-      });
-      // Unsubscribe from further gridTasks events
-      app.events.unsubscribe(event.type + '.' + event.namespace, execUpdateGrid);
-    });
+    app.events.subscribe('gridTasks.Ready', initGridTasks);
   }
 }());
