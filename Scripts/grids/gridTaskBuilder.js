@@ -1,4 +1,4 @@
-/*global _, $, app, define, kendo */
+/* global _, $, app, define, kendo */
 
 /**
  * Custom Grid Task Builder
@@ -16,79 +16,86 @@ define([
 ) {
   'use strict';
   var gridTaskModules = arguments,
-    definition = {
-      /**
-       * Build Grid Tasks.
-       *
-       * @param {function} [callback] - callback function once build is complete
-       */
-      build: function build(callback) {
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('gridTaskBuilder:build');
-        }
-
+      definition = {
         /**
-         * Get Grid Task View Model.
+         * Build Grid Tasks.
+         *
+         * @param {function} [callback] - callback function once build is complete
          */
-        function getGridTaskViewModel() {
-          var gridTaskVm = new kendo.observable({
-            '_isReady': false,
+        build: function build(callback) {
+          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+            app.custom.utils.log('gridTaskBuilder:build');
+          }
 
-            /**
-             * Check if Grid Tasks is ready.
-             *
-             * @returns {boolean} Grid Tasks is ready.
-             */
-            'isReady': function isReady() {
-              return this._isReady;
-            },
+          /**
+           * Get Grid Task View Model.
+           */
+          function getGridTaskViewModel() {
+            var gridTaskVm = new kendo.observable({
+              isReady: false,
+              _readyDeferred: $.Deferred(),
+              _readyList: [],
 
-            /**
-             * Add new Grid Task
-             *
-             * @param {object} gridData - Data object of kendoGrid to modify.
-             * @param {string} field - Grid column's name to modify.
-             * @param {string} type - Grid Task type [anchor/link/task].
-             * @param {string} name - Unique Grid Task name.
-             * @param {string} template - Kendo template string for column.
-             * @param {function} [callback] - Optional callback if Grid Task type supports it.
-             */
-            'add': function add(gridData, field, type, name, template, callback) {
-              var that = this,
-                // Look for provided column in grid by field name
-                taskColumn = _.find(gridData.columns, function (colValue) {
-                  return colValue.field === field;
-                });
-
-              if (!_.isUndefined(taskColumn)) {
-                if (_.isUndefined(taskColumn._style)) {
-                  // Add default blank style template function to column template
-                  Object.defineProperty(
-                    taskColumn,
-                    '_style', {
-                      enumerable: false,
-                      writable: true,
-                      /**
-                       * Default empty style template.
-                       */
-                      value: function defaultStyle() { return ''; },
-                    }
-                  );
+              /**
+               * Check if Grid Tasks is ready.
+               *
+               * @returns {object} Deferred promise.
+               * @param {fn} [fn] Optional deferred callback function.
+               */
+              ready: function ready(fn) {
+                if (typeof fn === 'function') {
+                  this._readyDeferred.then(fn);
                 }
+                return this._readyDeferred.promise();
+              },
 
-                if (_.isUndefined(taskColumn._tasks)) {
-                  // Add empty tasks array to column template
-                  Object.defineProperty(
-                    taskColumn,
-                    '_tasks', {
-                      enumerable: false,
-                      writable: true,
-                      value: [],
-                    }
-                  );
-                }
+              /**
+               * Add new Grid Task
+               *
+               * @param {object} gridData - Data object of kendoGrid to modify.
+               * @param {string} field - Grid column's name to modify.
+               * @param {string} type - Grid Task type [anchor/link/task].
+               * @param {string} name - Unique Grid Task name.
+               * @param {string} template - Kendo template string for column.
+               * @param {function} [callback] - Optional callback if Grid Task type supports it.
+               * @returns {this}
+               */
+              add: function add(gridData, field, type, name, template, callback) {
+                var that = this,
+                    // Look for provided column in grid by field name
+                    taskColumn = _.find(gridData.columns, function (colValue) {
+                      return colValue.field === field;
+                    });
 
-                switch (type) {
+                if (!_.isUndefined(taskColumn)) {
+                  if (_.isUndefined(taskColumn._style)) {
+                    // Add default blank style template function to column template
+                    Object.defineProperty(
+                      taskColumn,
+                      '_style', {
+                        enumerable: false,
+                        writable: true,
+                        /**
+                         * Default empty style template.
+                         */
+                        value: function defaultStyle() { return ''; },
+                      }
+                    );
+                  }
+
+                  if (_.isUndefined(taskColumn._tasks)) {
+                    // Add empty tasks array to column template
+                    Object.defineProperty(
+                      taskColumn,
+                      '_tasks', {
+                        enumerable: false,
+                        writable: true,
+                        value: [],
+                      }
+                    );
+                  }
+
+                  switch (type) {
                   case 'style':
                     // Set style template function to provided template
                     taskColumn._style = template;
@@ -111,169 +118,181 @@ define([
                       });
                     }
                     break;
-                }
-              } else {
-                app.custom.utils.log(2, 'gridTasks:add', "Warning! Unable to find field '" + field + "'.");
-              }
-            },
-
-            /**
-             * Get existing Grid Task by Field and Name in kendoGrid.
-             *
-             * @param {object} gridData - Data object of kendoGrid to query.
-             * @param {string} field - Grid column's name to modify.
-             * @param {string} name - Grid Task name.
-             * @returns {object|null} - Grid Task object, or null if not found.
-             */
-            'get': function get(gridData, field, name) {
-              // Look for provided column in grid by field name
-              var taskColumn = _.find(gridData.columns, function (colValue) {
-                return colValue.field === field;
-              });
-
-              if (!_.isUndefined(taskColumn)) {
-                if (_.isUndefined(name)) {
-                  // Return all tasks for the provided field
-                  return taskColumn._tasks;
-                } else {
-                  // Look for the specific task named in the provided field
-                  var gridTask = _.find(taskColumn._tasks, function (taskValue) {
-                    return taskValue.name === name;
-                  });
-
-                  if (!_.isUndefined(gridTask)) {
-                    // Return the specific task in the provided field
-                    return gridTask;
-                  } else {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                      app.custom.utils.log(2, 'gridTasks:get', "Warning! Unable to find task '" + name + "' in field '" + field + "'.");
-                    }
-                    return null;
                   }
-                }
-              } else {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                  app.custom.utils.log(2, 'gridTasks:get', 'Warning! Unable to find field:', field);
-                }
-                return null;
-              }
-            },
-
-            /**
-             * Grid Task Callback Handler
-             *
-             * @param {object} event - Click event object.
-             * @param {object} itemEle - Element clicked.
-             * @param {boolean} bClickPropagation - Determines if click event should propagate.
-             */
-            'callback': function callback(event, itemEle, bClickPropagation) {
-              var that = this,
-                item = $(itemEle),
-                gridData = item.closest('div[data-role="grid"]').data('kendoGrid'),
-                itemData = item.data(),
-                itemRowEle = item.closest('tr').get(0),
-                dataItem = gridData.dataItem(itemRowEle),
-                data = {
-                  event: event,
-                  gridData: gridData,
-                  itemRowEle: itemRowEle,
-                  dataItem: dataItem,
-                  itemData: itemData,
-                },
-                existingTask = that.get(gridData, itemData.field, itemData.task);
-
-              app.custom.utils.log('gridTasks:callback', data);
-
-              if (existingTask) {
-                // Stop click propagation for jQuery click events if requested
-                if (!bClickPropagation) {
-                  event.stopPropagation();
-                }
-
-                if (typeof existingTask.callback === 'function') {
-                  existingTask.callback(data);
-                }
-              } else {
-                app.custom.utils.log(2, 'gridTasks:callback', 'Unable to find task for callback.');
-              }
-            },
-
-            /**
-             * Apply Grid Tasks to provided kendoGrid data object.
-             *
-             * @param {object} gridData - Data object of kendoGrid to update.
-             */
-            'updateGrid': function updateGrid(gridData) {
-              var that = this,
-                bUpdateGridTemplate = false;
-
-              $.each(gridData.columns, function (colIndex, column) {
-                if (!_.isUndefined(column._style)) {
-                  column.template = that.buildTemplate('anchor', column);
-                  bUpdateGridTemplate = true;
-                }
-              });
-
-              if (bUpdateGridTemplate) {
-                // Update grid row templates if custom tasks/styles are added
-                gridData.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
-                gridData.altRowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
-
-                // Refresh grid to show column template changes
-                gridData.refresh();
-              }
-            },
-
-            /**
-             * Create Kendo template string based on Grid Task templating.
-             *
-             * @param {string} type - Grid Task type [anchor/link/task].
-             * @param {string} field - Grid column's name.
-             * @param {string} name - Grid Task name.
-             * @param {string} options - Grid Task options.
-             * @returns {string|null} Kendo template string or null if task type not found.
-             */
-            'buildTemplate': function buildTemplate(type, field, name, options) {
-              var gridTask = _.find(gridTaskModules, function (gridTask) {
-                if (_.isUndefined(gridTask.task)) {
-                  return false;
                 } else {
-                  return (gridTask.task.Task.toLowerCase() === type.toLowerCase());
+                  app.custom.utils.log(2, 'gridTasks:add', "Warning! Unable to find field '" + field + "'.");
                 }
-              });
 
-              if (!_.isUndefined(gridTask)) {
-                return gridTask.build(field, name, options);
-              } else {
-                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                  app.custom.utils.log(2, 'Property Not Found For Rendering:', type);
+                return this;
+              },
+
+              /**
+               * Get existing Grid Task by Field and Name in kendoGrid.
+               *
+               * @param {object} gridData - Data object of kendoGrid to query.
+               * @param {string} field - Grid column's name to modify.
+               * @param {string} name - Grid Task name.
+               * @returns {object|null} - Grid Task object, or null if not found.
+               */
+              get: function get(gridData, field, name) {
+                // Look for provided column in grid by field name
+                var taskColumn = _.find(gridData.columns, function (colValue) {
+                  return colValue.field === field;
+                });
+
+                if (!_.isUndefined(taskColumn)) {
+                  if (_.isUndefined(name)) {
+                    // Return all tasks for the provided field
+                    return taskColumn._tasks;
+                  } else {
+                    // Look for the specific task named in the provided field
+                    var gridTask = _.find(taskColumn._tasks, function (taskValue) {
+                      return taskValue.name === name;
+                    });
+
+                    if (!_.isUndefined(gridTask)) {
+                      // Return the specific task in the provided field
+                      return gridTask;
+                    } else {
+                      if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                        app.custom.utils.log(2, 'gridTasks:get', "Warning! Unable to find task '" + name + "' in field '" + field + "'.");
+                      }
+                      return null;
+                    }
+                  }
+                } else {
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    app.custom.utils.log(2, 'gridTasks:get', 'Warning! Unable to find field:', field);
+                  }
+                  return null;
                 }
-                return null;
-              }
-            },
-          });
+              },
 
-          return gridTaskVm;
-        }
+              /**
+               * Grid Task Callback Handler
+               *
+               * @param {object} event - Click event object.
+               * @param {object} itemEle - Element clicked.
+               * @param {boolean} bClickPropagation - Determines if click event should propagate.
+               */
+              callback: function callback(event, itemEle, bClickPropagation) {
+                var item = $(itemEle),
+                    gridData = item.closest('div[data-role="grid"]').data('kendoGrid'),
+                    itemData = item.data(),
+                    itemRowEle = item.closest('tr').get(0),
+                    dataItem = gridData.dataItem(itemRowEle),
+                    existingTask = this.get(gridData, itemData.field, itemData.task),
+                    data = {
+                      event: event,
+                      gridData: gridData,
+                      itemData: itemData,
+                      itemRowEle: itemRowEle,
+                      dataItem: dataItem,
+                    };
 
-        /**
-         * Initialize Custom Grid Tasks.
-         */
-        function initGridTasks() {
-          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-            app.custom.utils.log('gridTaskBuilder:initGridTask');
+                app.custom.utils.log('gridTasks:callback', data);
+
+                if (existingTask) {
+                  // Stop click propagation for jQuery click events if requested
+                  if (!bClickPropagation) {
+                    event.stopPropagation();
+                  }
+
+                  if (typeof existingTask.callback === 'function') {
+                    existingTask.callback(data);
+                  }
+                } else {
+                  app.custom.utils.log(2, 'gridTasks:callback', 'Unable to find task for callback.');
+                }
+              },
+
+              /**
+               * Apply Grid Tasks to provided kendoGrid data object.
+               *
+               * @param {object} gridData - Data object of kendoGrid to update.
+               * @returns {this}
+               */
+              apply: function apply(gridData) {
+                var that = this,
+                    bUpdateGridTemplate = false;
+
+                $.each(gridData.columns, function (colIndex, column) {
+                  if (!_.isUndefined(column._style)) {
+                    column.template = that.buildTemplate('anchor', column);
+                    bUpdateGridTemplate = true;
+                  }
+                });
+
+                if (bUpdateGridTemplate) {
+                  // Update grid row templates if custom tasks/styles are added
+                  gridData.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
+                  gridData.altRowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
+
+                  // Refresh grid to show column template changes
+                  gridData.refresh();
+                }
+
+                return this;
+              },
+
+              /**
+               * Create Kendo template string based on Grid Task templating.
+               *
+               * @param {string} type - Grid Task type [anchor/link/task].
+               * @param {string} field - Grid column's name.
+               * @param {string} name - Grid Task name.
+               * @param {string} options - Grid Task options.
+               * @returns {string|null} Kendo template string or null if task type not found.
+               */
+              buildTemplate: function buildTemplate(type, field, name, options) {
+                var gridTask = _.find(gridTaskModules, function (gridTask) {
+                  return _.isUndefined(gridTask.task) ? false : (gridTask.task.Task.toLowerCase() === type.toLowerCase());
+                });
+
+                if (!_.isUndefined(gridTask)) {
+                  return gridTask.build(field, name, options);
+                } else {
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    app.custom.utils.log(2, 'Property Not Found For Rendering:', type);
+                  }
+                  return null;
+                }
+              },
+            });
+
+            return gridTaskVm;
           }
-          var gridTaskViewModel = getGridTaskViewModel();
-          app.custom.gridTasks = gridTaskViewModel;
 
-          if (typeof callback === 'function') {
-            callback(gridTaskViewModel);
+          /**
+           * Initialize Custom Grid Task Builder.
+           */
+          function initGridTasks() {
+            if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+              app.custom.utils.log('gridTaskBuilder:initGridTask');
+            }
+            app.custom.gridTasks = getGridTaskViewModel();
+            app.custom.gridTasks.ready(function () {
+              app.custom.gridTasks.isReady = true;
+              app.events.publish('gridTasks.Ready');
+            });
+
+            // Wait for dynamicPageReady to trigger gridTasks.Ready event.
+            app.events.subscribe('dynamicPageReady', function publishGridTasksReady() {
+              // Unsubscribe from further dynamicPageReady events.
+              app.events.unsubscribe('dynamicPageReady', publishGridTasksReady);
+              app.custom.gridTasks._readyDeferred.resolve();
+            });
+
+            if (typeof callback === 'function') {
+              callback();
+            }
+
+            return app.custom.gridTasks;
           }
-        }
 
-        initGridTasks();
-      },
-    };
+          return initGridTasks();
+        },
+      };
 
   return definition;
 });

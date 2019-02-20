@@ -116,7 +116,7 @@ app.custom.utils = {
   getCSS: function getCSS(url) {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('getCSS', performance.now(), url);
+      app.custom.utils.log('getCSS', url);
     }
     return $('<link>', {
       type: 'text/css',

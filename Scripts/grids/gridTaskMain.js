@@ -44,14 +44,7 @@ require([
       app.custom.utils.log('gridTaskMain:initGridTasks');
     }
 
-    gridTaskBuilder.build(function () {
-      app.events.subscribe('dynamicPageReady', function publishGridTasksReady() {
-        app.custom.gridTasks._isReady = true;
-        app.events.publish('gridTasks.Ready');
-        // Unsubscribe from further dynamicPage events
-        app.events.unsubscribe('dynamicPageReady', publishGridTasksReady);
-      });
-    });
+    gridTaskBuilder.build();
   }
 
   initGridTasks();

@@ -1,9 +1,11 @@
-/*global _, $, app, console, define */
+/* global _, $, app, define */
 
 /**
-Grid List Item Task
-**/
-
+ * Grid List Item Task Controller
+ * @module taskController
+ * @see module:gridTaskmain
+ * @see module:gridTaskBuilder
+ */
 define([
   'text!CustomSpace/Scripts/grids/tasks/task/view.html',
 ], function (
@@ -21,9 +23,16 @@ define([
     definition = {
       template: listItemTaskTemplate,
       task: gridTask,
+      /**
+       * Build Grid List Item Task
+       *
+       * @param {string} field - Grid column name.
+       * @param {object} task - Grid Task Name.
+       * @param {object} options - Grid Task options.
+       */
       build: function build(field, task, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('gridTask:build', {
+          app.custom.utils.log('gridTask:build', {
             gridTask: gridTask,
             field: field,
             task: task,
@@ -31,7 +40,9 @@ define([
           });
         }
 
-        /* Initialization code */
+        /**
+         * Initialize Grid List Item Task
+         */
         function initGridTask() {
           var properties = {
               field: field,
