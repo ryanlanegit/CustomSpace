@@ -86,8 +86,3 @@ a.ra-grid-task-icon i:hover {
     text-align: center;
     box-sizing: border-box;
 }
-
-.k-grid .ra-grid-task-content {
-    display: inline;
-    width: 100%;
-}
