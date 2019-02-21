@@ -20,14 +20,6 @@ a.ra-grid-task-icon i:hover {
     content: none;
 }
 
-.k-grid .ra-grid-task-container {
-    display: block;
-    width: 100%;
-    height: 100%;
-    margin: -5px -6px -4px -6px;
-    padding: 5px 6px 4px 6px;
-}
-
 .k-grid .grid-highlight-column .ra-grid-task-menu,
 .k-grid .grid-highlight-column-title .ra-grid-task-menu,
 .k-grid .grid-highlight-column-last .ra-grid-task-menu {

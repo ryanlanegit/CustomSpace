@@ -65,11 +65,21 @@ define([
                * @param {string} field - Grid column's name to modify.
                * @param {string} type - Grid Task type [anchor/link/task].
                * @param {string} name - Unique Grid Task name.
-               * @param {string} template - Kendo template string for column.
+               * @param {string} template - Kendo template string for column or attribute.
                * @param {function} [callback] - Optional callback if Grid Task type supports it.
                * @returns {this}
                */
               add: function add(gridData, field, type, name, template, callback) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  app.custom.utils.log('gridTasks:add', {
+                    gridData: gridData,
+                    field: field,
+                    type: type,
+                    name: name,
+                    template: template,
+                    callback: callback,
+                  });
+                }
                 var that = this,
                     // Look for provided column in grid by field name
                     taskColumn = _.find(gridData.columns, function (colValue) {
@@ -77,21 +87,6 @@ define([
                     });
 
                 if (!_.isUndefined(taskColumn)) {
-                  if (_.isUndefined(taskColumn._style)) {
-                    // Add default blank style template function to column template
-                    Object.defineProperty(
-                      taskColumn,
-                      '_style', {
-                        enumerable: false,
-                        writable: true,
-                        /**
-                         * Default empty style template.
-                         */
-                        value: function defaultStyle() { return ''; },
-                      }
-                    );
-                  }
-
                   if (_.isUndefined(taskColumn._tasks)) {
                     // Add empty tasks array to column template
                     Object.defineProperty(
@@ -106,8 +101,8 @@ define([
 
                   switch (type) {
                   case 'style':
-                    // Set style template function to provided template
-                    taskColumn._style = template;
+                    // Set style attribute to provided template.
+                    taskColumn.attributes.style = (typeof template === 'function') ? template(taskColumn) : template;
                     break;
                   case 'task':
                     var existingTask = that.get(gridData, field, name);
@@ -126,6 +121,7 @@ define([
                         callback: callback,
                       });
                     }
+                    taskColumn.attributes.class = [taskColumn.attributes.class, 'ra-grid-task-container', 'clearfix'].filter(Boolean).join(' ');
                     break;
                   }
                 } else {
@@ -222,12 +218,19 @@ define([
                * @returns {this}
                */
               apply: function apply(gridData) {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  app.custom.utils.log('gridTasks:apply', {
+                    gridData: gridData,
+                  });
+                }
                 var that = this,
                     bUpdateGridTemplate = false;
 
                 $.each(gridData.columns, function (colIndex, column) {
-                  if (!_.isUndefined(column._style)) {
-                    column.template = that.buildTemplate('anchor', column);
+                  if (typeof column._tasks !== 'undefined') {
+                    if (column._tasks.length > 0) {
+                      column.template = that.buildTemplate('anchor', column);
+                    }
                     bUpdateGridTemplate = true;
                   }
                 });
@@ -238,6 +241,9 @@ define([
                   gridData.altRowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
 
                   // Refresh grid to show column template changes
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    app.custom.utils.log('gridTasks:gridData.refresh');
+                  }
                   gridData.refresh();
                 }
 
