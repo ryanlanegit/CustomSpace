@@ -32,41 +32,6 @@ require([
     app.custom.utils.log('roTaskMain');
   }
 
-  var waitQueue = [],
-      waitQueueInit = false,
-      waitQueueReady = false;
-
-  /**
-   * Wait until Angular has finished rendering and insert callback functions
-   * from waitQueue into Angular's evalAsync queue.
-   */
-  function processWaitQueue() {
-    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('roTaskMain:processWaitQueue', {
-        waitQueueInit: waitQueueInit,
-        waitQueueReady: waitQueueReady,
-        waitQueue: waitQueue,
-      });
-    }
-    if (!waitQueueInit) {
-      waitQueueInit = true;
-      angular.element(document).ready(function () {
-        waitQueueReady = true;
-        processWaitQueue();
-      });
-    } else if (waitQueueReady) {
-      waitQueueReady = false;
-      var angularElm = angular.element('#GeneralInformation'),
-          angularScope = angularElm.scope();
-      angularScope.$evalAsync(function () {
-        while (waitQueue.length > 0) {
-          (waitQueue.shift())();
-        }
-        waitQueueReady = true;
-      });
-    }
-  }
-
   /**
    * Initialize Request Offering Question/Task Default Container Classes
    * @returns {boolean} - DOM has been modified.
@@ -113,6 +78,37 @@ require([
       app.custom.utils.log('roTaskMain:initTask');
     }
     var roTaskVm = kendo.observable({
+      _evalAsyncQueueReady: false,
+      _initEvalAsyncQueue: _.once(function _initEvalAsyncQueue() {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+          app.custom.utils.log('roTaskVm:_initEvalAsyncQueue');
+        }
+        angular.element(document).ready(function () {
+          roTaskVm._evalAsyncQueueReady = true;
+          roTaskVm._processEvalAsyncQueue();
+        });
+      }),
+
+      /**
+       * Wait until Angular has finished rendering and insert callback functions
+       * from waitQueue into Angular's evalAsync queue.
+       */
+      _processEvalAsyncQueue: function _processEvalAsyncQueue() {
+        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+          app.custom.utils.log('roTaskVm:_processEvalAsyncQueue', {
+            _evalAsyncQueueReady: roTaskVm._evalAsyncQueueReady,
+          });
+        }
+        if (roTaskVm._evalAsyncQueueReady) {
+          roTaskVm._evalAsyncQueueReady = false;
+          var angularElm = angular.element('#GeneralInformation'),
+              angularScope = angularElm.scope();
+          angularScope.$evalAsync(function () {
+            app.events.publish('evalAsync.Ready');
+            roTaskVm._evalAsyncQueueReady = true;
+          });
+        }
+      },
       /**
        * Add callback to waitQueue and run processWaitQueue to wait until
        * Angular has finished rendering and insert callback function into
@@ -125,8 +121,9 @@ require([
             callback: callback,
           });
         }
-        waitQueue.push(callback);
-        processWaitQueue();
+        $(app.events).one('evalAsync.Ready', callback);
+        roTaskVm._initEvalAsyncQueue();
+        roTaskVm._processEvalAsyncQueue();
       },
     });
     // Build out custom request offering tasks

@@ -32,6 +32,7 @@ app.custom.utils = {
           'roTasks.Ready',
           'pageTasks.Ready',
           'wiTasks.Ready',
+          'evalAsync.Ready',
         ],
         flattenedDebugEvents = debugEvents.join(' ');
 
