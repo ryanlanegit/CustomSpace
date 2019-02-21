@@ -17,7 +17,7 @@ define(function () {
       Type: 'RequestOffering',
       Label: 'Bind Session User Properties',
       Configs: {
-        SystemUserPreferencesNotificationEndpointProjectionId: '39d94137-3c03-d846-4eb4-511f7d7aa3fc',
+        SystemUserPreferencesProjectionId: '490ab845-b14c-1d91-c39f-bb9e8a350933',
       },
       Access: true,
     },
@@ -110,7 +110,7 @@ define(function () {
                     read: {
                         url: "/Search/GetObjectPropertiesByProjection",
                         data: {
-                            projectionId: roTask.Configs.SystemUserPreferencesNotificationEndpointProjectionId,
+                            projectionId: roTask.Configs.SystemUserPreferencesProjectionId,
                             id: session.user.Id,
                         },
                         dataType: "json",
