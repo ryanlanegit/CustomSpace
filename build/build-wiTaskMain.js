@@ -1,4 +1,4 @@
-/*global console, module */
+/* global console, module */
 ({
   mainConfigFile: 'config-build-main.js',
   stubModules: [

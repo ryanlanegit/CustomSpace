@@ -20,6 +20,9 @@ define([
       Access: true,
     },
 
+    /**
+     * @exports taskController
+     */
     definition = {
       template: listItemTaskTemplate,
       task: gridTask,
@@ -41,7 +44,8 @@ define([
         }
 
         /**
-         * Initialize Grid List Item Task
+         * Initialize Grid List Item Task.
+         * @returns {string} Kendo template string.
          */
         function initGridTask() {
           var properties = {

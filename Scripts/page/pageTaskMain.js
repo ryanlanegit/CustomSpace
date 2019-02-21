@@ -1,9 +1,8 @@
-/*global $, _, app, require, session */
+/* global $, _, app, require, session */
 
-/**
-Load Custom Page Task Builder
-**/
-
+/*
+ * Load Custom Page Task Builder
+ */
 /**
  * Uncomment when loading gridTaskmain directly through client unoptimized
 **/

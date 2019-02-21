@@ -1,4 +1,4 @@
-/*global $, _, app, console, localization, performance, session, store, transformRO, window */
+/* global $, _, app, console, localization, performance, session, store, transformRO, window */
 
 /**
 Custom

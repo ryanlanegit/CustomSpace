@@ -1,4 +1,3 @@
-/*global console, module */
 ({
   mainConfigFile: 'config-build-task.js',
   include: [

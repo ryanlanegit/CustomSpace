@@ -1,9 +1,11 @@
-/*global _, app, console, define */
+/* global _, app, define */
 
 /**
-Grid Anchor
-**/
-
+ * Grid Task Anchor Controller
+ * @module anchorController
+ * @see module:gridTaskmain
+ * @see module:gridTaskBuilder
+ */
 define([
   'text!CustomSpace/Scripts/grids/tasks/anchor/view.html',
 ], function (
@@ -18,18 +20,29 @@ define([
       Access: true,
     },
 
+    /**
+     * @exports anchorController
+     */
     definition = {
       template: anchorTemplate,
       task: gridTask,
+      /**
+       * Build Grid Task Anchor
+       *
+       * @param {object} column - Grid column object.
+       */
       build: function build(column) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('gridTask:build', {
+          app.custom.utils.log('gridTask:build', {
             gridTask: gridTask,
             column: column,
           });
         }
 
-        /* Initialization code */
+        /**
+         * Initialize Grid Task Anchor.
+         * @returns {string} Kendo template string.
+         */
         function initGridTask() {
           var builtAnchor = _.template(anchorTemplate);
           return builtAnchor(column);

@@ -1,9 +1,11 @@
-/*global _, $, app, console, define, kendo, session */
+/* global $, _, app, define, kendo, session */
 
 /**
-Resolve Incident
-**/
-
+ * 'Layout Templaten' Request Offering Task
+ * @module resolveIncidentController
+ * @see module:wiTaskMain
+ * @see module:wiTaskBuilder
+ */
 define([
   'text!forms/tasks/anchor/view.html',
   'text!CustomSpace/Scripts/forms/tasks/resolveIncident/view.html',
@@ -33,6 +35,9 @@ define([
           Rows: 4,
         },
       },
+      /**
+       * @type {boolean}
+       */
       get Access() {
         return (session.user.Analyst === 1);
       },
@@ -42,14 +47,26 @@ define([
     incidentStatusResolvedEnumId = '2b8830b6-59f0-f574-9c2a-f4b4682f1681',
     systemDomainUserClassId = 'eca3c52a-f273-5cdc-f165-3eb95a2b26cf',
 
+    /**
+     * @exports resolveIncidentController
+     */
     definition = {
       template: resolveIncidentTemplate,
       task: resolveIncidentTask,
+      /**
+       * Build Work Item Task.
+       *
+       * @param {Object} vm - View Model of the base roTask plugin.
+       * @param {Object} roTaskElm - Source task container element.
+       * @param {Object} options - Parsed options from roTaskElm's JSON contents
+       */
       build: function build(vm, node, callback) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('resolveIncidentTask:build');
+          app.custom.utils.log('resolveIncidentTask:build');
         }
-        /* BEGIN Functions */
+
+        // #region Utility functions
+
         //form field helper
         function buildEnumPicker(container, props, vmModel) {
           enumPickerControl.build(vmModel, props, function (enumControl) {
@@ -299,7 +316,7 @@ define([
                 bindResolutionCategoryFieldEvents(modalWindowViewModel, modalWindowEle);
 
                 if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                  console.log('resolveIncidentTask:resolveIncident', {
+                  app.custom.utils.log('resolveIncidentTask:resolveIncident', {
                     modalWindowEle: modalWindowEle,
                     modalWindowControl: modalWindowControl,
                     modalWindowViewModel: modalWindowViewModel,
@@ -316,9 +333,12 @@ define([
 
           return taskVm;
         }
-        /* END functions */
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Work Item Task initialization script.
+         */
         function initFormTask() {
           var modalEle = buildAndRender.windowEle(resolveIncidentTemplate),
             formTaskViewModel = getFormTaskViewModel(modalEle),

@@ -1,4 +1,4 @@
-/*global console, module, require */
+/* global console, module, require */
 require.config({
   baseUrl: '../Scripts',
   paths: {
