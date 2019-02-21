@@ -91,7 +91,9 @@ require([
         formObj: formObj,
       });
     }
-    formObj.boundReady(initTasks);
+    formObj.boundReady(function () {
+        initTasks(formObj);
+    });
   }
 
   var supportedTypes = [
