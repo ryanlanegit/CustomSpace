@@ -1,4 +1,4 @@
-/* global _, $, app, define, kendo */
+/* global $, _, app, define, kendo */
 
 /**
  * Custom Grid Task Builder
@@ -16,11 +16,21 @@ define([
 ) {
   'use strict';
   var gridTaskModules = arguments,
+      /**
+       * @exports gridTaskBuilder
+       */
       definition = {
+        /**
+         * Optional build callback type.
+         *
+         * @callback buildCallback
+         * @param {Object} gridTaskVm - gridTask View Model.
+         */
+
         /**
          * Build Grid Tasks.
          *
-         * @param {function} [callback] - callback function once build is complete
+         * @param {buildCallback} [callback] - callback function once build is complete.
          */
         build: function build(callback) {
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -28,19 +38,18 @@ define([
           }
 
           /**
-           * Get Grid Task View Model.
+           * Get Grid Tasks View Model.
            */
-          function getGridTaskViewModel() {
+          function getGridTasksViewModel() {
             var gridTaskVm = new kendo.observable({
               isReady: false,
               _readyDeferred: $.Deferred(),
-              _readyList: [],
 
               /**
                * Check if Grid Tasks is ready.
                *
                * @returns {object} Deferred promise.
-               * @param {fn} [fn] Optional deferred callback function.
+               * @param {function} [fn] Optional deferred callback function.
                */
               ready: function ready(fn) {
                 if (typeof fn === 'function') {
@@ -270,24 +279,19 @@ define([
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('gridTaskBuilder:initGridTask');
             }
-            app.custom.gridTasks = getGridTaskViewModel();
-            app.custom.gridTasks.ready(function () {
-              app.custom.gridTasks.isReady = true;
-              app.events.publish('gridTasks.Ready');
-            });
+            var gridTasksVm = getGridTasksViewModel();
 
-            // Wait for dynamicPageReady to trigger gridTasks.Ready event.
-            app.events.subscribe('dynamicPageReady', function publishGridTasksReady() {
-              // Unsubscribe from further dynamicPageReady events.
-              app.events.unsubscribe('dynamicPageReady', publishGridTasksReady);
-              app.custom.gridTasks._readyDeferred.resolve();
+            // Wait for dynamicPageReady to trigger gridTasks.Ready event once.
+            $(app.events).one('dynamicPageReady', function publishGridTasksReady() {
+              gridTasksVm.isReady = true;
+              gridTasksVm._readyDeferred.resolve();
             });
 
             if (typeof callback === 'function') {
-              callback();
+              callback(gridTasksVm);
             }
 
-            return app.custom.gridTasks;
+            return gridTasksVm;
           }
 
           return initGridTasks();

@@ -1,12 +1,12 @@
-/*global $, _, app, console, pageForm, performance, require, session */
+/* global $, _, app, require, session */
 
 /**
-Load Custom Work Item Task Builder
-**/
+ * Load Custom Work Item Task Builder
+ */
 
 /**
  * Uncomment when loading WiTaskMain directly through client unoptimized
-**/
+ */
 /*
 if (typeof require !== 'undefined') {
   require.config({
@@ -21,6 +21,11 @@ if (typeof require !== 'undefined') {
 }
 */
 
+/**
+ * Load Custom Work Items Tasks Builder
+ * @module wiTaskMain
+ * @see module:wiTaskBuilder
+ */
 require([
   'CustomSpace/Scripts/forms/wiTaskBuilder',
 ], function (
@@ -28,12 +33,15 @@ require([
 ) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('wiTaskMain', performance.now());
+    app.custom.utils.log('wiTaskMain:define');
   }
 
+  /**
+   *
+   */
   function sortList(ulElement) {
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('wiTaskMain:sortList', ulElement);
+      app.custom.utils.log('wiTaskMain:sortList', ulElement);
     }
     ulElement = $(ulElement);
 
@@ -46,9 +54,14 @@ require([
     });
   }
 
-  function initTasks() {
+  /**
+   *
+   */
+  function initTasks(pageForm) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('wiTaskMain:initTasks', performance.now());
+      app.custom.utils.log('wiTaskMain:initTasks', {
+        pageForm: pageForm,
+      });
     }
 
     var closedStatusIds = [
@@ -69,9 +82,14 @@ require([
     }
   }
 
+  /**
+   *
+   */
   function boundReadyInitTasks(formObj) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      console.log('wiTaskMain:boundReadyInitTasks', performance.now());
+      app.custom.utils.log('wiTaskMain:boundReadyInitTasks', {
+        formObj: formObj,
+      });
     }
     formObj.boundReady(initTasks);
   }

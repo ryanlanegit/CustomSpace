@@ -1,4 +1,4 @@
-/*global $, _, app, console, define, performance */
+/* global $, _, app, define */
 
 /**
  * Custom Work Item Task Builder
@@ -11,35 +11,60 @@ define([
 ) {
   'use strict';
   var taskModules = arguments,
-    definition = {
-      build: function build(vm, callback) {
-        var ulElement = $('.taskmenu'),
-          taskCallback = function (view) {
-            ulElement.append(view);
-          };
+      /**
+       * @exports wiTaskBuilder
+       */
+      definition = {
+        /**
+         * Optional build callback type.
+         *
+         * @callback buildCallback
+         * @param {Object} taskMenuElm - Task Menu UL container element.
+         */
 
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          console.log('wiTaskBuilder:build', {
-            performance: performance.now(),
-            vm: vm,
-            taskModules: taskModules,
-          });
-        }
-
-        _.each(taskModules, function (taskModule) {
-          if (taskModule.task.Access && taskModule.task.Type.indexOf(vm.type) !== -1) {
-            taskModule.build(vm, taskModule.task, function (view) {
-              taskCallback(view);
+        /**
+         * Build Work Item Tasks.
+         *
+         * @param {object} vm - Page Form View Model.
+         * @param {buildCallback} [callback] - Callback function once build is complete.
+         */
+        build: function build(vm, callback) {
+          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+            app.custom.utils.log('wiTaskBuilder:build', {
+              vm: vm,
+              taskModules: taskModules,
             });
           }
-        });
+          var taskMenuElm = $('.taskmenu');
 
-        // Send back <ul> with <li> of each task
-        if (typeof callback === 'function') {
-          callback(ulElement);
-        }
-      },
-    };
+          /**
+           * Work Item Task Callback.
+           *
+           * @param {object} view - Work Item Task render view.
+           */
+          function taskCallback(view) {
+            taskMenuElm.append(view);
+          };
+
+          /**
+           * Initialize Custom Work Item Task Builder.
+           */
+          function initwiTasks() {
+            _.each(taskModules, function (taskModule) {
+              if (taskModule.task.Access && taskModule.task.Type.indexOf(vm.type) !== -1) {
+                taskModule.build(vm, taskModule.task, taskCallback);
+              }
+            });
+
+            // Send back <ul> with <li> of each task
+            if (typeof callback === 'function') {
+              callback(taskMenuElm);
+            }
+          }
+
+          initwiTasks();
+        },
+      };
 
   return definition;
 });

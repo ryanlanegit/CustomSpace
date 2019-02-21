@@ -127,18 +127,10 @@
 
   /**
    * Initialize Custom Grid Tasks.
-   *
-   * @param {object} [event] - Event object to unsubscribe from.
    */
-  function initGridTasks(event) {
+  function initGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('custom.gridTasks:initGridTasks', {
-        event: event,
-      });
-    }
-    if (typeof event !== 'undefined') {
-      // Unsubscribe from further gridTasks.Ready events.
-      app.events.unsubscribe(event.type, initGridTasks);
+      app.custom.utils.log('custom.gridTasks:initGridTasks');
     }
     // Immediately attempt to populate grid tasks.
     populateGridTasks();
@@ -149,6 +141,7 @@
   if (typeof app.custom.gridTasks !== 'undefined') {
     app.custom.gridTasks.ready(initGridTasks);
   } else {
-    app.events.subscribe('gridTasks.Ready', initGridTasks);
+    // Subscribe initGridTasks to gridTasks.Ready event once.
+    $(app.events).one('gridTasks.Ready', initGridTasks);
   }
 }());

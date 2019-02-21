@@ -44,7 +44,13 @@ require([
       app.custom.utils.log('gridTaskMain:initGridTasks');
     }
 
-    gridTaskBuilder.build();
+    gridTaskBuilder
+      .build(function(gridTasksVm) {
+        app.custom.gridTasks = gridTasksVm;
+      })
+      .ready(function () {
+        app.events.publish('gridTasks.Ready');
+      });
   }
 
   initGridTasks();

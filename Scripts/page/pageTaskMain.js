@@ -1,4 +1,4 @@
-/*global $, _, app, console, performance, require, session */
+/*global $, _, app, require, session */
 
 /**
 Load Custom Page Task Builder
@@ -28,10 +28,13 @@ require([
 ) {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    console.log('pageTaskBuilder', performance.now());
+    app.custom.utils.log('pageTaskBuilder:define');
   }
 
-  function initTasks() {
+  /**
+   * Initialize Custom Page Tasks.
+   */
+  function initPageTasks() {
     // Build out custom request offering tasks
     pageTaskBuilder.build($('div#main_wrapper'), pageTaskBuilder.node, function () {
       app.events.publish('pageTasks.Ready');
@@ -39,12 +42,9 @@ require([
   }
 
   if (app.isSessionStored()) {
-    initTasks();
+    initPageTasks();
   } else {
-    app.events.subscribe('sessionStorageReady', function execInitTasks() {
-      initTasks();
-      // Unsubscribe from further sessionStorage events
-      app.events.unsubscribe('sessionStorageReady', execInitTasks);
-    });
+    // Subscribe initPageTasks to sessionStorageReady event once.
+    $(app.events).one('sessionStorageReady', initPageTasks);
   }
 });

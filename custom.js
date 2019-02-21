@@ -245,29 +245,24 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
   /**
    * Load ROToolbox community scripts.
    * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
-   *
-   * @param {object} [event] - Object event object to unsubscribe from.
    */
-  function loadROToolbox(event) {
+  function loadROToolbox() {
     'use strict';
     if (app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('loadROToolbox', arguments);
+      app.custom.utils.log('loadROToolbox');
     }
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
       app.lib.mask.apply('Applying Request Offering Template');
       transformRO();
       app.lib.mask.remove();
     });
-    if (typeof event !== 'undefined') {
-      // Unsubscribe from further sessionStorage events
-      app.events.unsubscribe(event.type, loadROToolbox);
-    }
   }
 
   if (app.isSessionStored()) {
     loadROToolbox();
   } else {
-    app.events.subscribe('sessionStorageReady', loadROToolbox);
+    // Subscribe loadROToolbox to sessionStorageReady event once.
+    $(app.events).one('sessionStorageReady', loadROToolbox);
   }
 } else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
   if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {

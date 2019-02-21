@@ -28,6 +28,13 @@ define(function () {
     definition = {
       template: null,
       task: roTask,
+      /**
+       * Build Work Item Tasks.
+       *
+       * @param {object} vm - Request Offering Task View Model.
+       * @param {object} roTaskElm - Task Contrainer Element.
+       * @param {object} options - roTask parsed options.
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -57,10 +64,9 @@ define(function () {
           if (app.isSessionStored()) {
             _.each(targetElms, func);
           } else {
-            app.events.subscribe('sessionStorageReady', function execInitTasks(event) {
+            // Subscribe execInitTasks to sessionStorageReady event once.
+            $(app.events).one('sessionStorageReady', function execInitTasks() {
               _.each(targetElms, func);
-              // Unsubscribe from further sessionStorage events
-              app.events.unsubscribe(event.type, execInitTasks);
             });
           }
         }
