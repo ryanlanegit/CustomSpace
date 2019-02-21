@@ -227,10 +227,14 @@ app.custom.utils = {
 
 /**
  * Custom Session Storage
+ * @example
+ * // Enable Debug Mode via Console/Script/Plugin
+ * app.storage.custom.set('DEBUG_ENABLED', true);
+ * @example
+ * // Disable Debug Mode via Console/Script/Plugin
+ * app.storage.custom.set('DEBUG_ENABLED', false);
  */
 app.storage.custom = store.namespace('custom');
-// app.storage.custom.set('DEBUG_ENABLED', true); // Enable DEBUG Mode via Console/Script/Plugin
-// app.storage.custom.set('DEBUG_ENABLED', false); // Disable DEBUG Mode via Console/Script/Plugin
 
 // Enable Debug Mode to match enabled state from session storage.
 if (app.storage.custom.get('DEBUG_ENABLED')) {
