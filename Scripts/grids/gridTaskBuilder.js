@@ -36,18 +36,6 @@ define([
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
             app.custom.utils.log('gridTaskBuilder:build');
           }
-
-          /**
-           * Validate if provided classList contains className.
-           *
-           * @param {string} classList - Source class list string.
-           * @param {string} className - Class Name to find.
-           * @returns {boolean} classList contains classname.
-           */
-          function hasClass(classList, className) {
-            return (' ' + classList + ' ').indexOf(' ' + className + ' ') > -1;
-          }
-
           /**
            * Get Grid Tasks View Model.
            */
