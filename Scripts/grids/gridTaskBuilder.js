@@ -38,6 +38,17 @@ define([
           }
 
           /**
+           * Validate if provided classList contains className.
+           *
+           * @param {string} classList - Source class list string.
+           * @param {string} className - Class Name to find.
+           * @returns {boolean} classList contains classname.
+           */
+          function hasClass(classList, className) {
+            return (' ' + classList + ' ').indexOf(' ' + className + ' ') > -1;
+          }
+
+          /**
            * Get Grid Tasks View Model.
            */
           function getGridTasksViewModel() {
@@ -105,7 +116,7 @@ define([
                     taskColumn.attributes.style = (typeof template === 'function') ? template(taskColumn) : template;
                     break;
                   case 'task':
-                    var existingTask = that.get(gridData, field, name);
+                    var existingTask = that.get(gridData, field, name)
                     if (existingTask) {
                       // Merge new task with existing one in the column template
                       $.extend(existingTask, {
@@ -121,7 +132,6 @@ define([
                         callback: callback,
                       });
                     }
-                    taskColumn.attributes.class = [taskColumn.attributes.class, 'ra-grid-task-container', 'clearfix'].filter(Boolean).join(' ');
                     break;
                   }
                 } else {

@@ -1,88 +1,107 @@
 /*
-    Custom Grid Tasks
-*/
+ * Custom Grid Tasks
+ */
 
-/* Targeting Specific Icons */
+/*
+ * Targeting Specific Icons
+ */
 /*
 a.ra-grid-task-icon i {
-    color: #FF0000;
+  color: #FF0000;
 }
 
 a.ra-grid-task-icon i:hover {
-    color: #00FF00;
+  color: #00FF00;
 }
 */
 
+/*
+ * Remove Default Arrow Icon
+ */
 .k-grid tr:hover td.grid-highlight-column-last a:after,
 .k-grid tr:hover td.grid-highlight-column-title a:after,
 .k-grid .k-state-selected td.grid-highlight-column-last a:after,
 .k-grid .k-state-selected td.grid-highlight-column-title a:after {
-    content: none;
+  content: none;
 }
 
+/*
+ * Menu visibility and adjustment for default icon margin.
+ */
 .k-grid .grid-highlight-column .ra-grid-task-menu,
 .k-grid .grid-highlight-column-title .ra-grid-task-menu,
 .k-grid .grid-highlight-column-last .ra-grid-task-menu {
-    visibility: hidden;
-    margin-right: -20px;
+  visibility: hidden;
+  margin-right: -17px;
 }
 
 .k-grid tr:hover .ra-grid-task-menu,
 .k-grid .k-state-selected .ra-grid-task-menu {
-    visibility: visible;
+  visibility: visible;
 }
 
-.k-grid .k-state-selected td.grid-highlight-column .ra-grid-task-menu i,
-.k-grid .k-state-selected td.grid-highlight-column-title .ra-grid-task-menu i,
-.k-grid .k-state-selected td.grid-highlight-column-last .ra-grid-task-menu i,
-.grid-highlight-column .ra-grid-task-container i,
-.grid-highlight-column-title .ra-grid-task-container i,
-.grid-highlight-column-last .ra-grid-task-container i {
-    color: #a3b8c2;
-}
-
-.k-grid .k-state-selected td.grid-highlight-column .ra-grid-task-menu .ra-grid-task-item:hover i,
-.k-grid .k-state-selected td.grid-highlight-column-title .ra-grid-task-item:hover i,
-.k-grid .k-state-selected td.grid-highlight-column-last .ra-grid-task-item:hover i,
-.k-grid .k-state-selected .ra-grid-task-container .ra-grid-task-item:hover i,
-.grid-highlight-column .ra-grid-task-container .ra-grid-task-item:hover i,
-.grid-highlight-column-title .ra-grid-task-container .ra-grid-task-item:hover i,
-.grid-highlight-column-last .ra-grid-task-container .ra-grid-task-item:hover i,
-.k-grid tr:hover .ra-grid-task-menu .ra-highlight-default-icon i {
-    color: #fff;
-}
-
-.grid-highlight-column ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i,
-.grid-highlight-column-title ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i,
-.grid-highlight-column-last ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i {
-    color: #a3b8c2;
-}
-
-.grid-highlight-column ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i:hover,
-.grid-highlight-column-title ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i:hover,
-.grid-highlight-column-last ul.ra-grid-task-menu:hover li.ra-highlight-default-icon i:hover {
-    color: #fff;
-}
-
+/*
+ * Base Menu
+ */
 .k-grid .ra-grid-task-menu {
-    display: inherit;
-    list-style: none;
-    float:right;
-    text-align:right;
-    margin:-5px -5px -4px 4px;
-    padding: 0px 3px 0px 0px;
-    font-size: 0px;
+  display: inherit;
+  list-style: none;
+  float:right;
+  text-align:right;
+  margin:-5px -2px -4px 4px;
+  font-size: 0px;
 }
 
+/*
+ * Menu Items
+ */
 .k-grid .ra-grid-task-item {
-    display: inline-block;
+  display: inline-block;
 }
 
+/*
+ * Menu Item icons
+ */
 .k-grid .ra-grid-task-icon {
-    display: inherit;
-    height: 24px;
-    padding: 5px 4px 4px 4px;
-    vertical-align: middle;
-    text-align: center;
-    box-sizing: border-box;
+  display: inline-block;
+  height: 24px;
+  padding: 5px 4px 4px 4px;
+  box-sizing: border-box;
+}
+
+/*
+ * Icon Base Color
+ */
+.grid-highlight-column .ra-grid-task-item i,
+.grid-highlight-column-title .ra-grid-task-item i,
+.grid-highlight-column-last .ra-grid-task-item i,
+
+.k-state-selected .grid-highlight-column .ra-grid-task-item i,
+.k-state-selected .grid-highlight-column-title .ra-grid-task-item i,
+.k-state-selected .grid-highlight-column-last .ra-grid-task-item i,
+
+.grid-highlight-column .ra-grid-task-menu:hover .ra-highlight-default-icon i,
+.grid-highlight-column-title .ra-grid-task-menu:hover .ra-highlight-default-icon i,
+.grid-highlight-column-last .ra-grid-task-menu:hover .ra-highlight-default-icon i {
+  color: #a3b8c2;
+}
+
+/*
+ * Icon Hover Color
+ */
+.grid-highlight-column .ra-grid-task-item:hover i,
+.grid-highlight-column-title .ra-grid-task-item:hover i,
+.grid-highlight-column-last .ra-grid-task-item:hover i,
+
+.k-state-selected .ra-grid-task-item:hover i,
+.k-state-selected .grid-highlight-column .ra-grid-task-item:hover i,
+.k-state-selected .grid-highlight-column-title .ra-grid-task-item:hover i,
+.k-state-selected .grid-highlight-column-last .ra-grid-task-item:hover i,
+
+.k-grid tr:hover .ra-highlight-default-icon i,
+
+.grid-highlight-column .ra-grid-task-menu:hover .ra-highlight-default-icon:hover i,
+.grid-highlight-column-title .ra-grid-task-menu:hover .ra-highlight-default-icon:hover i,
+.grid-highlight-column-last .ra-grid-task-menu:hover .ra-highlight-default-icon:hover i {
+  color: #fff;
 }
