@@ -1,6 +1,6 @@
 <ul class="ra-grid-task-menu">
-    <% _.forEach(_tasks, function (task) { %>
+    <% _.each(_tasks, function (task) { %>
         <%= task.template(obj, task).replace(/ {4}/g,"") %>
-    <% }) %>
+    <% }); %>
 </ul>
 #: <%= field %> #
