@@ -14,12 +14,10 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/charCount/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/indent/controller',
-//'CustomSpace/Scripts/serviceCatalog/tasks/layoutTemplate/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
-//'CustomSpace/Scripts/serviceCatalog/tasks/externalFileAttachmentsDragDrop/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
 ], function (
   addClassController,
@@ -30,12 +28,10 @@ define([
   bindSessionUserController,
   charCountController,
   indentController,
-//layoutTemplateController,
   rowContainerController,
   setAttributeController,
   setOptionsController,
   singleLineEntryController,
-//externalFileAttachmentsDragDropController,
   summaryController
 ) {
   'use strict';
