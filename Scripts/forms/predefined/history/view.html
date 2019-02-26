@@ -1,142 +1,144 @@
-﻿<div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-                <div class="input-group">
-                    <div id="showHistoryDropDown"
-                        data-role="dropdownlist"
-                        data-text-field="text"
-                        data-value-field="value"
-                        data-template="dropDownHistoryTemplate"
-                    ></div>
-                    <span class="input-group-btn">
-                        <button data-role="button" class="btn btn-primary k-button" data-bind="events: {click: view.historyController.loadHistory}">
-                            <span class="fa cursor-pointer"></span><%= localization.ShowHistory %>
-                        </button>
-                    </span>
-                </div>
-            </div>
-            <div class="editor-label">
-                <label id="showHistoryTitle" data-bind="source: historyLabel" data-template="labelHistoryTemplate">PRE TEMPLATE</label>
-            </div>
-            <div id="historyView" data-bind="visible: showHistory"></div>  
+﻿<div id="historyController" data-role="historyController">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <div class="input-group">
+          <div
+            id="showHistoryDropDown"
+            data-role="dropdownlist"
+            data-text-field="text"
+            data-value-field="value"
+            data-template="dropDownHistoryTemplate"
+            data-bind="source: dropDownDataSource, value: selectedDropDown"
+          ></div>
+          <span class="input-group-btn">
+            <button data-role="button" class="btn btn-primary k-button" data-bind="click: loadHistory">
+              <span class="fa cursor-pointer"></span><%= localizationHelper.localize('ShowHistory', 'Show History') %>
+            </button>
+          </span>
         </div>
+      </div>
+      <div class="editor-label">
+        <label id="showHistoryTitle" data-bind="source: historyLabel" data-template="labelHistoryTemplate"></label>
+      </div>
+      <div id="historyView" data-bind="visible: showHistory"></div>
     </div>
+  </div>
 </div>
 
 <!--kendo templates-->
 <script type="text/x-kendo-template" id="labelHistoryTemplate">
+  # if (typeof type !== 'undefined') { #
     # if (type == "loading") { #
-        <span class='k-icon k-loading'></span>
+      <span class='k-icon k-loading'></span>
     # } else if (type == "error") { #
-        <span class='fa fa-warning'></span> Unable to load history. Please try again.
+      <span class='fa fa-warning'></span> Unable to load history. Please try again.
     # } else if (type == "info") { #
-        #: text #
+      #: text #
     # } #
+  # } #
 </script>
 <script type="text/x-kendo-template" id="dropDownHistoryTemplate">
-    <span style='white-space: pre;'>#= data.text #</span>
+  <span style='white-space: pre;'>#= data.text #</span>
 </script>
 <script type="text/x-kendo-template" id="viewHistoryTemplate">
-    <ul class='timeline' data-template='propertyHistoryTemplate' data-bind='source: nodes'></ul>
+  <ul class='timeline' data-template='propertyHistoryTemplate' data-bind='source: timelineDataSource'></ul>
 </script>
 <script type="text/x-kendo-template" id="propertyHistoryTemplate">
-    # if ((!_.isUndefined(ClassHistory) && ClassHistory.length > 0) || RelationshipHistory.length > 0) { #
+  # if ((!_.isUndefined(ClassHistory) && ClassHistory.length > 0) || RelationshipHistory.length > 0) { #
     <li>
-
-        # if (RelationshipHistory.length > 0) { #
-        <div class="timeline-badge primary">
-            <i class="fa fa-code-fork"></i>
-        </div>
-        # } else{ #
-        <div class="timeline-badge">
-            <i class="fa"></i>
-        </div>
-        # } #
-        <div class="timeline-panel">
-            <div class="timeline-heading">
-                <a><h4 class="timeline-title">#: UserName #</h4></a>
-                <p><small class="text-muted"><i class="fa fa-clock-o"></i>#: kendo.toString(new Date(DateOccurred),'g') #</small></p>
-            </div>
-            <div class="timeline-body">
-                # if ((!_.isUndefined(ClassHistory) && ClassHistory.length > 0)) { #
-                <h5><%= localization.PropertyChanges %>:</h5>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th><%= localization.Property %></th>
-                                <th><%= localization.OldValue %></th>
-                                <th><%= localization.NewValue %></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            # for (var i = 0; i < ClassHistory.length; i++) { #
-                            <tr>
-                                <td>#: localizationHelper.localize(ClassHistory[i].Key.replace(/ /g,""), ClassHistory[i].Key) #</td>
-                                <td>#: ClassHistory[i].BeforeValue && ClassHistory[i].IsDate ? kendo.toString(new Date(ClassHistory[i].BeforeValue),'g') : localizationHelper.localize(ClassHistory[i].BeforeValue.replace(/ /g,""), ClassHistory[i].BeforeValue) #</td>
-                                <td>#: ClassHistory[i].AfterValue && ClassHistory[i].IsDate ? kendo.toString(new Date(ClassHistory[i].AfterValue),'g') : localizationHelper.localize(ClassHistory[i].AfterValue.replace(/ [0-9]/g,""), ClassHistory[i].AfterValue) #</td>
-                            </tr>
-                            # } #
-                        </tbody>
-                    </table>
-                </div>
-                # } #
-                # if (RelationshipHistory.length > 0) { #
-                <h5><%= localization.RelationshipChanges %>:</h5>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th><%= localization.RelationshipClass %></th>
-                                <th><%= localization.Item %></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            # for (var i = 0; i < RelationshipHistory.length; i++) { #
-                            <tr>
-                                # if (RelationshipHistory[i].ChangeType === "Insert") { #
-                                <td><i class="fa fa-plus text-success"></i></td>
-                                <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
-                                <td>#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</td>
-                                # } #
-
-                                # if (RelationshipHistory[i].ChangeType === "Delete") { #
-                                <td><i class="fa fa-minus text-danger"></i></td>
-                                <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
-                                <td>#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</td>
-                                # } #
-
-                                # if (RelationshipHistory[i].ChangeType === "Update") { #
-                                <td><i class="fa fa-exchange text-info"></i></td>
-                                <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
-                                <td><strike class="text-danger">#: localizationHelper.localize(RelationshipHistory[i].PreviousItem.replace(/ /g,""), RelationshipHistory[i].PreviousItem) #</strike> <span class="text-success">#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</span></td>
-                                # } #
-
-                            </tr>
-                            # } #
-                        </tbody>
-                    </table>
-                </div>
-                # } #
-            </div>
-        </div>
-    </li>
+    # if (RelationshipHistory.length > 0) { #
+      <div class="timeline-badge primary">
+        <i class="fa fa-code-fork"></i>
+      </div>
+    # } else { #
+      <div class="timeline-badge">
+        <i class="fa"></i>
+      </div>
     # } #
-    # for (var i = 0; i < ActionLogHistory.length; i++) { #
+      <div class="timeline-panel">
+        <div class="timeline-heading">
+          <a><h4 class="timeline-title">#: UserName #</h4></a>
+          <p><small class="text-muted"><i class="fa fa-clock-o"></i>#: kendo.toString(new Date(DateOccurred),'g') #</small></p>
+        </div>
+        <div class="timeline-body">
+          # if ((!_.isUndefined(ClassHistory) && ClassHistory.length > 0)) { #
+            <h5><%= localization.PropertyChanges %>:</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th><%= localization.Property %></th>
+                    <th><%= localization.OldValue %></th>
+                    <th><%= localization.NewValue %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  # for (var i = 0; i < ClassHistory.length; i++) { #
+                    <tr>
+                      <td>#: localizationHelper.localize(ClassHistory[i].Key.replace(/ /g,""), ClassHistory[i].Key) #</td>
+                      <td>#: ClassHistory[i].BeforeValue && ClassHistory[i].IsDate ? kendo.toString(new Date(ClassHistory[i].BeforeValue),'g') : localizationHelper.localize(ClassHistory[i].BeforeValue.replace(/ /g,""), ClassHistory[i].BeforeValue) #</td>
+                      <td>#: ClassHistory[i].AfterValue && ClassHistory[i].IsDate ? kendo.toString(new Date(ClassHistory[i].AfterValue),'g') : localizationHelper.localize(ClassHistory[i].AfterValue.replace(/ [0-9]/g,""), ClassHistory[i].AfterValue) #</td>
+                    </tr>
+                  # } #
+                </tbody>
+              </table>
+            </div>
+          # } #
+          # if (RelationshipHistory.length > 0) { #
+            <h5><%= localization.RelationshipChanges %>:</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th><%= localization.RelationshipClass %></th>
+                    <th><%= localization.Item %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  # for (var i = 0; i < RelationshipHistory.length; i++) { #
+                    <tr>
+                      # if (RelationshipHistory[i].ChangeType === "Insert") { #
+                        <td><i class="fa fa-plus text-success"></i></td>
+                        <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
+                        <td>#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</td>
+                      # } #
+
+                      # if (RelationshipHistory[i].ChangeType === "Delete") { #
+                        <td><i class="fa fa-minus text-danger"></i></td>
+                        <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
+                        <td>#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</td>
+                      # } #
+
+                      # if (RelationshipHistory[i].ChangeType === "Update") { #
+                        <td><i class="fa fa-exchange text-info"></i></td>
+                        <td>#: localizationHelper.localize(RelationshipHistory[i].RelationshipName.replace(/\./g,". ").replace(/ /g,""), RelationshipHistory[i].RelationshipName.replace(/\./g,". ")) #</td>
+                        <td><strike class="text-danger">#: localizationHelper.localize(RelationshipHistory[i].PreviousItem.replace(/ /g,""), RelationshipHistory[i].PreviousItem) #</strike> <span class="text-success">#: localizationHelper.localize(RelationshipHistory[i].Item.replace(/ /g,""), RelationshipHistory[i].Item) #</span></td>
+                      # } #
+                    </tr>
+                  # } #
+                </tbody>
+              </table>
+            </div>
+          # } #
+        </div>
+      </div>
+    </li>
+  # } #
+  # for (var i = 0; i < ActionLogHistory.length; i++) { #
     <li class="timeline-inverted">
-        <div class="timeline-badge info"><i class="fa fa-user"></i></div>
-        <div class="timeline-panel">
-            <div class="timeline-heading">
-                <h4 class="timeline-title">#: localizationHelper.localize(ActionLogHistory[i].EnteredBy.replace(/ /g,""), ActionLogHistory[i].EnteredBy) #</h4>
-                <p><small class="text-muted"><i class="fa fa-clock-o"></i> #: kendo.toString(new Date(DateOccurred),'g') #</small></p>
-            </div>
-            <div class="timeline-body">
-                <h5>#: localizationHelper.localize(ActionLogHistory[i].ActionType.replace(/ /g,""), ActionLogHistory[i].ActionType) #</h5>
-                <blockquote>#: localizationHelper.localize(ActionLogHistory[i].Description.replace(/ /g,""), ActionLogHistory[i].Description) #</blockquote>
-            </div>
+      <div class="timeline-badge info"><i class="fa fa-user"></i></div>
+      <div class="timeline-panel">
+        <div class="timeline-heading">
+          <h4 class="timeline-title">#: localizationHelper.localize(ActionLogHistory[i].EnteredBy.replace(/ /g,""), ActionLogHistory[i].EnteredBy) #</h4>
+          <p><small class="text-muted"><i class="fa fa-clock-o"></i> #: kendo.toString(new Date(DateOccurred),'g') #</small></p>
         </div>
+        <div class="timeline-body">
+          <h5>#: localizationHelper.localize(ActionLogHistory[i].ActionType.replace(/ /g,""), ActionLogHistory[i].ActionType) #</h5>
+          <blockquote>#: localizationHelper.localize(ActionLogHistory[i].Description.replace(/ /g,""), ActionLogHistory[i].Description) #</blockquote>
+        </div>
+      </div>
     </li>
-    # } #
+  # } #
 </script>
