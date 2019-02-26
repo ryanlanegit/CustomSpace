@@ -1,79 +1,92 @@
-/*global _, $, define, kendo, setTimeout */
+/* global $, _, define, kendo, setTimeout */
 
 /**
-LONGSTRING
-**/
-
+ * Long String Field Control
+ * @module longStringController
+ * @see module:gridTaskmain
+ * @see module:gridTaskBuilder
+ */
 define([
   'text!CustomSpace/Scripts/forms/fields/longstring/view.html',
 ], function (longStringTemplate) {
   'use strict';
+  /**
+   * @exports longStringController
+   */
   var definition = {
     template: longStringTemplate,
-    build: function build(vm, node, callback) {
-      if (_.isUndefined(vm[node.PropertyName])) {
-        vm[node.PropertyName] = [];
-      }
+    /**
+     * Optional build callback type.
+     *
+     * @callback buildCallback
+     * @param {object} fieldElm - Built Field DOM Element.
+     */
 
+    /**
+     * Build Long String Field Control.
+     *
+     * @param {object} vm - View Model to add Control View Model to.
+     * @param {object} node - Module configuration.
+     * @param {buildCallback} [callback] - Callback function once build is complete.
+     * @returns {object} Built Field DOM Element.
+     */
+    build: function build(vm, node, callback) {
+      /**
+       *  Get Field Controller Kendo View Model.
+       */
       function getFieldViewModel(properties) {
         var fieldProperties = {
-          CharactersRemaining: properties.MaxLength,
-          CheckLength: function checkLength(e) { //blur event
-            setTimeout(function () {
-              var elem = $(e.currentTarget),
-                helpBlock = elem.next(),
-                maxChars = elem.attr('maxlength'),
-                count = elem.val().length;
-              if (count > maxChars) {
-                elem.attr('data-invalid', '');
-                helpBlock.show();
-              } else {
-                helpBlock.hide();
-                elem.removeAttr('data-invalid');
-                elem.data('prevent', false);
-              }
-            }, 100);
-          },
-          TextCounter: function textCounter() {
-            this.set('CharactersRemaining', this.MaxLength - this.ResolutionDescription.length);
-          },
-        },
-          fieldViewModel = kendo.observable($.extend(true, fieldProperties, properties));
+          LimitLength: (!_.isUndefined(node.MinLength) || !_.isUndefined(node.MaxLength)),
+          charactersRemaining: node.MaxLength,
+          textCounter: _.debounce(function textCounter() {
+            if (this.LimitLength) {
+              this.set('charactersRemaining', this.MaxLength - this[this.PropertyName].length);
+            }
+          }, 100),
+        };
+        $.extend(true, fieldProperties, properties, node);
 
-        return fieldViewModel;
+        return kendo.observable(fieldProperties);
       }
 
-      //template .build() and view.renderererers.
-      var buildAndRender = {
-        fieldEle: function fieldEle(properties, fieldViewModel, fieldTemplate) {
-          $.extend(true, properties, node);
-          // build the field and bind viewmOdel to it
-          var builtField = _.template(fieldTemplate),
-            fieldElm = new kendo.View(builtField(properties), { wrap: false, model: fieldViewModel});
+      /**
+       * Build the field and bind it to ViewModel.
+       *
+       * @returns {object} Built Field DOM Element.
+       */
+      function buildAndRender(fieldViewModel, fieldTemplate) {
+        var builtField = _.template(fieldTemplate),
+            fieldView = new kendo.View(builtField(fieldViewModel), {
+              wrap: false,
+              model: fieldViewModel,
+            }),
+            fieldElm = fieldView.render();
 
-          //send hidden window back to caller (appended in the callback)
-          if (typeof callback === 'function') {
-            callback(fieldElm.render());
-          }
-          return fieldElm;
-        },
-      };
+        // Send View element back to caller (appended in the callback).
+        if (typeof callback === 'function') {
+          callback(fieldElm);
+        }
 
+        return fieldElm;
+      }
+
+      /**
+       * Initialize Field Controller.
+       *
+       * @returns {object} Built Field DOM Element.
+       */
       function initField() {
-        var fieldTemplateProps = {
-          Required: node.Required,
-          Disabled: node.disabled,
-          MinLength: node.MinLength,
-          MaxLength: node.MaxLength,
-          LimitLength: (!_.isUndefined(node.MinLength) || !_.isUndefined(node.MaxLength)),
-          Rows: node.Rows || 5,
-          visible: (!_.isUndefined(node.IsVisible) && node.IsVisible === false ? 'hidden' : ''),
-        },
-          fieldViewModel = getFieldViewModel(fieldTemplateProps),
-          fieldEle = buildAndRender.fieldEle(fieldTemplateProps, fieldViewModel, longStringTemplate);
+        var defaultProperties = {
+              visible: true,
+              Required: false,
+              Disabled: false,
+              Rows: 4,
+            },
+            fieldViewModel = getFieldViewModel(defaultProperties),
+            fieldElm = buildAndRender(fieldViewModel, longStringTemplate);
 
         vm[node.PropertyName] = fieldViewModel;
-        return fieldEle;
+        return fieldElm;
       }
 
       return initField();
