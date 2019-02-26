@@ -72,7 +72,7 @@ define([
        * @returns {boolean} Item is a non-empty array.
        */
       function arrayIsNotNullOrEmpty(item) {
-        return (_.isArray(item) && item.length > 0);
+        return (typeof item !== 'undefined' && item.length > 0);
       }
 
       /**
