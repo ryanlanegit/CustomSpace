@@ -39,6 +39,13 @@ define(function () {
     definition = {
       template: null,
       task: roTask,
+      /**
+       * Build Work Item Tasks.
+       *
+       * @param {object} vm - Request Offering Task View Model.
+       * @param {object} roTaskElm - Task Contrainer Element.
+       * @param {object} options - roTask parsed options.
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -54,13 +61,13 @@ define(function () {
          * This callback type is called `processCallback` and is run on a target container.
          *
          * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
+         * @param {object} targetElm - Target question or display container.
          */
 
         /**
          * Processes the next N non-task containers.
          *
-         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {number} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
@@ -68,6 +75,12 @@ define(function () {
           _.each(targetElms, func);
         }
 
+        /**
+         * Set target field value using Angular evalAsync.
+         *
+         * @param {object} targetElm - Target field container element.
+         * @param {object|string|number} paramValue - Value to be set.
+         */
         function processParam(targetElm, paramValue) {
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
             app.custom.utils.log('roTask:build:processParam', {
@@ -79,13 +92,13 @@ define(function () {
           // Check if angular framework is ready
           vm.waitForAngular(function () {
             var questionType = $(targetElm).find('input.question-answer-type').val(),
-                targetId = $(targetElm).find('input.question-answer-id').val();
+                targetId = $(targetElm).find('input.question-answer-id').val(),
+                currentValue = $(targetElm).find('#' + targetId).val();
             switch (questionType) {
             case 'List':
-              var currentValue = $(targetElm).find('#' + targetId).val();
               if (paramValue !== currentValue) {
-                var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList');
-                var targetDataSourceData = targetDropdownData.dataSource.data(),
+                var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList'),
+                    targetDataSourceData = targetDropdownData.dataSource.data(),
                     filteredData;
                 if (targetDataSourceData.length > 0) {
                   filteredData = _.find(targetDataSourceData, function (item, index) {
@@ -111,7 +124,11 @@ define(function () {
           });
         }
 
-        /* Initialization code */
+        // #endregion Utility functions
+
+        /**
+         * Request Offering Task initialization script.
+         */
         function initROTask() {
           options.next = options.next || 1;
 

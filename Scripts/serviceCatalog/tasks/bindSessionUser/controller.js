@@ -50,13 +50,13 @@ define(function () {
          * This callback type is called `processCallback` and is run on a target container.
          *
          * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
+         * @param {object} targetElm - Target question or display container.
          */
 
         /**
          * Processes the next N non-task containers.
          *
-         * @param {Integer} next - Number of next non-task containers to process.
+         * @param {number} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
@@ -93,7 +93,7 @@ define(function () {
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
           options.next = options.next || 1;
