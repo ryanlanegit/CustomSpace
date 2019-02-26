@@ -19,7 +19,7 @@ define([
      * Optional build callback type.
      *
      * @callback buildCallback
-     * @param {Object} historyElm - History Control container element.
+     * @param {object} historyElm - History Control container element.
      */
 
     /**
@@ -42,12 +42,12 @@ define([
       // #region Utility functions
 
       /**
-       *
+       * Get DropDownList data From View Model Activity objects recursively.
        */
       function getDropDownData() {
         var data = [];
         /**
-         *
+         * Recursive processing of child Activity objects.
          */
         function getChildren(viewModel, prefix) {
           prefix = prefix || '';
