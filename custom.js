@@ -279,6 +279,11 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
 
     /*
+     *  Load Action Edit Button
+     */
+    app.custom.utils.getCachedScript('/CustomSpace/custom.editComment.js');
+
+    /*
      * Check Is Private In Action Log By Default
      */
     app.custom.formTasks.add('ServiceRequest', null, function (formObj) {
