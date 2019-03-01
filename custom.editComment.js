@@ -14,10 +14,18 @@
         actionLogVm = commentBoxEditor.element.get(0).kendoBindingTarget.source,
         actionLogAddButtonElm = $('.action-log-add-button'),
         actionLogGridElm = $('[data-control-grid="actionLogGrid"]'),
-        editButtomTemplate = '<i class="fa fa-pencil editComment pull-right" title="Edit"></i>';
+        editButtomTemplate = '<i class="fa fa-pencil editComment pull-right" title="Edit"></i>',
+        supportedActionTypes = [
+          'AnalystComment',
+          'EndUserComment',
+        ];
 
     actionLogAddButtonElm.on('click', function() {
-      if ($('.editComment').length === 0) {
+      if (
+        typeof actionLogVm.actionLogSource[0].ActionType !== 'undefined' &&
+        supportedActionTypes.indexOf(actionLogVm.actionLogSource[0].ActionType) !== -1 &&
+        $('.editComment').length === 0
+      ) {
         var editButtonElm = $(editButtomTemplate),
             containerCellElm = actionLogGridElm.find('.k-master-row:eq(0) td:last');
         containerCellElm.append(editButtonElm);
