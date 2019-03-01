@@ -14,8 +14,7 @@
         actionLogVm = commentBoxEditor.element.get(0).kendoBindingTarget.source,
         actionLogAddButtonElm = $('.action-log-add-button'),
         actionLogGridElm = $('[data-control-grid="actionLogGrid"]'),
-        editButtomTemplate = '<i class="fa fa-pencil editComment pull-right" title="Edit"></i>',
-        previousCommentText = '';
+        editButtomTemplate = '<i class="fa fa-pencil editComment pull-right" title="Edit"></i>';
 
     actionLogAddButtonElm.on('click', function() {
       if ($('.editComment').length === 0) {
@@ -26,7 +25,6 @@
           var actionLogComment = actionLogVm.actionLogSource.shift();
           commentBoxEditor.value(actionLogComment.Description);
           actionLogVm.set('isPrivate', actionLogComment.IsPrivate);
-          previousCommentText = actionLogComment.Description;
 
           commentBoxEditor.trigger('keyup', {
             currentTarget: commentBoxEditor.body,
