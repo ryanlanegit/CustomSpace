@@ -55,13 +55,13 @@
     });
   }
 
-  var supportedTypes = [
+  var supportedWITypes = [
     'Incident',
     'Problem',
     'ChangeRequest',
     'ServiceRequest',
   ];
-  _.each(supportedTypes, function (type) {
+  _.each(supportedWITypes, function (type) {
     app.custom.formTasks.add(type, null, initEditComment);
   });
 }());
