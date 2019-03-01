@@ -22,20 +22,20 @@
         var editButtonElm = $(editButtomTemplate),
             containerCellElm = actionLogGridElm.find('.k-master-row:eq(0) td:last');
         containerCellElm.append(editButtonElm);
-    		editButtonElm.on('click', function() {
-    			var actionLogComment = actionLogVm.actionLogSource[0];
-    			commentBoxEditor.value(actionLogComment.Description);
+        editButtonElm.on('click', function() {
+          var actionLogComment = actionLogVm.actionLogSource[0];
+          commentBoxEditor.value(actionLogComment.Description);
           actionLogVm.set('isPrivate', actionLogComment.IsPrivate);
-    			actionLogVm.actionLogSource.shift();
+          actionLogVm.actionLogSource.shift();
           previousCommentText = actionLogComment.Description;
 
           commentBoxEditor.trigger('keyup', {
             currentTarget: commentBoxEditor.body,
           });
           commentBoxEditor.trigger('change');
-    		});
+        });
       }
-  	});
+    });
   }
 
   /**
