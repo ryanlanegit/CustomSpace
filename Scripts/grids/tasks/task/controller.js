@@ -53,6 +53,7 @@ define([
               task: task,
               icon: 'fa-pencil',
               bClickPropagation: true,
+              title: '',
             },
             builtTask = _.template(listItemTaskTemplate);
 

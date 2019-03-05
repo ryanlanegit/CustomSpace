@@ -80,6 +80,7 @@
                   taskLinkSettings: {
                     icon: 'fa-pencil',
                     bClickPropagation: false,
+                    title: 'Assign To Analyst By Group',
                   },
                 });
 

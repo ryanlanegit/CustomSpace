@@ -56,6 +56,7 @@ define([
               className: '',
               href: '/',
               target: '_blank',
+              title: '',
             },
             builtLink = _.template(listItemLinkTemplate);
 
