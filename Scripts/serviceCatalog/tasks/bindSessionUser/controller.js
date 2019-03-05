@@ -178,10 +178,8 @@ define(function () {
                     } else {
                       switch (propertyKey) {
                       case 'EmailAddress':
-                        var SMTPFilter = _.find(data[0].Preference, function (item, index) {
-                          return item.ChannelName === 'SMTP';
-                        });
-                        if (SMTPFilter) {
+                        var SMTPFilter = _.findWhere(data[0].Preference, {ChannelName: 'SMTP'});
+                        if (!_.isUndefined(SMTPFilter)) {
                           updateTextAreaField(targetElm, SMTPFilter.TargetAddress);
                         }
                         break;

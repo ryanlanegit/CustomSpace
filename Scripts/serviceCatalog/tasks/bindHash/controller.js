@@ -101,10 +101,8 @@ define(function () {
                     targetDataSourceData = targetDropdownData.dataSource.data(),
                     filteredData;
                 if (targetDataSourceData.length > 0) {
-                  filteredData = _.find(targetDataSourceData, function (item, index) {
-                    return item.name === paramValue;
-                  });
-                  if (filteredData) {
+                  filteredData = _.findWhere(targetDataSourceData, {name: paramValue});
+                  if (!_.isUndefined(filteredData)) {
                     targetDropdownData.select(function(dataItem) {
                       return dataItem.name === paramValue;
                     });
