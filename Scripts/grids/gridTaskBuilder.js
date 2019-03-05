@@ -81,9 +81,7 @@ define([
                 }
                 var that = this,
                     // Look for provided column in grid by field name
-                    taskColumn = _.find(gridData.columns, function (colValue) {
-                      return colValue.field === field;
-                    }),
+                    taskColumn = _.findWhere(gridData.columns, {field: field}),
                     taskClass,
                     taskStyle;
 
@@ -116,6 +114,28 @@ define([
                       taskColumn.attributes.class = taskClass;
                     } else {
                       taskColumn.attributes.class = _.compact([taskColumn.attributes.class.replace(taskClass, ''), taskClass]).join(' ');
+                    }
+                    
+                    // Fix previous uses of template in saved grid state.
+                    if (typeof taskColumn.template !== 'undefined' && field === 'Priority') {
+                        var gridId = gridData.element.attr('Id'),
+                            gridNode = _.findWhere(app.storage.viewPanels.session.get('all'), {Id: gridId});
+                        if (!_.isUndefined(gridNode)) {
+                          var columnDefinition = _.findWhere(gridNode.Definition.content.grid.columns, {field: field});
+                          if (!_.isUndefined(columnDefinition)) {
+                            if (typeof columnDefinition.template === 'undefined') {
+                              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                app.custom.utils.log('gridTasks:add', "Removing previous template for '" + field + "'.");
+                              }
+                              delete taskColumn.template;
+                            } else {
+                              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                                app.custom.utils.log('gridTasks:add', "Resetting previous template for '" + field + "'.");
+                              }
+                              taskColumn.template = columnDefinition.template;
+                            }
+                          }
+                        }
                     }
                     break;
                   case 'style':
@@ -171,9 +191,7 @@ define([
                */
               get: function get(gridData, field, name) {
                 // Look for provided column in grid by field name
-                var taskColumn = _.find(gridData.columns, function (colValue) {
-                  return colValue.field === field;
-                });
+                var taskColumn = _.findWhere(gridData.columns, {field: field});
 
                 if (!_.isUndefined(taskColumn)) {
                   if (_.isUndefined(name)) {
@@ -181,9 +199,7 @@ define([
                     return taskColumn._tasks;
                   } else {
                     // Look for the specific task named in the provided field
-                    var gridTask = _.find(taskColumn._tasks, function (taskValue) {
-                      return taskValue.name === name;
-                    });
+                    var gridTask = _.findWhere(taskColumn._tasks, {name: name});
 
                     if (!_.isUndefined(gridTask)) {
                       // Return the specific task in the provided field
