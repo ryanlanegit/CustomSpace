@@ -294,11 +294,13 @@ define([
                     gridData.refresh();
                   } else {
                     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                      app.custom.utils.log('gridTasks:apply', 'Patch Grid Options');
+                      app.custom.utils.log('gridTasks:apply', 'Patch Grid Columns');
                     }
-                    $.extend(true, gridData.options.columns, gridData.columns);
-                    gridData.options.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
-                    gridData.options.altRowTemplate = gridData._tmpl(gridData.options.altRowTemplate || gridData.options.rowTemplate, gridData.columns);
+                    //$.extend(true, gridData.options.columns, gridData.columns);
+                    //gridData.options.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
+                    //gridData.options.altRowTemplate = gridData._tmpl(gridData.options.altRowTemplate || gridData.options.rowTemplate, gridData.columns);
+                    
+                    gridData._updateCols();
                   }
                 }
 
