@@ -1,4 +1,4 @@
-/* global _, $, app, kendo, session */
+/* global _, $, app, kendo, localizationHelper, session */
 
 /*
  * Custom Grid Tasks Config
@@ -80,7 +80,7 @@
                   taskLinkSettings: {
                     icon: 'fa-pencil',
                     bClickPropagation: false,
-                    title: 'Assign To Analyst By Group',
+                    title: localizationHelper.localize(task.name, 'Assign To Analyst By Group'),
                   },
                 });
 
