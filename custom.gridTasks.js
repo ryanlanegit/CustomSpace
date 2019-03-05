@@ -22,31 +22,7 @@
     if (!_.isUndefined(gridData)) {
       app.custom.gridTasks
         // Adding background colors to the Priority column based on value.
-        .add(gridData, 'Priority', 'style', '',
-          // Custom Priority Style Template
-          function () {
-            var template =
-              '# if (!_.isUndefined(Priority)) {' +
-                  'switch (Priority) {' +
-                  'case "4":' +
-                    '# #' +
-                    'break;' +
-                  'case "3":' +
-                    '# background-color:rgba(0, 255, 0, 0.25); #' +
-                    'break;' +
-                  'case "2":' +
-                  'case "Medium":' +
-                    '# background-color:rgba(255, 255, 0, 0.25); #' +
-                    'break;' +
-                  'case "1":' +
-                  'case "High":' +
-                    '# background-color:rgba(255, 0, 0, 0.25); #' +
-                    'break;' +
-                  '}' +
-                '} #';
-
-            return template;
-        })
+        .add(gridData, 'Priority', 'class', '', "#= 'ra-grid-priority-' + Priority #")
         // Adding custom internal and external links to the Title column with dynamic template and no callback.
         .add(gridData, 'Title', 'task', 'TitleLinks',
           // Custom Title Links Task Template generated using Underscore templating

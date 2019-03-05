@@ -4,7 +4,7 @@
  * Load Custom Grid Task Builder
  */
 
-/**
+/*
  * Uncomment when loading gridTaskmain directly through client unoptimized
  */
 /*

@@ -83,7 +83,9 @@ define([
                     // Look for provided column in grid by field name
                     taskColumn = _.find(gridData.columns, function (colValue) {
                       return colValue.field === field;
-                    });
+                    }),
+                    taskClass,
+                    taskStyle;
 
                 if (!_.isUndefined(taskColumn)) {
                   if (_.isUndefined(taskColumn._tasks)) {
@@ -99,9 +101,39 @@ define([
                   }
 
                   switch (type) {
+                  case 'class':
+                    // Set class attribute to provided template.
+                    taskClass = (typeof template === 'function') ? template(taskColumn) : template;
+                    Object.defineProperty(
+                      taskColumn.attributes,
+                      '_class', {
+                        enumerable: false,
+                        writable: true,
+                        value: taskClass,
+                      }
+                    );
+                    if (typeof taskColumn.attributes.class === 'undefined') {
+                      taskColumn.attributes.class = taskClass;
+                    } else {
+                      taskColumn.attributes.class = _.compact([taskColumn.attributes.class.replace(taskClass, ''), taskClass]).join(' ');
+                    }
+                    break;
                   case 'style':
                     // Set style attribute to provided template.
-                    taskColumn.attributes.style = (typeof template === 'function') ? template(taskColumn) : template;
+                    taskStyle = (typeof template === 'function') ? template(taskColumn) : template;
+                    Object.defineProperty(
+                      taskColumn.attributes,
+                      '_style', {
+                        enumerable: false,
+                        writable: true,
+                        value: taskStyle,
+                      }
+                    );
+                    if (typeof taskColumn.attributes.style === 'undefined') {
+                      taskColumn.attributes.style = taskStyle;
+                    } else {
+                      taskColumn.attributes.style = _.compact([taskColumn.attributes.style.replace(taskStyle, ''), taskStyle]).join(' ');
+                    }
                     break;
                   case 'task':
                     var existingTask = that.get(gridData, field, name)
@@ -224,7 +256,7 @@ define([
                 var that = this,
                     bUpdateGridTemplate = false;
 
-                $.each(gridData.columns, function (colIndex, column) {
+                _.each(gridData.columns, function (column) {
                   if (typeof column._tasks !== 'undefined') {
                     if (column._tasks.length > 0) {
                       column.template = that.buildTemplate('anchor', column);
