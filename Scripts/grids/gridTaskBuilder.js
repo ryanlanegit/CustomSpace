@@ -268,13 +268,22 @@ define([
                 if (bUpdateGridTemplate) {
                   // Update grid row templates if custom tasks/styles are added
                   gridData.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
-                  gridData.altRowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
+                  gridData.altRowTemplate = gridData._tmpl(gridData.options.altRowTemplate || gridData.options.rowTemplate, gridData.columns);
 
                   // Refresh grid to show column template changes
-                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    app.custom.utils.log('gridTasks:gridData.refresh');
+                  if (gridData.element.find('.k-loading-mask').length == 0) {
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                      app.custom.utils.log('gridTasks:apply', 'Refresh Grid');
+                    }
+                    gridData.refresh();
+                  } else {
+                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                      app.custom.utils.log('gridTasks:apply', 'Patch Grid Options');
+                    }
+                    $.extend(true, gridData.options.columns, gridData.columns);
+                    gridData.options.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
+                    gridData.options.altRowTemplate = gridData._tmpl(gridData.options.altRowTemplate || gridData.options.rowTemplate, gridData.columns);
                   }
-                  gridData.refresh();
                 }
 
                 return this;
