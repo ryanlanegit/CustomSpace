@@ -1,7 +1,7 @@
 /* global $, _, app, localizationHelper */
 
 /*
- * Dynamically add 'Edit' button to last comment in Action Log grid.
+ * Custom Action log Grid Tasks Config
  */
 
  (function () {
@@ -11,7 +11,7 @@
    }
 
   /**
-   * Dynamically add 'Edit' button to last comment in Action Log grid.
+   * Populate grid tasks for Action Log.
    */
   function populateActionLogTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -44,7 +44,7 @@
             taskLinkSettings: {
               icon: 'fa-pencil',
               bClickPropagation: false,
-              title: localizationHelper.localize(task.name, 'Edit Comment'),
+              title: localizationHelper.localize('Edit', 'Edit'),
             },
           });
 
@@ -90,7 +90,7 @@
   }
 
   /**
-   * Initialize Custom Grid Tasks.
+   * Initialize Custom Action Log Grid Tasks.
    */
   function initActionLogTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -100,33 +100,10 @@
     populateActionLogTasks();
   }
 
-  /**
-   * Initialize Dynamic 'Edit' Button Script
-   *
-   * @param {object} formObj - Page Form Object.
-   *
-   */
-  function initWICustomTask(formObj) {
-    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('custom.actionLogTasks:initWICustomTask');
-    }
-    formObj.boundReady(function(){
-      if (typeof app.custom.gridTasks !== 'undefined') {
-        app.custom.gridTasks.ready(initActionLogTasks);
-      } else {
-        // Subscribe initGridTasks to gridTasks.Ready event once.
-        $(app.events).one('gridTasks.Ready', initActionLogTasks);
-      }
-    });
+  if (typeof app.custom.gridTasks !== 'undefined') {
+    app.custom.gridTasks.ready(initActionLogTasks);
+  } else {
+    // Subscribe initActionLogTasks to gridTasks.Ready event once.
+    $(app.events).one('gridTasks.Ready', initActionLogTasks);
   }
-
-  var supportedWITypes = [
-    'Incident',
-    'Problem',
-    'ChangeRequest',
-    'ServiceRequest',
-  ];
-  _.each(supportedWITypes, function (type) {
-    app.custom.formTasks.add(type, null, initWICustomTask);
-  });
 }());
