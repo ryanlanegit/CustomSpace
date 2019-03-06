@@ -53,7 +53,7 @@
         // Format EnteredDate field
         fieldTemplate: "#= (EnteredDate) ? kendo.toString(new Date(EnteredDate), 'g'):'' #",
         /**
-         * Custom callback function.
+         * Custom Edit callback function.
          *
          * @param {object} data - Grid data object including dataItem and related data.
          */
