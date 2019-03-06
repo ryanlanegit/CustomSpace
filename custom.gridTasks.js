@@ -1,4 +1,4 @@
-/* global _, $, app, kendo, localizationHelper, session */
+/* global _, $, app, localizationHelper, session */
 
 /*
  * Custom Grid Tasks Config
