@@ -1,6 +1,15 @@
+<% var fieldTemplate; %>
 <ul class="ra-grid-task-menu">
-    <% _.each(_tasks, function (task) { %>
-        <%= task.template(obj, task).replace(/ {4}/g,"") %>
-    <% }); %>
+  <% _.each(_tasks, function (task) {
+       if (!_.isUndefined(task.fieldTemplate)) {
+         fieldTemplate = task.fieldTemplate;
+       }
+  %>
+    <%= task.template(obj, task).replace(/ {4}/g,"") %>
+  <% }); %>
 </ul>
-#: <%= field %> #
+<% if (_.isUndefined(fieldTemplate)) { %>
+  #: <%= field %> #
+<% } else { %>
+  <%= fieldTemplate %>
+<% } %>

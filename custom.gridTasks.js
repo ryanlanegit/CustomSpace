@@ -22,11 +22,24 @@
     if (!_.isUndefined(gridData)) {
       app.custom.gridTasks
         // Adding background colors to the Priority column based on value.
-        .add(gridData, 'Priority', 'class', '', "#= 'ra-grid-priority-' + Priority #")
+        .add(gridData, {
+          field: 'Priority',
+          type: 'class',
+          template: "#= 'ra-grid-priority-' + Priority #",
+        })
         // Adding custom internal and external links to the Title column with dynamic template and no callback.
-        .add(gridData, 'Title', 'task', 'TitleLinks',
-          // Custom Title Links Task Template generated using Underscore templating
-          function (column, task) {
+        .add(gridData, {
+          field: 'Title',
+          type: 'task',
+          name: 'TitleLinks',
+          /**
+           * Custom Title Links task template generated using Underscore templating
+           *
+           * @param {object} column - Kendo grid column object.
+           * @param {object} task - gridTask object.
+           * @returns {string} Kendo column template.
+           */
+          template: function template(column, task) {
             var template =
               '# var url = app.gridUtils.getLinkUrl(data, "***");' +
                 'if ((!_.isUndefined(WorkItemType) && WorkItemType.indexOf("Activity") != -1)) {' +
@@ -56,6 +69,7 @@
             });
 
             return template;
+          },
         });
 
       // If user is an analyst then add 'AssignToAnalystByGroup' grid task to AssignedUser column.
@@ -65,9 +79,18 @@
         if (assignToAnalystByGroupButton.length > 0) {
           app.custom.gridTasks
             // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
-            .add(gridData, 'AssignedUser', 'task', 'AssignToAnalystByGroup',
-              // Custom AssignToAnalystByGroup Task Template
-              function (column, task) {
+            .add(gridData, {
+              field: 'AssignedUser',
+              type: 'task',
+              name: 'AssignToAnalystByGroup',
+              /**
+               * Custom AssignToAnalystByGroup task template.
+               *
+               * @param {object} column - Kendo grid column object.
+               * @param {object} task - gridTask object.
+               * @returns {string} Kendo column template.
+               */
+              template: function template(column, task) {
                 var template =
                   '# var analystByGroupTypes = ["System.WorkItem.Incident", "System.WorkItem.ServiceRequest"];' +
                     'if (!_.isUndefined(WorkItemType) && analystByGroupTypes.indexOf(WorkItemType) > -1) { #' +
@@ -86,13 +109,18 @@
 
                 return template;
               },
-              // Custom callback function
-              function (data) {
+              /**
+               * Custom callback function.
+               *
+               * @param {object} data - Grid data object including dataItem and related data.
+               */
+              callback: function (data) {
                 app.custom.utils.log('AssignToAnalystByGroup:callback', data);
                 data.gridData.clearSelection();
                 data.gridData.select(data.itemRowEle);
 
                 assignToAnalystByGroupButton.click();
+              },
           });
         }
       }

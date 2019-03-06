@@ -312,10 +312,16 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
    * Load Custom Page Tasks
    */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
-} else if (window.location.pathname.indexOf('/View/') > -1) {
-  /*
-   *  Load Custom Grid Tasks
-   */
+}
+
+/*
+ *  Load Custom Grid Tasks
+ */
+if (
+  window.location.pathname.indexOf('/View/') > -1 ||
+  window.location.pathname.indexOf('/Edit/') > -1 ||
+  window.location.pathname.indexOf('/New/') > -1
+) {
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
   app.custom.utils.getCachedScript('/CustomSpace/custom.gridTasks.js');
 }
@@ -324,9 +330,9 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
  * Set Header Search Defaults
  */
 if (
-  (window.location.href.indexOf('ServiceCatalog') > -1) ||
-  (window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1) ||
-  (window.location.href.indexOf('02efdc70-55c7-4ba8-9804-ca01631c1a54') > -1)
+  window.location.href.indexOf('ServiceCatalog') > -1 ||
+  window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1 ||
+  window.location.href.indexOf('02efdc70-55c7-4ba8-9804-ca01631c1a54') > -1
 ) {
   $(function () {
     'use strict';

@@ -1,4 +1,4 @@
-/* global $, _, app, define, kendo */
+/* global $, _, app, define, kendo, pageForm, window */
 
 /**
  * Custom Grid Task Builder
@@ -24,7 +24,7 @@ define([
          * Optional build callback type.
          *
          * @callback buildCallback
-         * @param {Object} gridTaskVm - gridTask View Model.
+         * @param {Object} gridTasksVm - gridTask View Model.
          */
 
         /**
@@ -40,7 +40,7 @@ define([
            * Get Grid Tasks View Model.
            */
           function getGridTasksViewModel() {
-            var gridTaskVm = new kendo.observable({
+            var gridTasksVm = new kendo.observable({
               isReady: false,
               _readyDeferred: $.Deferred(),
 
@@ -80,16 +80,48 @@ define([
                   });
                 }
                 var that = this,
-                    // Look for provided column in grid by field name
-                    taskColumn = _.findWhere(gridData.columns, {field: field}),
-                    taskClass,
-                    taskStyle;
+                    options = {},
+                    taskTemplate;
 
-                if (!_.isUndefined(taskColumn)) {
-                  if (_.isUndefined(taskColumn._tasks)) {
+                if (arguments.length > 2) {
+                  options = {
+                    field: field,
+                    type: type,
+                    name: name,
+                    template: template,
+                    callback: callback,
+                  };
+                } else {
+                  if (typeof field === 'object') {
+                    $.extend(options, field);
+                  } else {
+                    if (!_.isUndefined(app.storage.utils)) {
+                      app.custom.utils.log(2, 'gridTasks:add', 'Warning! Invalid arguments supplied.');
+                    }
+                    return this;
+                  }
+                }
+
+                // Validate options
+                if (
+                  _.isUndefined(options.field) ||
+                  (
+                    ['class','style'].indexOf(options.type) === -1 && _.isUndefined(options.name)
+                  )
+                ) {
+                  if (!_.isUndefined(app.storage.utils)) {
+                    app.custom.utils.log(2, 'gridTasks:add', 'Warning! Invalid arguments supplied.');
+                  }
+                  return this;
+                }
+
+                // Look for provided column in grid by field name
+                var gridColumn = _.findWhere(gridData.columns, {field: options.field});
+                if (!_.isUndefined(gridColumn)) {
+                  if (_.isUndefined(gridColumn._tasks)) {
                     // Add empty tasks array to column template
                     Object.defineProperty(
-                      taskColumn,
+                      gridColumn,
                       '_tasks', {
                         enumerable: false,
                         writable: true,
@@ -98,41 +130,41 @@ define([
                     );
                   }
 
-                  switch (type) {
+                  switch (options.type) {
                   case 'class':
                     // Set class attribute to provided template.
-                    taskClass = (typeof template === 'function') ? template(taskColumn) : template;
+                    taskTemplate = (typeof options.template === 'function') ? options.template(gridColumn) : options.template;
                     Object.defineProperty(
-                      taskColumn.attributes,
+                      gridColumn.attributes,
                       '_class', {
                         enumerable: false,
                         writable: true,
-                        value: taskClass,
+                        value: taskTemplate,
                       }
                     );
-                    if (typeof taskColumn.attributes.class === 'undefined') {
-                      taskColumn.attributes.class = taskClass;
+                    if (typeof gridColumn.attributes.class === 'undefined') {
+                      gridColumn.attributes.class = taskTemplate;
                     } else {
-                      taskColumn.attributes.class = _.compact([taskColumn.attributes.class.replace(taskClass, ''), taskClass]).join(' ');
+                      gridColumn.attributes.class = _.compact([gridColumn.attributes.class.replace(taskTemplate, ''), taskTemplate]).join(' ');
                     }
-                    
+
                     // Fix previous uses of template in saved grid state.
-                    if (typeof taskColumn.template !== 'undefined' && field === 'Priority') {
+                    if (typeof gridColumn.template !== 'undefined' && options.field === 'Priority') {
                         var gridId = gridData.element.attr('Id'),
                             gridNode = _.findWhere(app.storage.viewPanels.session.get('all'), {Id: gridId});
                         if (!_.isUndefined(gridNode)) {
-                          var columnDefinition = _.findWhere(gridNode.Definition.content.grid.columns, {field: field});
+                          var columnDefinition = _.findWhere(gridNode.Definition.content.grid.columns, {field: options.field});
                           if (!_.isUndefined(columnDefinition)) {
                             if (typeof columnDefinition.template === 'undefined') {
                               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                                app.custom.utils.log('gridTasks:add', "Removing previous template for '" + field + "'.");
+                                app.custom.utils.log('gridTasks:add', "Removing previous template for '" + options.field + "'.");
                               }
-                              delete taskColumn.template;
+                              delete gridColumn.template;
                             } else {
                               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                                app.custom.utils.log('gridTasks:add', "Resetting previous template for '" + field + "'.");
+                                app.custom.utils.log('gridTasks:add', "Resetting previous template for '" + options.field + "'.");
                               }
-                              taskColumn.template = columnDefinition.template;
+                              gridColumn.template = columnDefinition.template;
                             }
                           }
                         }
@@ -140,42 +172,36 @@ define([
                     break;
                   case 'style':
                     // Set style attribute to provided template.
-                    taskStyle = (typeof template === 'function') ? template(taskColumn) : template;
+                    taskTemplate = (typeof options.template === 'function') ? options.template(gridColumn) : options.template;
                     Object.defineProperty(
-                      taskColumn.attributes,
+                      gridColumn.attributes,
                       '_style', {
                         enumerable: false,
                         writable: true,
-                        value: taskStyle,
+                        value: taskTemplate,
                       }
                     );
-                    if (typeof taskColumn.attributes.style === 'undefined') {
-                      taskColumn.attributes.style = taskStyle;
+                    if (typeof gridColumn.attributes.style === 'undefined') {
+                      gridColumn.attributes.style = taskTemplate;
                     } else {
-                      taskColumn.attributes.style = _.compact([taskColumn.attributes.style.replace(taskStyle, ''), taskStyle]).join(' ');
+                      gridColumn.attributes.style = _.compact([gridColumn.attributes.style.replace(taskTemplate, ''), taskTemplate]).join(' ');
                     }
                     break;
                   case 'task':
-                    var existingTask = that.get(gridData, field, name)
+                    var existingTask = that.get(gridData, options.field, options.name);
                     if (existingTask) {
                       // Merge new task with existing one in the column template
-                      $.extend(existingTask, {
-                        name : name,
-                        template: template,
-                        callback: callback,
-                      });
+                      $.extend(existingTask, options);
                     } else {
                       // Add new task to the column template
-                      taskColumn._tasks.push({
-                        name : name,
-                        template: template,
-                        callback: callback,
-                      });
+                      gridColumn._tasks.push(options);
                     }
                     break;
                   }
                 } else {
-                  app.custom.utils.log(2, 'gridTasks:add', "Warning! Unable to find field '" + field + "'.");
+                  if (!_.isUndefined(app.storage.utils)) {
+                    app.custom.utils.log(2, 'gridTasks:add', "Warning! Unable to find field '" + options.field + "'.");
+                  }
                 }
 
                 return this;
@@ -191,16 +217,14 @@ define([
                */
               get: function get(gridData, field, name) {
                 // Look for provided column in grid by field name
-                var taskColumn = _.findWhere(gridData.columns, {field: field});
-
-                if (!_.isUndefined(taskColumn)) {
+                var gridColumn = _.findWhere(gridData.columns, {field: field});
+                if (!_.isUndefined(gridColumn)) {
                   if (_.isUndefined(name)) {
                     // Return all tasks for the provided field
-                    return taskColumn._tasks;
+                    return gridColumn._tasks;
                   } else {
                     // Look for the specific task named in the provided field
-                    var gridTask = _.findWhere(taskColumn._tasks, {name: name});
-
+                    var gridTask = _.findWhere(gridColumn._tasks, {name: name});
                     if (!_.isUndefined(gridTask)) {
                       // Return the specific task in the provided field
                       return gridTask;
@@ -240,8 +264,11 @@ define([
                       itemRowEle: itemRowEle,
                       dataItem: dataItem,
                     };
-
-                app.custom.utils.log('gridTasks:callback', data);
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  app.custom.utils.log('gridTasks:callback', {
+                    data: data,
+                  });
+                }
 
                 if (existingTask) {
                   // Stop click propagation for jQuery click events if requested
@@ -253,7 +280,9 @@ define([
                     existingTask.callback(data);
                   }
                 } else {
-                  app.custom.utils.log(2, 'gridTasks:callback', 'Unable to find task for callback.');
+                  if (!_.isUndefined(app.storage.utils)) {
+                    app.custom.utils.log(2, 'gridTasks:callback', 'Unable to find task for callback.');
+                  }
                 }
               },
 
@@ -296,10 +325,6 @@ define([
                     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                       app.custom.utils.log('gridTasks:apply', 'Patch Grid Columns');
                     }
-                    //$.extend(true, gridData.options.columns, gridData.columns);
-                    //gridData.options.rowTemplate = gridData._tmpl(gridData.options.rowTemplate, gridData.columns);
-                    //gridData.options.altRowTemplate = gridData._tmpl(gridData.options.altRowTemplate || gridData.options.rowTemplate, gridData.columns);
-                    
                     gridData._updateCols();
                   }
                 }
@@ -332,7 +357,7 @@ define([
               },
             });
 
-            return gridTaskVm;
+            return gridTasksVm;
           }
 
           /**
@@ -340,14 +365,39 @@ define([
            */
           function initGridTasks() {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              app.custom.utils.log('gridTaskBuilder:initGridTask');
+              app.custom.utils.log('gridTaskBuilder:initGridTasks');
             }
-            var gridTasksVm = getGridTasksViewModel();
+            var gridTasksVm = getGridTasksViewModel(),
+                supportedWITypes = [
+                  'Incident',
+                  'Problem',
+                  'ChangeRequest',
+                  'ServiceRequest',
+                ];
 
-            // Wait for dynamicPageReady to trigger gridTasks.Ready event once.
-            $(app.events).one('dynamicPageReady', function publishGridTasksReady() {
+            /**
+             * Resolve deferred ready function queue.
+             * gridTaskmain module will publish 'gridTasks.Ready' event.
+             */
+            function publishGridTasksReady() {
               gridTasksVm.isReady = true;
               gridTasksVm._readyDeferred.resolve();
+            }
+
+            // Wait for dynamicPageReady event to trigger gridTasks.Ready event on View or Page path
+            $(app.events).one('dynamicPageReady', publishGridTasksReady);
+
+            /**
+             * Resolve Grid Tasks ready state on Page Form ready.
+             *
+             * @param {object} formObj - Page Form Object.
+             */
+            function initWICustomTask(formObj) {
+              formObj.boundReady(publishGridTasksReady);
+            }
+
+            _.each(supportedWITypes, function (type) {
+              app.custom.formTasks.add(type, null, initWICustomTask);
             });
 
             if (typeof callback === 'function') {
