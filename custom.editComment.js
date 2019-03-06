@@ -61,7 +61,6 @@
           app.custom.utils.log('EditComment:callback', data);
           var commentBoxEditor = $('#commentBoxEditor').data('kendoEditor'),
               actionLogVm = commentBoxEditor.element.get(0).kendoBindingTarget.source,
-              actionLogAddButtonElm = $('.action-log-add-button'),
               actionLogComment = _.findWhere(actionLogVm.actionLogSource, {uid: data.dataItem.uid}),
               actionLogCommentIndex;
 
