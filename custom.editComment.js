@@ -67,7 +67,6 @@
           if (!_.isUndefined(actionLogComment)) {
             actionLogCommentIndex = _.indexOf(actionLogVm.actionLogSource, actionLogComment);
             if (actionLogCommentIndex > -1) {
-              actionLogComment = actionLogVm.actionLogSource[actionLogCommentIndex];
               commentBoxEditor.value(actionLogComment.Description);
               actionLogVm.set('isPrivate', actionLogComment.IsPrivate);
 
