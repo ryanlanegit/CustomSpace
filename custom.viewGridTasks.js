@@ -7,15 +7,15 @@
 (function () {
   'use strict';
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-    app.custom.utils.log('custom.gridTasks:define');
+    app.custom.utils.log('custom.viewGridTasks:define');
   }
 
   /**
    * Populate the grid tasks of the first Kendo Grid found.
    */
-  function populateGridTasks() {
+  function populateViewGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('custom.gridTasks:populateGridTasks');
+      app.custom.utils.log('custom.viewGridTasks:populateViewGridTasks');
     }
     // Find first kendoGrid on page.
     var gridData = $('div[data-role="grid"]:first').data('kendoGrid');
@@ -133,20 +133,20 @@
   /**
    * Initialize Custom Grid Tasks.
    */
-  function initGridTasks() {
+  function initViewGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('custom.gridTasks:initGridTasks');
+      app.custom.utils.log('custom.viewGridTasks:initViewGridTasks');
     }
     // Immediately attempt to populate grid tasks.
-    populateGridTasks();
+    populateViewGridTasks();
     // Subscribe to queryBuilderGridReady events to populate dynamics grids.
-    app.events.subscribe('queryBuilderGridReady', populateGridTasks);
+    app.events.subscribe('queryBuilderGridReady', populateViewGridTasks);
   }
 
   if (typeof app.custom.gridTasks !== 'undefined') {
-    app.custom.gridTasks.ready(initGridTasks);
+    app.custom.gridTasks.ready(initViewGridTasks);
   } else {
-    // Subscribe initGridTasks to gridTasks.Ready event once.
-    $(app.events).one('gridTasks.Ready', initGridTasks);
+    // Subscribe initViewGridTasks to gridTasks.Ready event once.
+    $(app.events).one('gridTasks.Ready', initViewGridTasks);
   }
 }());

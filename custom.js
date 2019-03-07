@@ -279,9 +279,9 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
 
     /*
-     *  Load Action Edit Button
+     *  Load Custom Work Item Grid Tasks
      */
-    app.custom.utils.getCachedScript('/CustomSpace/custom.editComment.js');
+    app.custom.utils.getCachedScript('/CustomSpace/custom.wiGridTasks.js');
 
     /*
      * Check Is Private In Action Log By Default
@@ -312,6 +312,11 @@ if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
    * Load Custom Page Tasks
    */
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
+} else if (window.location.pathname.indexOf('/View/') > -1) {
+  /*
+   *  Load View Grid Tasks
+   */
+  app.custom.utils.getCachedScript('/CustomSpace/custom.viewGridTasks.js');
 }
 
 /*
@@ -323,7 +328,6 @@ if (
   window.location.pathname.indexOf('/New/') > -1
 ) {
   app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-  app.custom.utils.getCachedScript('/CustomSpace/custom.gridTasks.js');
 }
 
 /*
