@@ -1,4 +1,4 @@
-/* global $, _, app, localizationHelper */
+/* global $, _, app, kendo, localizationHelper */
 
 /*
  * Custom Action log Grid Tasks Config
@@ -60,18 +60,21 @@
         callback: function callback(data) {
           app.custom.utils.log('EditComment:callback', data);
           var commentBoxEditor = $('#commentBoxEditor').data('kendoEditor'),
-              actionLogVm = commentBoxEditor.element.get(0).kendoBindingTarget.source,
-              actionLogComment = _.findWhere(actionLogVm.actionLogSource, {uid: data.dataItem.uid}),
-              actionLogCommentIndex;
+              actionLogVm = data.gridData.dataSource.transport.data.parent(),
+              actionLogComment = _.findWhere(actionLogVm.actionLogSource, {uid: data.dataItem.uid});
 
-          if (!_.isUndefined(actionLogComment)) {
-            actionLogCommentIndex = _.indexOf(actionLogVm.actionLogSource, actionLogComment);
-            if (actionLogCommentIndex > -1) {
-              commentBoxEditor.value(actionLogComment.Description);
-              actionLogVm.set('isPrivate', actionLogComment.IsPrivate);
-
+          /**
+           * Remove Action Log comment and update Comment Editor.
+           */
+          function editComment() {
+            var actionLogCommentIndex = _.indexOf(actionLogVm.actionLogSource, actionLogComment);
+            if (!_.isUndefined(actionLogComment) && actionLogCommentIndex > -1) {
               // Remove comment from Action Log.
               actionLogVm.actionLogSource.splice(actionLogCommentIndex, 1);
+
+              // Set Comment Editor values.
+              commentBoxEditor.value(actionLogComment.Description);
+              actionLogVm.set('isPrivate', actionLogComment.IsPrivate);
 
               // Trigger Comment Editor events.
               commentBoxEditor.trigger('keyup', {
@@ -79,6 +82,21 @@
               });
               commentBoxEditor.trigger('change');
             }
+          }
+
+          if (actionLogVm.commentBoxHTML === '') {
+            editComment();
+          } else {
+            $.when(kendo.ui.ExtOkCancelDialog.show({
+                title: localizationHelper.localize('Warning', 'Warning'),
+                message: 'Your comment has not been added to the Action Log, continuing will overwrite it.',
+                icon: 'fa fa-exclamation',
+              })
+            ).done(function (response) {
+              if (response.button === 'ok') {
+                editComment();
+              }
+            });
           }
         },
       });
