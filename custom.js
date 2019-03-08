@@ -76,7 +76,9 @@ app.custom.utils = {
     if (arguments.length > 1 && typeof arguments[0] === 'number') {
       args = Array.prototype.slice.call(arguments, 1);
     }
-    Array.prototype.splice.call(args, 1, 0, performance.now());
+    if (typeof performance.now === 'function') {
+      Array.prototype.splice.call(args, 1, 0, performance.now());
+    }
 
     switch(outLevel) {
     case 1:
@@ -333,28 +335,27 @@ app.storage.custom = store.namespace('custom');
     });
   }
 
+  /**
+  * Load ROToolbox community scripts.
+  * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
+  */
+  function loadROToolbox() {
+    if (app.storage.custom.get('DEBUG_ENABLED')) {
+      app.custom.utils.log('loadROToolbox');
+    }
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
+      app.lib.mask.apply('Applying Request Offering Template');
+      transformRO();
+      app.lib.mask.remove();
+    });
+  }
+
   // Request Offering Customizations
   if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
     // Load Custom Request Offering Tasks
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
-
     // Load ROToolbox for specific Request Offering.
     if (window.location.pathname.indexOf('175a6ac3-e3de-1384-269f-5d91fc0e3087') > -1) {
-      /**
-      * Load ROToolbox community scripts.
-      * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
-      */
-      function loadROToolbox() {
-        if (app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('loadROToolbox');
-        }
-        app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
-          app.lib.mask.apply('Applying Request Offering Template');
-          transformRO();
-          app.lib.mask.remove();
-        });
-      }
-
       if (app.isSessionStored()) {
         loadROToolbox();
       } else {
@@ -372,11 +373,9 @@ app.storage.custom = store.namespace('custom');
   ) {
     // Load Custom Work Item Tasks
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
-
     // Load Custom Work Item Grid Tasks
     app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
     app.custom.utils.getCachedScript('/CustomSpace/custom.wiGridTasks.js');
-
     // Mark 'Is Private' as true in Action Log.
     app.custom.utils.formTasks.add({
       types: [
