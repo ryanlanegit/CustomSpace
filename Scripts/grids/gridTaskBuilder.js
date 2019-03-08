@@ -367,13 +367,7 @@ define([
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('gridTaskBuilder:initGridTasks');
             }
-            var gridTasksVm = getGridTasksViewModel(),
-                supportedWITypes = [
-                  'Incident',
-                  'Problem',
-                  'ChangeRequest',
-                  'ServiceRequest',
-                ];
+            var gridTasksVm = getGridTasksViewModel();
 
             /**
              * Resolve deferred ready function queue.
@@ -387,17 +381,15 @@ define([
             // Wait for dynamicPageReady event to trigger gridTasks.Ready event on View or Page path
             $(app.events).one('dynamicPageReady', publishGridTasksReady);
 
-            /**
-             * Resolve Grid Tasks ready state on Page Form ready.
-             *
-             * @param {object} formObj - Page Form Object.
-             */
-            function initWICustomTask(formObj) {
-              formObj.boundReady(publishGridTasksReady);
-            }
-
-            _.each(supportedWITypes, function (type) {
-              app.custom.formTasks.add(type, null, initWICustomTask);
+            // Resolve Grid Tasks ready state on Page Form ready.
+            app.custom.utils.formTasks.add({
+              types: [
+                'Incident',
+                'Problem',
+                'ChangeRequest',
+                'ServiceRequest',
+              ],
+              func: publishGridTasksReady,
             });
 
             if (typeof callback === 'function') {
