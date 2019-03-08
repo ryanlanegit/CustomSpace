@@ -18,7 +18,7 @@
       app.custom.utils.log('custom.viewGridTasks:populateViewGridTasks');
     }
     // Find first kendoGrid on page.
-    var gridData = $('div[data-role="grid"]:first').data('kendoGrid');
+    var gridData = $('.k-grid').filter('[data-role="grid"]:first').data('kendoGrid');
     if (!_.isUndefined(gridData)) {
       app.custom.gridTasks
         // Adding background colors to the Priority column based on value.
@@ -75,7 +75,7 @@
       // If user is an analyst then add 'AssignToAnalystByGroup' grid task to AssignedUser column.
       if (session.user.Analyst === 1) {
         // Check if page includes the 'analystByGroup' button before adding task.
-        var assignToAnalystByGroupButton = $('li[data-bind*="click: analystByGroup"]:first');
+        var assignToAnalystByGroupButton = $('.drawer-task-menu li').filter('[data-bind*="click: analystByGroup"]').eq(0)
         if (assignToAnalystByGroupButton.length > 0) {
           app.custom.gridTasks
             // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback

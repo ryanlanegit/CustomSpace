@@ -18,7 +18,7 @@
       app.custom.utils.log('custom.wiGridTasks:populateWIGridTasks');
     }
     // Find Action Log grid.
-    var actionLogGridData = $('.k-grid[data-control-grid="actionLogGrid"]').data('kendoGrid');
+    var actionLogGridData = $('.k-grid').filter('[data-control-grid="actionLogGrid"]').data('kendoGrid');
     if (!_.isUndefined(actionLogGridData)) {
       app.custom.gridTasks
         // Adding grid task to trigger EditComment with dynamic templates and custom callback
