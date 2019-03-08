@@ -78,6 +78,7 @@ require([
       app.custom.utils.log('roTaskMain:initTask');
     }
     var roTaskVm = kendo.observable({
+      _evalAsyncQueue: [],
       _evalAsyncQueueReady: false,
       _initEvalAsyncQueue: _.once(function _initEvalAsyncQueue() {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -104,7 +105,9 @@ require([
           var angularElm = angular.element('#GeneralInformation'),
               angularScope = angularElm.scope();
           angularScope.$evalAsync(function () {
-            app.events.publish('evalAsync.Ready');
+            while (roTaskVm._evalAsyncQueue.length){
+              roTaskVm._evalAsyncQueue.shift()();
+            }
             roTaskVm._evalAsyncQueueReady = true;
           });
         }
@@ -121,7 +124,7 @@ require([
             callback: callback,
           });
         }
-        $(app.events).one('evalAsync.Ready', callback);
+        roTaskVm._evalAsyncQueue.push(callback);
         roTaskVm._initEvalAsyncQueue();
         roTaskVm._processEvalAsyncQueue();
       },
