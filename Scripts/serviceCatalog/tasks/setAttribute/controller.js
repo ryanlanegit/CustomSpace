@@ -22,6 +22,13 @@ define(function () {
     definition = {
       template: null,
       task: roTask,
+      /**
+       * Build Request Offering Task.
+       *
+       * @param {Object} vm - View Model of the base roTask plugin.
+       * @param {Object} roTaskElm - Source task container element.
+       * @param {Object} options - Parsed options from roTaskElm's JSON contents
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -47,7 +54,7 @@ define(function () {
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
+          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
           _.each(targetElms, func);
         }
 

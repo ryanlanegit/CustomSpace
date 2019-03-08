@@ -54,7 +54,7 @@ define(function () {
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
+          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
           _.each(targetElms, func);
         }
 
@@ -228,7 +228,7 @@ define(function () {
               /*
                 Remove Existing Watchers for Ng-Show
               */
-              relatedElms = $('.row[ng-show="' + targetElmNGOriginalShow + '"], .row[ng-original-show="' + targetElmNGOriginalShow + '"]').filter(':not([addShowCriteria])').add(targetElm);
+              relatedElms = $('.row').filter('[ng-show="' + targetElmNGOriginalShow + '"], .row[ng-original-show="' + targetElmNGOriginalShow + '"]').filter(':not([addShowCriteria])').add(targetElm);
               sortedRelatedElms = _.sortBy(relatedElms, function (relatedElm) {
                 return $(relatedElm).find('input[ng-model]').attr('ng-model');
               }).reverse();

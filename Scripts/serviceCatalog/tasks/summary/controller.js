@@ -26,6 +26,13 @@ define([
     definition = {
       template: summaryTemplate,
       task: roTask,
+      /**
+       * Build Request Offering Task.
+       *
+       * @param {Object} vm - View Model of the base roTask plugin.
+       * @param {Object} roTaskElm - Source task container element.
+       * @param {Object} options - Parsed options from roTaskElm's JSON contents
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -51,7 +58,7 @@ define([
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
+          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
           _.each(targetElms, func);
         }
 
@@ -71,8 +78,11 @@ define([
           var gridEle = targetEle.find('div[data-control-grid]'),
             gridDataSource = new kendo.data.DataSource({
               transport: {
+                /**
+                 *
+                 */
                 getUserInput: function getUserInput() {
-                  var roQuestionElms = $('div.question-container').filter(':not(.ng-hide)'),
+                  var roQuestionElms = $('div.question-container').not('.ng-hide'),
                     userInput = [];
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     app.custom.utils.log('roTaskBuilder:createSummary.getUserInput', {
@@ -121,9 +131,16 @@ define([
 
                   return userInput;
                 },
+
+                /**
+                 *
+                 */
                 parseUserInput: function parseUserInput(userInput) {
                   var parsedUserInput = [];
 
+                  /**
+                   *
+                   */
                   function attachmentFilter(attachment) {
                     return (attachment !== 'null');
                   }
@@ -156,9 +173,15 @@ define([
                   });
                   return parsedUserInput;
                 },
+                /**
+                 *
+                 */
                 create: function (options) {
                   options.success(this.parseUserInput(this.getUserInput()));
                 },
+                /**
+                 *
+                 */
                 read: function (options) {
                   options.success(this.parseUserInput(this.getUserInput()));
                 },
@@ -178,7 +201,7 @@ define([
           gridEle.find('.k-grid-toolbar').hide();
 
           $('#drawer-taskbar').find('button:contains("Next")').on('click', function () {
-            $('section[ng-show="(currentIndex==1)"]').find('div.page-panel').find('div[data-control-grid]').data().handler.dataSource.read();
+            $('section').filter('[ng-show="(currentIndex==1)"]').find('div.page-panel').find('div[data-control-grid]').data().handler.dataSource.read();
           });
 
           return kendoGrid;

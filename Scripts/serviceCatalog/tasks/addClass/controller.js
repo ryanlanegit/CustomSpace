@@ -54,7 +54,7 @@ define(function () {
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll(':not(.task-container)').slice(0, next);
+          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
           _.each(targetElms, func);
         }
 
