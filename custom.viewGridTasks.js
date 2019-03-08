@@ -1,7 +1,7 @@
 /* global _, $, app, localizationHelper, session */
 
 /*
- * Custom Grid Tasks Config
+ * Custom View Grid Tasks Config
  */
 
 (function () {
@@ -75,7 +75,7 @@
       // If user is an analyst then add 'AssignToAnalystByGroup' grid task to AssignedUser column.
       if (session.user.Analyst === 1) {
         // Check if page includes the 'analystByGroup' button before adding task.
-        var assignToAnalystByGroupButton = $('.drawer-task-menu li').filter('[data-bind*="click: analystByGroup"]').eq(0)
+        var assignToAnalystByGroupButton = $('.drawer-task-menu li').filter('[data-bind*="click: analystByGroup"]').eq(0);
         if (assignToAnalystByGroupButton.length > 0) {
           app.custom.gridTasks
             // Adding grid task to trigger AssignToAnalystByGroup with dynamic template and custom callback
@@ -131,13 +131,13 @@
   }
 
   /**
-   * Initialize Custom Grid Tasks.
+   * Initialize Custom View grid tasks.
    */
   function initViewGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       app.custom.utils.log('custom.viewGridTasks:initViewGridTasks');
     }
-    // Immediately attempt to populate grid tasks.
+    // Immediately attempt to populate View grid tasks.
     populateViewGridTasks();
     // Subscribe to queryBuilderGridReady events to populate dynamics grids.
     app.events.subscribe('queryBuilderGridReady', populateViewGridTasks);

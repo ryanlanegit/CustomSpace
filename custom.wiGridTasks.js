@@ -109,7 +109,7 @@
   }
 
   /**
-   * Initialize Custom Workl Item Grid Tasks.
+   * Initialize Custom Work Item grid tasks.
    */
   function initWIGridTasks() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
