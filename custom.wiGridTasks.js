@@ -53,7 +53,7 @@
             return template;
           },
           // Format EnteredDate field
-          fieldTemplate: "#= (EnteredDate) ? kendo.toString(new Date(EnteredDate), 'g'):'' #",
+          fieldTemplate: "#= (EnteredDate) ? kendo.toString(new Date(EnteredDate), 'g') : '' #",
           /**
            * Custom Edit callback function.
            *
