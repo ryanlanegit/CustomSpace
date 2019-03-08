@@ -1,4 +1,4 @@
-/* global $, _, app, console, localization, performance, session, store, transformRO, window */
+/* global $, _, app, console, localizationHelper, performance, session, store, transformRO, window */
 /* eslint "no-console": [ "error", { "allow": [ "log", "warn", "error"] } ] */
 
 /*
@@ -8,7 +8,8 @@
 /**
  * Custom Script Utilities
  * @namespace utils
- * @property {string} utils.debugCSSPath - The default path of the Debug CSS file.
+ * @property {string} debugCSSPath - The default path of the Debug CSS file.
+ * @property {object} formTasks - Custom functions for app.custom.formTasks.
  */
 app.custom.utils = {
   debugCSSPath: '/CustomSpace/Content/Styles/custom.debug.css',
@@ -16,6 +17,7 @@ app.custom.utils = {
    * Enable or Disable Debug mode for custom scripts.
    *
    * @param {boolean} enabled - Level of logging [1/2/3] => [Log, Warning, Error]
+   * @returns {object} app.custom.utils for chaining.
    */
   setDebugMode: function setDebugMode(enabled) {
     'use strict';
@@ -56,6 +58,8 @@ app.custom.utils = {
     } else {
       app.custom.utils.removeCSS(app.custom.utils.debugCSSPath);
     }
+
+    return this;
   },
 
   /**
@@ -63,6 +67,7 @@ app.custom.utils = {
    *
    * @param {number} [level=1] - Level of logging [1/2/3] => [Log, Warning, Error]
    * @param {...object} content - Log contents
+   * @returns {object} app.custom.utils for chaining.
    */
   log: function log(level, content) {
     'use strict';
@@ -86,6 +91,8 @@ app.custom.utils = {
     default:
       console.log.apply(this, args);
     }
+
+    return this;
   },
 
   /**
@@ -130,6 +137,7 @@ app.custom.utils = {
    * Unload a CSS file based on the provided url.
    *
    * @param {string} url - URL of file to unload.
+   * @returns {object} app.custom.utils for chaining.
    */
   removeCSS: function removeCSS(url) {
     'use strict';
@@ -138,8 +146,10 @@ app.custom.utils = {
     }
 
     if (url !== null && url.length > 0 && url !== ' ') {
-      $('link[href*="' + url + '"]').remove();
+      $('link').filter('[href*="' + url + '"]').remove();
     }
+
+    return this;
   },
 
   /**
@@ -223,6 +233,53 @@ app.custom.utils = {
     }
     return format;
   },
+
+  formTasks: {
+    /**
+     * Bind calback to Page Form ready event for provided Work Item types.
+     *
+     * @param {object} types - Work Item types array or Options object.
+     * @param {string} [label] - Task Label.
+     * @param {function} [func] - Task callback function.
+     */
+    add: function add(types, label, func) {
+      'use strict';
+      var options = {
+        label: null,
+      };
+      if (arguments.length > 1) {
+        $.extend(options, {
+          types: types,
+          label: label,
+          func: func,
+        });
+      } else {
+        if (typeof types === 'object') {
+          $.extend(options, types);
+        } else {
+          if (!_.isUndefined(app.storage.utils)) {
+            app.custom.utils.log(2, 'custom.formTasks:add', 'Warning! Invalid arguments supplied.');
+          }
+          return app.custom.formTasks.tasks;
+        }
+      }
+
+      /**
+       * Bind calback to Page Form ready event.
+       *
+       * @param {object} formObj - Page Form Object.
+       */
+      function bindCallback(formObj) {
+        formObj.boundReady(options.func);
+      }
+
+      _.each(options.types, function (type) {
+        app.custom.formTasks.add(type, options.label, bindCallback);
+      });
+
+      return app.custom.formTasks.tasks;
+    },
+  },
 };
 
 /**
@@ -236,110 +293,21 @@ app.custom.utils = {
  */
 app.storage.custom = store.namespace('custom');
 
-// Enable Debug Mode to match enabled state from session storage.
-if (app.storage.custom.get('DEBUG_ENABLED')) {
-  app.custom.utils.setDebugMode(true);
-}
+// Customizations
+(function () {
+  'use strict';
 
-if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
-  /*
-   * Load Custom Request Offering Tasks
-   */
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
-
-  /**
-   * Load ROToolbox community scripts.
-   * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
-   */
-  function loadROToolbox() {
-    'use strict';
-    if (app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('loadROToolbox');
-    }
-    app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
-      app.lib.mask.apply('Applying Request Offering Template');
-      transformRO();
-      app.lib.mask.remove();
-    });
+  // Enable Debug Mode to match enabled state from session storage.
+  if (app.storage.custom.get('DEBUG_ENABLED')) {
+    app.custom.utils.setDebugMode(true);
   }
 
-  if (app.isSessionStored()) {
-    loadROToolbox();
-  } else {
-    // Subscribe loadROToolbox to sessionStorageReady event once.
-    $(app.events).one('sessionStorageReady', loadROToolbox);
-  }
-} else if (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1) {
-  if (window.location.pathname.indexOf('Incident') > -1 || window.location.pathname.indexOf('ServiceRequest') > -1) {
-    // app.events.subscribe('wiTasks.Ready', function () { 'use strict'; window.location.reload(); });
-
-    /*
-     *  Load Custom Work Item Tasks
-     */
-    app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
-
-    /*
-     *  Load Custom Work Item Grid Tasks
-     */
-    app.custom.utils.getCachedScript('/CustomSpace/custom.wiGridTasks.js');
-
-    /*
-     * Check Is Private In Action Log By Default
-     */
-    app.custom.formTasks.add('ServiceRequest', null, function (formObj) {
-      'use strict';
-      formObj.boundReady(function () {
-        $('#actionLogisPrivate').trigger('click');
-        $('.link[data-bind*=sendEmail]').on('click', function () {
-          $('#IsAddToLog').trigger('click').closest('div').hide();
-        });
-      });
-    });
-
-    app.custom.formTasks.add('Incident', null, function (formObj) {
-      'use strict';
-      formObj.boundReady(function () {
-        $('#actionLogisPrivate').trigger('click');
-        $('.link[data-bind*=sendEmail]').on('click', function () {
-          $('#IsAddToLog').trigger('click').closest('div').hide();
-          $('#ChangeStatusToPending').closest('div').hide();
-        });
-      });
-    });
-  }
-} else if (window.location.pathname.indexOf('/Page/') > -1) {
-  /*
-   * Load Custom Page Tasks
-   */
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
-} else if (window.location.pathname.indexOf('/View/') > -1) {
-  /*
-   *  Load View Grid Tasks
-   */
-  app.custom.utils.getCachedScript('/CustomSpace/custom.viewGridTasks.js');
-}
-
-/*
- *  Load Custom Grid Tasks
- */
-if (
-  window.location.pathname.indexOf('/View/') > -1 ||
-  window.location.pathname.indexOf('/Edit/') > -1 ||
-  window.location.pathname.indexOf('/New/') > -1
-) {
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-}
-
-/*
- * Set Header Search Defaults
- */
-if (
-  window.location.href.indexOf('ServiceCatalog') > -1 ||
-  window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1 ||
-  window.location.href.indexOf('02efdc70-55c7-4ba8-9804-ca01631c1a54') > -1
-) {
-  $(function () {
-    'use strict';
+  // Set Header Search Defaults
+  if (
+    window.location.href.indexOf('ServiceCatalog') > -1 ||
+    window.location.href.indexOf('94ecd540-714b-49dc-82d1-0b34bf11888f') > -1 ||
+    window.location.href.indexOf('02efdc70-55c7-4ba8-9804-ca01631c1a54') > -1
+  ) {
     $(function () {
       /**
        * Set NavBar Search dropdown selection and placeholder.
@@ -350,19 +318,102 @@ if (
        */
       function headerSearchSetType(searchParamVal, searchConceptHTML, searchInputPlaceholder) {
         searchParamVal = searchParamVal || 'WorkItem';
-        searchConceptHTML = searchConceptHTML || localization.WorkItems;
-        searchInputPlaceholder = searchInputPlaceholder || localization.SearchWorkItem;
+        searchConceptHTML = searchConceptHTML || localizationHelper.localize('WorkItems', 'Work Items');
+        searchInputPlaceholder = searchInputPlaceholder || localizationHelper.localize('SearchWorkItem', 'Search Work Item');
 
         var searchParam = $('input#search_param'),
             searchConcept = $('span#search_concept'),
-            searchInput = $('input[name="searchText"]');
+            searchInput = $('input').filter('[name="searchText"]');
 
         searchParam.val(searchParamVal);
         searchConcept.html(searchConceptHTML);
         searchInput.attr('placeholder', searchInputPlaceholder);
       }
-
-      headerSearchSetType();
+      $(headerSearchSetType);
     });
-  });
-}
+  }
+
+  // Request Offering Customizations
+  if (window.location.pathname.indexOf('ServiceCatalog/RequestOffering') > -1) {
+    // Load Custom Request Offering Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/roTaskMain-built.min.js');
+
+    // Load ROToolbox for specific Request Offering.
+    if (window.location.pathname.indexOf('175a6ac3-e3de-1384-269f-5d91fc0e3087') > -1) {
+      /**
+      * Load ROToolbox community scripts.
+      * @see {@link https://github.com/doyle-johnpaul/ROToolbox|ROToolbox}
+      */
+      function loadROToolbox() {
+        if (app.storage.custom.get('DEBUG_ENABLED')) {
+          app.custom.utils.log('loadROToolbox');
+        }
+        app.custom.utils.getCachedScript('/CustomSpace/Scripts/serviceCatalog/custom.ROToolbox.js').done(function () {
+          app.lib.mask.apply('Applying Request Offering Template');
+          transformRO();
+          app.lib.mask.remove();
+        });
+      }
+
+      if (app.isSessionStored()) {
+        loadROToolbox();
+      } else {
+        // Subscribe loadROToolbox to sessionStorageReady event once.
+        $(app.events).one('sessionStorageReady', loadROToolbox);
+      }
+    }
+    return;
+  }
+
+  // Work Item Customizations
+  if (
+    (window.location.pathname.indexOf('/Incident/') > -1 || window.location.pathname.indexOf('/ServiceRequest/') > -1) &&
+    (window.location.pathname.indexOf('/Edit/') > -1 || window.location.pathname.indexOf('/New/') > -1)
+  ) {
+    // Load Custom Work Item Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/forms/wiTaskMain-built.min.js');
+
+    // Load Custom Work Item Grid Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
+    app.custom.utils.getCachedScript('/CustomSpace/custom.wiGridTasks.js');
+
+    // Mark 'Is Private' as true in Action Log.
+    app.custom.utils.formTasks.add({
+      types: [
+        'Incident',
+        'Problem',
+        'ChangeRequest',
+        'ServiceRequest',
+      ],
+      /**
+       * Mark 'Is Private' as true in Action Log.
+       */
+      func: function setCommentIsPrivate() {
+        var actionLogGridData = $('.k-grid').filter('[data-control-grid="actionLogGrid"]').data('kendoGrid'),
+            actionLogVm;
+        if (!_.isUndefined(actionLogGridData)) {
+          actionLogVm = actionLogGridData.dataSource.transport.data.parent();
+          if (!_.isUndefined(actionLogVm)) {
+            actionLogVm.set('isPrivate', true);
+          }
+        }
+      },
+    });
+    return;
+    }
+
+  // Page Customizations
+  if (window.location.pathname.indexOf('/Page/') > -1) {
+    // Load Custom Page Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/page/pageTaskMain-built.min.js');
+    return;
+  }
+
+  // View Customizations
+  if (window.location.pathname.indexOf('/View/') > -1) {
+    // Load View Grid Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
+    app.custom.utils.getCachedScript('/CustomSpace/custom.viewGridTasks.js');
+    return;
+  }
+}());
