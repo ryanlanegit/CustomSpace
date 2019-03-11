@@ -7,8 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
   'jquery/autosize.js',
 ], function (
+  roTaskUtils,
   autosize
 ) {
   'use strict';
@@ -44,24 +46,6 @@ define([
 
         // #region Utility functions
 
-        /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
-
         // #endregion Utility functions
 
         /**
@@ -71,9 +55,9 @@ define([
           options.next = options.next || 1;
           options.rows = options.rows || '1';
 
-          processNext(options.next, function (targetElm, targetIndex) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetRows = (typeof options.rows === 'string') ? options.rows : options.rows[targetIndex];
-            vm.waitForAngular(function () {
+            roTaskUtils.waitForAngular(function () {
               var targetInputELm = $(targetElm).find('textarea');
               targetInputELm.addClass('auto-size').attr('rows', targetRows);
               autosize(targetInputELm);

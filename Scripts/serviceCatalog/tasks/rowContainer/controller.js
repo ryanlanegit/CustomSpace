@@ -7,8 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/view.html',
 ], function (
+  roTaskUtils,
   rowContainerTemplate
 ) {
   'use strict';
@@ -57,7 +59,7 @@ define([
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
-        function processNext(next, func) {
+        function processNext(roTaskElm, next, func) {
           var lastTargetElm = $(roTaskElm).nextAll().not('.task-container, .row-container').slice(0, next).slice(-1),
               targetElms = $(roTaskElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
               builtRowContainer = _.template(rowContainerTemplate);
@@ -83,7 +85,7 @@ define([
             options.colspan = columnSpanMap[options.next];
           }
 
-          processNext(options.next, function (targetElm, targetIndex) {
+          processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetColSpan = (typeof options.colspan === 'string') ? options.colspan : options.colspan[targetIndex];
             targetElm = $(targetElm);
             // Remove row class and column classes

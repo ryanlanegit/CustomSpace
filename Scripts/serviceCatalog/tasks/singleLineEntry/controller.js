@@ -6,7 +6,12 @@
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
-define(function () {
+define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+],
+function (
+  roTaskUtils
+) {
   'use strict';
   var roTask = {
       Task: 'singleLineEntry',
@@ -41,24 +46,6 @@ define(function () {
         // #region Utility functions
 
         /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
-
-        /**
          * Handle TextArea input field pasting entry, removing new lines if entered.
          *
          * @param {String} textInputId - Id of TextArea element.
@@ -91,7 +78,7 @@ define(function () {
         function initROTask() {
           options.next = options.next || 1;
 
-          processNext(options.next, function (targetElm) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
             targetElm = $(targetElm);
             var textInputId = targetElm.find('input.question-answer-id').val(),
                 targetTextAreaElm = targetElm.find('textArea');

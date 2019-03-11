@@ -7,8 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/summary/view.html',
 ], function (
+  roTaskUtils,
   summaryTemplate
 ) {
   'use strict';
@@ -43,24 +45,6 @@ define([
         }
 
         // #region Utility functions
-
-        /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
 
         // #endregion Utility functions
 
@@ -214,7 +198,7 @@ define([
           //var target = promptElm.next().find('div.col-xs-12'),
           var builtSummary = _.template(summaryTemplate);
 
-          processNext(options.next, function (targetElm) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
             $(targetElm).removeClass('col-md-8').addClass('col-md-12');
             $(targetElm).html(builtSummary());
             createSummary($(targetElm).find('div[data-control-bind]'));

@@ -77,58 +77,7 @@ require([
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       app.custom.utils.log('roTaskMain:initTask');
     }
-    var roTaskVm = kendo.observable({
-      _evalAsyncQueue: [],
-      _evalAsyncQueueReady: false,
-      _initEvalAsyncQueue: _.once(function _initEvalAsyncQueue() {
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTaskVm:_initEvalAsyncQueue');
-        }
-        angular.element(document).ready(function () {
-          roTaskVm._evalAsyncQueueReady = true;
-          roTaskVm._processEvalAsyncQueue();
-        });
-      }),
-
-      /**
-       * Wait until Angular has finished rendering and insert callback functions
-       * from waitQueue into Angular's evalAsync queue.
-       */
-      _processEvalAsyncQueue: function _processEvalAsyncQueue() {
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTaskVm:_processEvalAsyncQueue', {
-            _evalAsyncQueueReady: roTaskVm._evalAsyncQueueReady,
-          });
-        }
-        if (roTaskVm._evalAsyncQueueReady) {
-          roTaskVm._evalAsyncQueueReady = false;
-          var angularElm = angular.element('#GeneralInformation'),
-              angularScope = angularElm.scope();
-          angularScope.$evalAsync(function () {
-            while (roTaskVm._evalAsyncQueue.length){
-              roTaskVm._evalAsyncQueue.shift()();
-            }
-            roTaskVm._evalAsyncQueueReady = true;
-          });
-        }
-      },
-      /**
-       * Add callback to waitQueue and run processWaitQueue to wait until
-       * Angular has finished rendering and insert callback function into
-       * Angular's evalAsync queue.
-       * @param {function(string)} callback - Callback function.
-       */
-      waitForAngular: function waitForAngular(callback) {
-        if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('waitForAngular', {
-            callback: callback,
-          });
-        }
-        roTaskVm._evalAsyncQueue.push(callback);
-        roTaskVm._initEvalAsyncQueue();
-        roTaskVm._processEvalAsyncQueue();
-      },
-    });
+    var roTaskVm = kendo.observable({});
     // Build out custom request offering tasks
     roTaskBuilder.build(roTaskVm, roTaskBuilder.node, function () {
       app.events.publish('roTasks.Ready');

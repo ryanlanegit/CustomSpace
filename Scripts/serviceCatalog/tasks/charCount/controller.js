@@ -7,8 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/charCount/view.html',
 ], function (
+  roTaskUtils,
   charCountTemplate
 ) {
   'use strict';
@@ -26,6 +28,13 @@ define([
     definition = {
       template: charCountTemplate,
       task: roTask,
+      /**
+       * Build Request Offering Task.
+       *
+       * @param {Object} vm - View Model of the base roTask plugin.
+       * @param {Object} roTaskElm - Source task container element.
+       * @param {Object} options - Parsed options from roTaskElm's JSON contents
+       */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
           app.custom.utils.log('roTask:build', {
@@ -36,24 +45,6 @@ define([
         }
 
         // #region Utility functions
-
-        /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
 
         /**
          * Add the Minimum / Maximum required text to the page.
@@ -88,19 +79,25 @@ define([
           }
           options = $.extend(defaultOptions, options);
 
-          processNext(options.next, function (targetElm) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
             var targetTextAreaElm = $(targetElm).find('textarea'),
                 targetOptions = $.extend({}, options, {
                   charMin: $(targetTextAreaElm).siblings('input').attr('minlength') || 0,
                   charMax: $(targetTextAreaElm).siblings('input').attr('maxlength') || 0,
                 });
 
+            /**
+             * Paste input event handler.
+             */
             function funcOnPaste () {
               setTimeout(function () {
                 createCharacterCount($(this), targetOptions);
               }, 100);
             }
 
+            /**
+             * Key Up input event handler.
+             */
             function funcOnKeyUp () {
               createCharacterCount($(this), targetOptions);
             }

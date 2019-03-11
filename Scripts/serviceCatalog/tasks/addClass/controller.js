@@ -6,7 +6,12 @@
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
-define(function () {
+define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+],
+function (
+  roTaskUtils
+) {
   'use strict';
   var roTask = {
       Task: 'addClass',
@@ -40,24 +45,6 @@ define(function () {
 
         // #region Utility functions
 
-        /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
-
         // #endregion Utility functions
 
         /**
@@ -70,7 +57,7 @@ define(function () {
             return;
           }
 
-          processNext(options.next, function (targetElm, targetIndex) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetCSSClass = (typeof options.cssclass === 'string') ? options.cssclass : options.cssclass[targetIndex],
                 targetSelector;
             if (typeof options.selector === 'undefined') {

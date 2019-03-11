@@ -6,7 +6,12 @@
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
-define(function () {
+define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+],
+function (
+  roTaskUtils
+) {
   'use strict';
   var roTask = {
       Task: 'addShowCriteria',
@@ -39,24 +44,6 @@ define(function () {
         }
 
         // #region Utility functions
-
-        /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {Object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {Integer} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
 
         /**
           * Get function name from provided call string.
@@ -203,7 +190,7 @@ define(function () {
          */
         function recompileAngularElm(targetElm) {
           // Async wait for Angular framework to be ready
-          vm.waitForAngular(function () {
+          roTaskUtils.waitForAngular(function () {
             var $element = angular.element(targetElm),
                 $scope = $element.scope(),
                 $injector = $element.injector(),
@@ -334,8 +321,8 @@ define(function () {
             group: 'continue',
           };
           options = $.extend({}, defaultOptions, options);
-          processNext(options.next, function (targetElm) {
-            vm.waitForAngular(function () {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+            roTaskUtils.waitForAngular(function () {
               var subTaskElms = $(roTaskElm).nextUntil(targetElm, '.task-container'),
                   $element = angular.element(targetElm),
                   $scope = $element.scope(),

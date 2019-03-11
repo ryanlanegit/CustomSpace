@@ -6,7 +6,12 @@
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
-define(function () {
+define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+],
+function (
+  roTaskUtils
+) {
   'use strict';
 
   var initFetchDataSource = _.once(function (dataSource) {
@@ -59,7 +64,7 @@ define(function () {
          * @param {number} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
-        function processNext(next, func) {
+        function processNext(roTaskElm, next, func) {
           var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
           if (app.isSessionStored()) {
             _.each(targetElms, func);
@@ -80,7 +85,7 @@ define(function () {
         function updateTextAreaField(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
-          vm.waitForAngular(function () {
+          roTaskUtils.waitForAngular(function () {
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
@@ -125,7 +130,7 @@ define(function () {
             });
           }
 
-          processNext(options.next, function (targetElm, targetIndex) {
+          processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             // Update Input If HASH exists on Load
             var targetType = $(targetElm).find('input.question-answer-type').val(),
                 targetInputElm,

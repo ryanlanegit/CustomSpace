@@ -6,7 +6,12 @@
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
-define(function () {
+define([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+],
+function (
+  roTaskUtils
+) {
   'use strict';
   /*
     URL Hash Change Monitoring
@@ -58,24 +63,6 @@ define(function () {
         // #region Utility functions
 
         /**
-         * This callback type is called `processCallback` and is run on a target container.
-         *
-         * @callback processNextCallback
-         * @param {object} targetElm - Target question or display container.
-         */
-
-        /**
-         * Processes the next N non-task containers.
-         *
-         * @param {number} next - Number of next non-task containers to process.
-         * @param {processNextCallback} func - Callback function to process next question or display container.
-         */
-        function processNext(next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
-          _.each(targetElms, func);
-        }
-
-        /**
          * Set target field value using Angular evalAsync.
          *
          * @param {object} targetElm - Target field container element.
@@ -90,7 +77,7 @@ define(function () {
           }
 
           // Check if angular framework is ready
-          vm.waitForAngular(function () {
+          roTaskUtils.waitForAngular(function () {
             var questionType = $(targetElm).find('input.question-answer-type').val(),
                 targetId = $(targetElm).find('input.question-answer-id').val(),
                 currentValue = $(targetElm).find('#' + targetId).val();
@@ -134,7 +121,7 @@ define(function () {
             return;
           }
 
-          processNext(options.next, function (targetElm) {
+          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
             var targetId = $(targetElm).find('input.question-answer-id').val(),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),
