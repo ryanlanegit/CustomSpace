@@ -40,7 +40,9 @@ define([
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
     app.custom.utils.log('roTaskBuilder:define');
   }
-  var roTaskModules = arguments,
+  var roTaskModules = _.filter(arguments, function (argument) {
+        return (typeof argument === 'object' && !_.isUndefined(argument.task));
+      }),
       nodeConfig = {
         Name: 'roTaskBuilder',
         Type: 'RequestOffering',
@@ -81,11 +83,7 @@ define([
            */
           function buildAndRender(taskName, roTaskElm, options) {
             var roTask = _.find(roTaskModules, function (roTask) {
-              if (_.isUndefined(roTask.task)) {
-                return false;
-              } else {
-                return (roTask.task.Task.toLowerCase() === taskName.toLowerCase());
-              }
+                return roTask.task.Task.toLowerCase() === taskName.toLowerCase();
             });
 
             if (!_.isUndefined(roTask)) {
@@ -105,10 +103,8 @@ define([
           function initTask() {
             $('div.page-panel').each(function () {
               var roPage = $(this),
-                roTaskElms = roPage.find('div.row').filter(function (index) {
-                  return roTaskUtils.isValidJSON($(this).text());
-                }),
-                roQuestionElms = roPage.find('div.question-container');
+                  roQuestionElms = roPage.children('.question-container'),
+                  roTaskElms = roPage.children('.task-container');
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 app.custom.utils.log('roTaskBuilder:initTask', {
                   roPage: roPage,
@@ -119,10 +115,9 @@ define([
 
               roQuestionElms.each(function () {
                 var questionElm = $(this),
-                  questionId = questionElm.find('input.question-answer-id').val(),
-                  questionType = questionElm.find('input.question-answer-type').val(),
-                  questionFormGroup = questionElm.find('div.form-group'),
-                  msgSpan;
+                    questionId = questionElm.children('input.question-answer-id').val(),
+                    questionType = questionElm.children('input.question-answer-type').val(),
+                    questionFormGroup = questionElm.find('div.form-group');
 
                 switch (questionType) {
                 case 'Integer':
@@ -135,9 +130,10 @@ define([
                     }
                     questionFormGroup.find('input[data-role]').data().handler.setOptions({format: '#', decimals: 0 });
                     if (questionElm.find('span.k-invalid-msg').length === 0) {
-                      msgSpan = $('<span></span');
-                      msgSpan.addClass('k-invalid-msg').attr('data-for', questionId);
-                      questionFormGroup.prepend(msgSpan);
+                      questionFormGroup.prepend($('<span></span>', {
+                        'class': 'k-invalid-msg',
+                        'data-for': questionId,
+                      }));
                     }
                   });
                   break;

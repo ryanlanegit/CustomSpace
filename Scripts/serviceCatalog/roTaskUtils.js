@@ -2,7 +2,7 @@
 
 /**
  * Request Offering Task Utility Function Library
- * @module roTaskUtilsController
+ * @module roTaskUtils
  * @see module:roTaskMain
  * @see module:roTaskBuilder
  */
@@ -46,7 +46,7 @@ define(function () {
         },
       },
       /**
-       * @exports roTaskUtilsController
+       * @exports roTaskUtils
        */
       definition = {
         /**
@@ -98,7 +98,7 @@ define(function () {
         },
 
         /**
-         * This callback type is called `processCallback` and is run on a target container.
+         * This callback type is called 'processNextCallback' and is run on a target container.
          *
          * @callback processNextCallback
          * @param {object} targetElm - Target question or display container.
@@ -132,7 +132,7 @@ define(function () {
           roTaskUtilsVm.initEvalAsyncQueue();
           roTaskUtilsVm.processEvalAsyncQueue();
         },
-  };
+      };
 
   return definition;
 });

@@ -80,7 +80,7 @@ function (
 
           roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
             targetElm = $(targetElm);
-            var textInputId = targetElm.find('input.question-answer-id').val(),
+            var textInputId = targetElm.children('input.question-answer-id').val(),
                 targetTextAreaElm = targetElm.find('textArea');
 
             targetTextAreaElm

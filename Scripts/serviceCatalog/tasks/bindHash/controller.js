@@ -78,13 +78,14 @@ function (
 
           // Check if angular framework is ready
           roTaskUtils.waitForAngular(function () {
-            var questionType = $(targetElm).find('input.question-answer-type').val(),
-                targetId = $(targetElm).find('input.question-answer-id').val(),
-                currentValue = $(targetElm).find('#' + targetId).val();
+            targetElm = $(targetElm);
+            var questionType = targetElm.children('input.question-answer-type').val(),
+                targetId = targetElm.children('input.question-answer-id').val(),
+                currentValue = targetElm.find('#' + targetId).val();
             switch (questionType) {
             case 'List':
               if (paramValue !== currentValue) {
-                var targetDropdownData = $(targetElm).find('[data-role="dropdownlist"]').data('kendoDropDownList'),
+                var targetDropdownData = targetElm.find('[data-role="dropdownlist"]').data('kendoDropDownList'),
                     targetDataSourceData = targetDropdownData.dataSource.data(),
                     filteredData;
                 if (targetDataSourceData.length > 0) {
@@ -122,7 +123,7 @@ function (
           }
 
           roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
-            var targetId = $(targetElm).find('input.question-answer-id').val(),
+            var targetId = $(targetElm).children('input.question-answer-id').val(),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),
                 onInputChange;
