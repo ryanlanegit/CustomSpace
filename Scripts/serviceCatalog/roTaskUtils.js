@@ -73,6 +73,31 @@ define(function () {
         },
 
         /**
+         * Validate if a given string is a valid GUID.
+         * @see {@link https://github.com/douglascrockford/JSON-js/blob/master/json2.js|JSON-js}
+         * @example
+         * // returns true
+         * isValidJSON('{"bindHash": {"param" : "request"}}');
+         *
+         * @param {object|string} content - JSON string to validate.
+         * @returns {boolean} Provided string is a valid JSON string.
+         */
+        isValidJSON: function isValidJSON(content) {
+          // Regex Check For Valid JSON based on https://github.com/douglascrockford/JSON-js/blob/master/json2.js
+          var rx_one = /^[\],:{}\s]*$/,
+            rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+            rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+            rx_four = /(?:^|:|,)(?:\s*\[)+/g;
+
+          return rx_one.test(
+            content
+              .replace(rx_two, '@')
+              .replace(rx_three, ']')
+              .replace(rx_four, '')
+          );
+        },
+
+        /**
          * This callback type is called `processCallback` and is run on a target container.
          *
          * @callback processNextCallback

@@ -20,11 +20,14 @@ if (typeof require !== 'undefined') {
 /**
  * Load Custom Request Offering Task Builder
  * @module roTaskMain
+ * @see module:roTaskUtils
  * @see module:roTaskBuilder
  */
 require([
+  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
   'CustomSpace/Scripts/serviceCatalog/roTaskBuilder',
 ], function (
+  roTaskUtils,
   roTaskBuilder
 ) {
   'use strict';
@@ -45,7 +48,7 @@ require([
       roPages.each(function () {
         var roPage = $(this),
             roTaskElms = roPage.find('div.row').filter(function (index) {
-              return app.custom.utils.isValidJSON($(this).text());
+              return roTaskUtils.isValidJSON($(this).text());
             }),
             roQuestionElms = roPage.find('div.question-container');
 

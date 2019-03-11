@@ -86,7 +86,7 @@ define([
                         questionType = 'int';
                         break;
                       case 'list':
-                        if (app.custom.utils.isValidGUID(questionValue)) {
+                        if (roTaskUtils.isValidGUID(questionValue)) {
                           questionType = 'enum';
                         }
                         break;

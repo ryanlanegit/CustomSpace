@@ -153,56 +153,6 @@ app.custom.utils = {
  },
 
  /**
-  * Validate if a given string is a valid GUID.
-  *
-  * @example
-  * // returns true
-  * isValidGUID('12604183-1B96-908C-DADE-B46EB8CDF4F9');
-  *
-  * @param {object|string} content - GUID string to validate.
-  * @returns {boolean} Provided string is a valid GUID.
-  */
- isValidGUID: function isValidGUID(content) {
-   'use strict';
-   if (app.storage.custom.get('DEBUG_ENABLED')) {
-     app.custom.utils.log('isValidGUID', content);
-   }
-   content = content.toString();
-   var rx_one = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi,
-     rx_braces = /(^{|}$)/gi;
-   return rx_one.test(
-     content
-       .replace(rx_braces, '')
-   );
- },
-
- /**
-  * Validate if a given string is a valid GUID.
-  * @see {@link https://github.com/douglascrockford/JSON-js/blob/master/json2.js|JSON-js}
-  * @example
-  * // returns true
-  * isValidJSON('{"bindHash": {"param" : "request"}}');
-  *
-  * @param {object|string} content - JSON string to validate.
-  * @returns {boolean} Provided string is a valid JSON string.
-  */
- isValidJSON: function isValidJSON(content) {
-   // Regex Check For Valid JSON based on https://github.com/douglascrockford/JSON-js/blob/master/json2.js
-   'use strict';
-   var rx_one = /^[\],:{}\s]*$/,
-     rx_two = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
-     rx_three = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
-     rx_four = /(?:^|:|,)(?:\s*\[)+/g;
-
-   return rx_one.test(
-     content
-       .replace(rx_two, '@')
-       .replace(rx_three, ']')
-       .replace(rx_four, '')
-   );
- },
-
- /**
   * Format a string expression with
   *
   * @example

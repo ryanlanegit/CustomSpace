@@ -106,7 +106,7 @@ define([
             $('div.page-panel').each(function () {
               var roPage = $(this),
                 roTaskElms = roPage.find('div.row').filter(function (index) {
-                  return app.custom.utils.isValidJSON($(this).text());
+                  return roTaskUtils.isValidJSON($(this).text());
                 }),
                 roQuestionElms = roPage.find('div.question-container');
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
