@@ -183,53 +183,6 @@ app.custom.utils = {
    }
    return format;
  },
-
- formTasks: {
-   /**
-    * Bind calback to Page Form ready event for provided Work Item types.
-    *
-    * @param {object} types - Work Item types array or Options object.
-    * @param {string} [label] - Task Label.
-    * @param {function} [func] - Task callback function.
-    */
-   add: function add(types, label, func) {
-     'use strict';
-     var options = {
-       label: null,
-     };
-     if (arguments.length > 1) {
-       $.extend(options, {
-         types: types,
-         label: label,
-         func: func,
-       });
-     } else {
-       if (typeof types === 'object') {
-         $.extend(options, types);
-       } else {
-         if (!_.isUndefined(app.storage.utils)) {
-           app.custom.utils.log(2, 'custom.formTasks:add', 'Warning! Invalid arguments supplied.');
-         }
-         return app.custom.formTasks.tasks;
-       }
-     }
-
-     /**
-      * Bind calback to Page Form ready event.
-      *
-      * @param {object} formObj - Page Form Object.
-      */
-     function bindCallback(formObj) {
-       formObj.boundReady(options.func);
-     }
-
-     _.each(options.types, function (type) {
-       app.custom.formTasks.add(type, options.label, bindCallback);
-     });
-
-     return app.custom.formTasks.tasks;
-   },
- },
 };
 
 /**

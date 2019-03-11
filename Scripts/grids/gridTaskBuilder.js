@@ -6,10 +6,12 @@
  * @see module:gridTaskMain
  */
 define([
+  'CustomSpace/Scripts/forms/formTasksUtils',
   'CustomSpace/Scripts/grids/tasks/anchor/controller',
   'CustomSpace/Scripts/grids/tasks/link/controller',
   'CustomSpace/Scripts/grids/tasks/task/controller',
 ], function (
+  formTasksUtils,
   anchorController,
   linkController,
   taskController
@@ -382,7 +384,7 @@ define([
             $(app.events).one('dynamicPageReady', publishGridTasksReady);
 
             // Resolve Grid Tasks ready state on Page Form ready.
-            app.custom.utils.formTasks.add({
+            formTasksUtils.add({
               types: [
                 'Incident',
                 'Problem',
