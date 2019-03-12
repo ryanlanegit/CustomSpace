@@ -27,7 +27,7 @@ define(function () {
        */
       build: function build(promptElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('pageTask:build', {
+          app.custom.utils.log('addClassController:build', {
             task: pageTask,
             promptElm: promptElm,
             options: options,

@@ -37,7 +37,7 @@ define([
        */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTask:build', {
+          app.custom.utils.log('summaryController:build', {
             task: roTask,
             roTaskElm: roTaskElm,
             options: options,
@@ -69,7 +69,7 @@ define([
                   var roQuestionElms = $('div.question-container').not('.ng-hide'),
                     userInput = [];
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    app.custom.utils.log('roTaskBuilder:createSummary.getUserInput', {
+                    app.custom.utils.log('summaryController:createSummary.getUserInput', {
                       'roQuestionElms': roQuestionElms,
                     });
                   }

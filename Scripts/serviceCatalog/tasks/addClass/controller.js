@@ -36,7 +36,7 @@ function (
        */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTask:build', {
+          app.custom.utils.log('addClassController:build', {
             task: roTask,
             roTaskElm: roTaskElm,
             options: options,

@@ -35,7 +35,7 @@ define([
        */
       build: function build(field, task, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('gridTask:build', {
+          app.custom.utils.log('linkController:build', {
             gridTask: gridTask,
             field: field,
             task: task,

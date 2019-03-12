@@ -33,7 +33,7 @@ define([
        */
       build: function build(column) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('gridTask:build', {
+          app.custom.utils.log('anchorController:build', {
             gridTask: gridTask,
             column: column,
           });

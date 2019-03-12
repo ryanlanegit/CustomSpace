@@ -36,7 +36,7 @@ function (
        */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTask:build', {
+          app.custom.utils.log('addShowCriteriaController:build', {
             task: roTask,
             roTaskElm: roTaskElm,
             options: options,
@@ -202,7 +202,7 @@ function (
                 filteredWatchers;
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              app.custom.utils.log('recompileAngularElm', {
+              app.custom.utils.log('addShowCriteriaController:recompileAngularElm', {
                 targetElm: targetElm,
                 $element: $element,
                 $scope: $scope,
@@ -235,7 +235,7 @@ function (
                 arrayRemove($$watchers, filteredWatchers[targetIndex]);
                 arrayRemove($$watchers, filteredWatchers[targetIndex+1]);
               } else {
-                app.custom.utils.log(3, 'recompileAngularElm',
+                app.custom.utils.log(3, 'addShowCriteriaController:recompileAngularElm',
                   'Angular App watchers modification failure', {
                   targetElm: targetElm,
                   targetElmNGOriginalShow: targetElmNGOriginalShow,

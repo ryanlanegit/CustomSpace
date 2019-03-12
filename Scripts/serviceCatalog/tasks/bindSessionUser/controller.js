@@ -42,7 +42,7 @@ function (
        */
       build: function build(vm, roTaskElm, options) {
         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-          app.custom.utils.log('roTask:build', {
+          app.custom.utils.log('bindSessionController:build', {
             task: roTask,
             roTaskElm: roTaskElm,
             options: options,
@@ -138,7 +138,7 @@ function (
                 currentValue,
                 bUpdateValue = false;
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              app.custom.utils.log('roTask:processNext', {
+              app.custom.utils.log('bindSessionController:processNext', {
                 task: roTask,
                 roTaskElm: roTaskElm,
                 targetElm: targetElm,
