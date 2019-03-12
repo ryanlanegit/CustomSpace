@@ -212,9 +212,7 @@ function (
             }
 
             if (typeof $injector !== 'undefined') {
-              /*
-                Remove Existing Watchers for Ng-Show
-              */
+              // Remove Existing Watchers for Ng-Show
               relatedElms = $('.row').filter('[ng-show="' + targetElmNGOriginalShow + '"], .row[ng-original-show="' + targetElmNGOriginalShow + '"]').filter(':not([addShowCriteria])').add(targetElm);
               sortedRelatedElms = _.sortBy(relatedElms, function (relatedElm) {
                 return $(relatedElm).find('input[ng-model]').attr('ng-model');
@@ -249,9 +247,7 @@ function (
                 });
               }
 
-              /*
-                Recompile Angular Element
-              */
+              // Recompile Angular Element
               $injector.invoke(['$compile', function ($compile) {
                 $(targetElm).attr('addShowCriteria', true);
                 $compile($element)($scope);
