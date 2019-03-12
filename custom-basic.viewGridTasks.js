@@ -6,11 +6,12 @@
  * Minimal Configuration For Custom Grid Tasks
  */
 
+// #region Utility functions
+
 /**
  * Custom Script Utilities
  * @namespace utils
  * @property {string} debugCSSPath - The default path of the Debug CSS file.
- * @property {object} formTasks - Custom functions for app.custom.formTasks.
  */
 app.custom.utils = {
  debugCSSPath: '/CustomSpace/Content/Styles/custom.debug.css',
@@ -154,6 +155,8 @@ app.custom.utils = {
  },
 };
 
+// #endregion Utility functions
+
 /**
  * Custom Session Storage
  * @example
@@ -165,13 +168,19 @@ app.custom.utils = {
  */
 app.storage.custom = store.namespace('custom');
 
-// Enable Debug Mode to match enabled state from session storage.
-if (app.storage.custom.get('DEBUG_ENABLED')) {
-  app.custom.utils.setDebugMode(true);
-}
+// Customizations
+(function () {
+  'use strict';
 
-if (window.location.pathname.indexOf('/View/') > -1) {
-  // Load Custom Grid Tasks
-  app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
-  app.custom.utils.getCachedScript('/CustomSpace/custom.viewGridTasks.js');
-}
+  // Enable Debug Mode to match enabled state from session storage.
+  if (app.storage.custom.get('DEBUG_ENABLED')) {
+    app.custom.utils.setDebugMode(true);
+  }
+
+  // View Customizations
+  if (window.location.pathname.indexOf('/View/') > -1) {
+    // Load Custom Grid Tasks
+    app.custom.utils.getCachedScript('/CustomSpace/Scripts/grids/gridTaskMain-built.min.js');
+    app.custom.utils.getCachedScript('/CustomSpace/custom.viewGridTasks.js');
+  }
+}());

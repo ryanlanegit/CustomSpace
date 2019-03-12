@@ -21,7 +21,7 @@ define([
            * @param {object} template - Template to render.
            * @returns {object} Kendo view of rendered object.
            */
-          template: function popupNotification (template) {
+          template: function template (template) {
             var builtTemplate = _.template(template),
                 templateElm = new kendo.View(builtTemplate(), {
                   wrap: false,
@@ -70,7 +70,10 @@ define([
         },
 
         /**
+         * Create Kendo popup notification.
          *
+         * @param {object|function|number} message - Popup message.
+         * @param {string} type - Notification template type.
          */
         createPopupNotification: function createPopupNotification(message, type) {
           if (_.isUndefined(wiTaskUtilsVm.notificationView)) {

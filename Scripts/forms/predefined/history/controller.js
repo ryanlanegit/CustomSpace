@@ -108,7 +108,7 @@ define([
             serverFiltering: false,
             transport: {
               read: {
-                url: "/Search/GetObjectHistory",
+                url: '/Search/GetObjectHistory',
                 data: {
                   id: getObjectQueryId,
                 },

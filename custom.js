@@ -5,6 +5,8 @@
  * Custom Script utilties and dynamically loading modules.
  */
 
+// #region Utility functions
+
 /**
  * Custom Script Utilities
  * @namespace utils
@@ -209,6 +211,8 @@ app.custom.utils = {
   },
 };
 
+// #endregion Utility functions
+
 /**
  * Custom Session Storage
  * @example
@@ -305,8 +309,8 @@ app.storage.custom = store.namespace('custom');
     app.custom.utils.formTasks.add({
       types: [
         'Incident',
-        'Problem',
-        'ChangeRequest',
+      //'Problem',
+      //'ChangeRequest',
         'ServiceRequest',
       ],
       /**
@@ -324,7 +328,7 @@ app.storage.custom = store.namespace('custom');
       },
     });
     return;
-    }
+  }
 
   // Page Customizations
   if (window.location.pathname.indexOf('/Page/') > -1) {
