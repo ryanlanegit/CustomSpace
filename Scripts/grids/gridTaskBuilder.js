@@ -17,7 +17,12 @@ define([
   taskController
 ) {
   'use strict';
-  var gridTaskModules = arguments,
+  var gridTaskModules = _.chain(arguments)
+        .toArray()
+        .filter(function (argument) {
+          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+        })
+        .value(),
       /**
        * @exports gridTaskBuilder
        */

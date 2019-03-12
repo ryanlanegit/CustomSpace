@@ -70,16 +70,15 @@ app.custom.utils = {
    */
   log: function log(level, content) {
     'use strict';
-    var args = arguments,
-        outLevel = (typeof level === 'number') ? level : 1;
+    var args = _.toArray(arguments);
     if (arguments.length > 1 && typeof arguments[0] === 'number') {
-      args = Array.prototype.slice.call(arguments, 1);
+      args.splice(0, 1);
     }
     if (typeof performance.now === 'function') {
-      Array.prototype.splice.call(args, 1, 0, performance.now());
+      args.splice(1, 0, performance.now());
     }
 
-    switch(outLevel) {
+    switch((typeof level === 'number') ? level : 1) {
     case 1:
       console.log.apply(this, args);
       break;
@@ -146,11 +145,67 @@ app.custom.utils = {
       app.custom.utils.log('removeCSS', url);
     }
 
-    if (url !== null && url.length > 0 && url !== ' ') {
+    if (!_.isEmpty(url)) {
       $('link').filter('[href*="' + url + '"]').remove();
     }
 
     return this;
+  },
+
+  formTasks: {
+    /**
+    * Bind calback to Page Form ready event for provided Work Item types.
+    *
+    * @param {object} types - Work Item types array or Options object.
+    * @param {string} [label] - Task Label.
+    * @param {function} [func] - Task callback function.
+    */
+    add: function add(types, label, func) {
+      'use strict';
+      if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+        app.custom.utils.log('formTasksUtils:add', {
+          types: types,
+          label: label,
+          func: func,
+        });
+      }
+      var options = {
+        label: null,
+      };
+      if (arguments.length > 1) {
+        $.extend(options, {
+          types: types,
+          label: label,
+          func: func,
+        });
+      } else {
+        if (typeof types === 'object') {
+          $.extend(options, types);
+        } else {
+          if (!_.isUndefined(app.storage.utils)) {
+            app.custom.utils.log(2, 'formTasksUtils:add', 'Warning! Invalid arguments supplied.');
+          }
+          return app.custom.formTasks.tasks;
+        }
+      }
+
+      /**
+      * Bind calback to Page Form ready event.
+      *
+      * @param {object} formObj - Page Form Object.
+      */
+      function bindCallback(formObj) {
+        formObj.boundReady(function () {
+          options.func(formObj);
+        });
+      }
+
+      _.each(options.types, function (type) {
+        app.custom.formTasks.add(type, options.label, bindCallback);
+      });
+
+      return app.custom.formTasks.tasks;
+    },
   },
 };
 

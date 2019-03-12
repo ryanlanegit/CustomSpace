@@ -40,9 +40,12 @@ define([
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
     app.custom.utils.log('roTaskBuilder:define');
   }
-  var roTaskModules = _.filter(arguments, function (argument) {
-        return (typeof argument === 'object' && !_.isUndefined(argument.task));
-      }),
+  var roTaskModules = _.chain(arguments)
+        .toArray()
+        .filter(function (argument) {
+          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+        })
+        .value(),
       nodeConfig = {
         Name: 'roTaskBuilder',
         Type: 'RequestOffering',

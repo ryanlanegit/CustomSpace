@@ -69,31 +69,32 @@ app.custom.utils = {
   * @param {...object} content - Log contents
   * @returns {object} app.custom.utils for chaining.
   */
- log: function log(level, content) {
-   'use strict';
-   var args = arguments,
-       outLevel = (typeof level === 'number') ? level : 1;
-   if (arguments.length > 1 && typeof arguments[0] === 'number') {
-     args = Array.prototype.slice.call(arguments, 1);
-   }
-   Array.prototype.splice.call(args, 1, 0, performance.now());
+  log: function log(level, content) {
+    'use strict';
+    var args = _.toArray(arguments);
+    if (arguments.length > 1 && typeof arguments[0] === 'number') {
+      args.splice(0, 1);
+    }
+    if (typeof performance.now === 'function') {
+      args.splice(1, 0, performance.now());
+    }
 
-   switch(outLevel) {
-   case 1:
-     console.log.apply(this, args);
-     break;
-   case 2:
-     console.warn.apply(this, args);
-     break;
-   case 3:
-     console.error.apply(this, args);
-     break;
-   default:
-     console.log.apply(this, args);
-   }
+    switch((typeof level === 'number') ? level : 1) {
+    case 1:
+      console.log.apply(this, args);
+      break;
+    case 2:
+      console.warn.apply(this, args);
+      break;
+    case 3:
+      console.error.apply(this, args);
+      break;
+    default:
+      console.log.apply(this, args);
+    }
 
-   return this;
- },
+    return this;
+  },
 
  /**
   * Load a JavaScript file with cache enabled from the provided url.
@@ -145,43 +146,11 @@ app.custom.utils = {
      app.custom.utils.log('removeCSS', url);
    }
 
-   if (url !== null && url.length > 0 && url !== ' ') {
+   if (!_.isEmpty(url)) {
      $('link').filter('[href*="' + url + '"]').remove();
    }
 
    return this;
- },
-
- /**
-  * Format a string expression with
-  *
-  * @example
-  * // returns '1: String'
-  * stringFormat('{0}: {1}', '1', 'String');
-  * @example
-  * // returns '2: Array'
-  * stringFormat('{0}: {1}', ['2', 'Array']);
-  * @example
-  * // returns '3: Object'
-  * stringFormat('{key1}: {key2}', {key1: '3', key2: 'Object'});
-  *
-  * @param {string} format - String expression with placeholders.
-  * @param {...string|string[]|object} content - Placeholder values.
-  * @returns {string} Formatted string.
-  */
- stringFormat: function stringFormat(format, content) {
-   'use strict';
-   format = format.toString();
-   if (arguments.length > 1) {
-     var args = (typeof content === 'string' || typeof content === 'number') ? Array.prototype.slice.call(arguments, 1) : content,
-       key;
-     for (key in args) {
-       if (args.hasOwnProperty(key)) {
-         format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), args[key]);
-       }
-     }
-   }
-   return format;
  },
 };
 

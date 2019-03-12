@@ -66,13 +66,10 @@ require([
       });
     }
 
-    var closedStatusIds = [
-      'c7b65747-f99e-c108-1e17-3c1062138fc4', // Service Request Status Closed
-      'bd0ae7c4-3315-2eb3-7933-82dfc482dbaf', // Incident Status Closed
-      'f228d50b-2b5a-010f-b1a4-5c7d95703a9b', // Change Status Closed
-      '25eac210-e091-8ae8-a713-fea2472f32ff', // Problem Status Closed
-      '221155fc-ad9f-1e40-c50e-9028ee303137', // Release Record Status Closed
-    ];
+    var closedStatusIds = _.chain(app.constants.workItemStatuses)
+      .pluck('Closed')
+      .compact()
+      .value();
 
     // If Work item is New or Status is not closed then add tasks
     if (pageForm.newWI || closedStatusIds.indexOf(pageForm.viewModel.Status.Id) === -1) {
@@ -84,25 +81,11 @@ require([
     }
   }
 
-  /**
-   *
-   */
-  function boundReadyInitTasks(formObj) {
-    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-      app.custom.utils.log('wiTaskMain:boundReadyInitTasks', {
-        formObj: formObj,
-      });
-    }
-    formObj.boundReady(function () {
-        initTasks(formObj);
-    });
-  }
-
   formTasksUtils.add({
     types: [
       'Incident',
       'ServiceRequest',
     ],
-    func: boundReadyInitTasks,
+    func: initTasks,
   });
 });

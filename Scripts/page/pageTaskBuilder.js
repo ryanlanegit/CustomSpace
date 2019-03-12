@@ -13,7 +13,12 @@ define([
   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
     app.custom.utils.log('pageTaskBuilder:define');
   }
-  var pageTaskModules = arguments,
+  var pageTaskModules = _.chain(arguments)
+        .toArray()
+        .filter(function (argument) {
+          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+        })
+        .value(),
       nodeConfig = {
         Name: 'pageTaskBuilder',
         Type: 'RequestOffering',

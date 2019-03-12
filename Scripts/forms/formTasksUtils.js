@@ -54,7 +54,9 @@ define(function () {
        * @param {object} formObj - Page Form Object.
        */
       function bindCallback(formObj) {
-        formObj.boundReady(options.func);
+        formObj.boundReady(function () {
+          options.func(formObj);
+        });
       }
 
       _.each(options.types, function (type) {

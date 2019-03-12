@@ -10,7 +10,12 @@ define([
   resolveIncidentController
 ) {
   'use strict';
-  var taskModules = arguments,
+  var taskModules = _.chain(arguments)
+        .toArray()
+        .filter(function (argument) {
+          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+        })
+        .value(),
       /**
        * @exports wiTaskBuilder
        */
