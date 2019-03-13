@@ -14,7 +14,7 @@ function (
 ) {
   'use strict';
   var roTask = {
-      Task: 'setAttribute',
+      Name: 'setAttribute',
       Type: 'RequestOffering',
       Label: 'Set Attribute',
       Configs: {},

@@ -14,7 +14,7 @@ function (
 ) {
   'use strict';
   var roTask = {
-      Task: 'singleLineEntry',
+      Name: 'singleLineEntry',
       Type: 'RequestOffering',
       Label: 'Single Line Entry',
       Configs: {},

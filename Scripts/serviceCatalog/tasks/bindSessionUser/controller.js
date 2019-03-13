@@ -18,7 +18,7 @@ function (
       dataSource.fetch();
     }),
     roTask = {
-      Task: 'bindSessionUser',
+      Name: 'bindSessionUser',
       Type: 'RequestOffering',
       Label: 'Bind Session User Properties',
       Configs: {

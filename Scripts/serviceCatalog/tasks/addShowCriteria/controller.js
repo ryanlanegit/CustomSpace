@@ -14,7 +14,7 @@ function (
 ) {
   'use strict';
   var roTask = {
-      Task: 'addShowCriteria',
+      Name: 'addShowCriteria',
       Type: 'RequestOffering',
       Label: 'Add Show Criteria',
       Configs: {},
@@ -357,7 +357,7 @@ function (
                   var parsedProperties = JSON.parse(subTaskElm.text()),
                       subTaskNGShowAttr = subTaskElm.attr('ng-show'),
                       criteriaOptions = {},
-                      criteriaPropertyName = roTask.Task + '.criteria';
+                      criteriaPropertyName = roTask.Name + '.criteria';
                   if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
                     $.extend(criteriaOptions, defaultOptions, parsedProperties[criteriaPropertyName]);
                     currentCriteriaGroup.push(criteriaOptions.operator);

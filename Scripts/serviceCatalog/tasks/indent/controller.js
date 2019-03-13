@@ -14,7 +14,7 @@ function (
 ) {
   'use strict';
   var roTask = {
-      Task: 'indent',
+      Name: 'indent',
       Type: 'RequestOffering',
       Label: 'Indent',
       Configs: {},

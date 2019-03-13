@@ -14,7 +14,7 @@ function (
 ) {
   'use strict';
   var roTask = {
-      Task: 'addClass',
+      Name: 'addClass',
       Type: 'RequestOffering',
       Label: 'Add Class',
       Configs: {},

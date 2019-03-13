@@ -80,13 +80,13 @@ define([
           /**
            * Build and render a Request Offering Task.
            *
-           * @param {string} taskName - Task Name
            * @param {object} roTaskElm - Task Container
+           * @param {string} taskName - Task Name
            * @param {object} options - Number
            */
-          function buildAndRender(taskName, roTaskElm, options) {
+          function buildAndRender(roTaskElm, taskName, options) {
             var roTask = _.find(roTaskModules, function (roTask) {
-                return roTask.task.Task.toLowerCase() === taskName.toLowerCase();
+                return roTask.task.Name.toLowerCase() === taskName.toLowerCase();
             });
 
             if (!_.isUndefined(roTask)) {
@@ -145,22 +145,19 @@ define([
 
               roTaskElms.each(function () {
                 var roTaskElm = $(this),
-                    parsedProperties = JSON.parse(roTaskElm.text()),
-                    propName;
-                for (propName in parsedProperties) {
-                  if (parsedProperties.hasOwnProperty(propName)) {
-                    if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                      app.custom.utils.log('roTaskElm.property', {
-                        name: propName,
-                        value: parsedProperties[propName],
-                      });
-                    }
-                    // Ignore tasks with a namespace as they represent additional options/criteria for a previous task
-                    if (propName.indexOf('.') === -1) {
-                      buildAndRender(propName, roTaskElm, parsedProperties[propName]);
-                    }
+                    parsedProperties = JSON.parse(roTaskElm.text());
+                _.each(parsedProperties, function (val, key) {
+                  if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                    app.custom.utils.log('roTaskElm.property', {
+                      key: key,
+                      value: val,
+                    });
                   }
-                }
+                  // Ignore tasks with a namespace as they represent additional options/criteria for a previous task
+                  if (key.indexOf('.') === -1) {
+                    buildAndRender(roTaskElm, key, val);
+                  }
+                });
               });
             });
 

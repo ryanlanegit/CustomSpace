@@ -15,7 +15,7 @@ define([
 ) {
   'use strict';
   var roTask = {
-      Task: 'charCount',
+      Name: 'charCount',
       Type: 'RequestOffering',
       Label: 'Character Count',
       Configs: {},

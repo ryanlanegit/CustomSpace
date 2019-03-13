@@ -29,7 +29,7 @@ function (
   });
 
   var roTask = {
-      Task: 'bindHash',
+      Name: 'bindHash',
       Type: 'RequestOffering',
       Label: 'Bind Hash',
       Configs: {

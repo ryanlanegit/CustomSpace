@@ -15,7 +15,7 @@ define([
 ) {
   'use strict';
   var roTask = {
-      Task: 'autoSize',
+      Name: 'autoSize',
       Type: 'RequestOffering',
       Label: 'Autosize Textarea',
       Configs: {},

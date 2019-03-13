@@ -58,13 +58,10 @@ define([
         stringFormat: function stringFormat(format, content) {
           format = format.toString();
           if (arguments.length > 1) {
-            var args = (typeof content === 'string' || typeof content === 'number') ? _.toArray(arguments).slice(1) : content,
-                key;
-            for (key in args) {
-              if (args.hasOwnProperty(key)) {
-                format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), args[key]);
-              }
-            }
+            var args = (typeof content === 'string' || typeof content === 'number') ? _.toArray(arguments).slice(1) : content;
+            _.each(args, function (val, key) {
+              format = format.replace(new RegExp('\\{' + key + '\\}', 'gi'), val);
+            });
           }
           return format;
         },

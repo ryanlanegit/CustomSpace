@@ -15,7 +15,7 @@ define([
 ) {
   'use strict';
   var roTask = {
-      Task: 'rowContainer',
+      Name: 'rowContainer',
       Type: 'RequestOffering',
       Label: 'Row Container',
       Configs: {},

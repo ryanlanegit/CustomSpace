@@ -37,7 +37,6 @@ require([
 
   /**
    * Initialize Request Offering Question/Task Default Container Classes
-   * @returns {boolean} - DOM has been modified.
    */
   function initContainerStyles() {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
@@ -46,31 +45,19 @@ require([
     var roPages = $('div.page-panel');
     if (roPages.length > 0) {
       roPages.each(function () {
-        var roPage = $(this),
-            roPageRows = roPage.children('.row'),
+        var roPageRows = $(this).children('.row'),
             roQuestionElms = roPageRows.filter('.question-container'),
-            roTaskElms = roPageRows.not(roQuestionElms).filter(function (index) {
+            roDisplayElms = roPageRows.not(roQuestionElms),
+            roTaskElms = roDisplayElms.filter(function () {
               return roTaskUtils.isValidJSON($(this).text());
             });
-
-        // Add 'task-container' class to rows contains task JSON
+        // Set 50% width for question rows.
+        roQuestionElms.children('.col-xs-12').filter('.col-md-4, .col-md-8').removeClass('col-md-4 col-md-8').addClass('col-md-6');
+        // Set 100% width for display (non-question) rows.
+        roDisplayElms.children('.col-xs-12').removeClass('col-md-8').addClass('col-md-12');
+        // Add 'task-container' class to rows that contain task JSON.
         roTaskElms.addClass('task-container').children().addClass('task-container-content');
-
-        // Set 100% Width for Display Rows
-        roPageRows.not(roQuestionElms).children('.col-xs-12').removeClass('col-md-8').addClass('col-md-12');
-
-        // Set 50% Width for Question Rows
-        roQuestionElms.each(function () {
-          var questionElm = $(this),
-              questionContainer = questionElm.children('.col-xs-12');
-          if (questionContainer.hasClass('col-md-4') || questionContainer.hasClass('col-md-8')) {
-            questionContainer.removeClass('col-md-4 col-md-8').addClass('col-md-6');
-          }
-        });
       });
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -81,19 +68,17 @@ require([
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       app.custom.utils.log('roTaskMain:initTask');
     }
-    var roTaskVm = kendo.observable({});
-    // Build out custom request offering tasks
-    roTaskBuilder.build(roTaskVm, roTaskBuilder.node, function () {
+    // Set row container styling
+    initContainerStyles();
+    // Build custom Request Offering Tasks
+    roTaskBuilder.build(kendo.observable(), roTaskBuilder.node, function () {
       app.events.publish('roTasks.Ready');
     });
   }
 
-  if (initContainerStyles()) {
-    initTasks();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTasks);
   } else {
-    $(document).ready(function () {
-      initContainerStyles();
-      initTasks();
-    });
+    initTasks();
   }
 });
