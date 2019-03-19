@@ -39,7 +39,9 @@ require([
   }
 
   /**
+   * Sort UL List.
    *
+   * @param {object} ulElement - UL elememnt to sort.
    */
   function sortList(ulElement) {
     if (app.storage.custom.get('DEBUG_ENABLED')) {
@@ -57,7 +59,9 @@ require([
   }
 
   /**
+   * Work Item Tasks initialization script.
    *
+   * @param {object} pageForm - Page Form Kendo View Model.
    */
   function initTasks(pageForm) {
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {

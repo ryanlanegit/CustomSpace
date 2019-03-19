@@ -1,4 +1,4 @@
-/* global $, _, app, define */
+/* global $, _, app, define, kendo */
 
 /**
  * Custom Request Offering Task Builder
@@ -62,15 +62,11 @@ define([
         /**
          * Build Request Offering Tasks.
          *
-         * @param {object} vm - View Model of the base roTask plugin.
-         * @param {object} node - Module configuration.
          * @param {function} [callback] - callback function once build is complete.
          */
-        build: function build(vm, node, callback) {
+        build: function build(callback) {
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
             app.custom.utils.log('roTaskBuilder:build', {
-              vm: vm,
-              node: node,
               callback: callback,
             });
           }
@@ -84,18 +80,43 @@ define([
            * @param {string} taskName - Task Name
            * @param {object} options - Number
            */
-          function buildAndRender(roTaskElm, taskName, options) {
+          function buildAndRender(roTasksVm, roTaskElm, taskName, options) {
             var roTask = _.find(roTaskModules, function (roTask) {
                 return roTask.task.Name.toLowerCase() === taskName.toLowerCase();
             });
 
             if (!_.isUndefined(roTask)) {
-              roTask.build(vm, roTaskElm, options);
+              roTask.build(roTasksVm, roTaskElm, options);
             } else {
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 app.custom.utils.log(2, 'Property Not Found For Rendering:', taskName);
               }
             }
+          }
+
+          /**
+           * Get Request Offering Tasks View Model.
+           */
+          function getROTasksViewModel() {
+            var roTasksVm = new kendo.observable({
+              isReady: false,
+              _readyDeferred: $.Deferred(),
+
+              /**
+               * Check if Grid Tasks is ready.
+               *
+               * @returns {object} Deferred promise.
+               * @param {function} [fn] Optional deferred callback function.
+               */
+              ready: function ready(fn) {
+                if (typeof fn === 'function') {
+                  this._readyDeferred.then(fn);
+                }
+                return this._readyDeferred.promise();
+              },
+            });
+
+            return roTasksVm;
           }
 
           // #endregion Utility functions
@@ -104,6 +125,11 @@ define([
            * Request Offering Task initialization script
            */
           function initTask() {
+            if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+              app.custom.utils.log('roTaskBuilder:initTask');
+            }
+            var roTasksVm = getROTasksViewModel();
+
             $('div.page-panel').each(function () {
               var roPage = $(this),
                   roQuestionElms = roPage.children('.question-container'),
@@ -155,18 +181,23 @@ define([
                   }
                   // Ignore tasks with a namespace as they represent additional options/criteria for a previous task
                   if (key.indexOf('.') === -1) {
-                    buildAndRender(roTaskElm, key, val);
+                    buildAndRender(roTasksVm, roTaskElm, key, val);
                   }
                 });
               });
             });
 
             if (typeof callback === 'function') {
-              callback();
+              callback(roTasksVm);
             }
+
+            roTasksVm.isReady = true;
+            roTasksVm._readyDeferred.resolve();
+
+            return roTasksVm;
           }
 
-          initTask();
+          return initTask();
         },
       };
 

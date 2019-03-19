@@ -71,9 +71,11 @@ require([
     // Set row container styling
     initContainerStyles();
     // Build custom Request Offering Tasks
-    roTaskBuilder.build(kendo.observable(), roTaskBuilder.node, function () {
-      app.events.publish('roTasks.Ready');
-    });
+    roTaskBuilder
+      .build()
+      .ready(function () {
+        app.events.publish('roTasks.Ready');
+      });
   }
 
   if (document.readyState === 'loading') {

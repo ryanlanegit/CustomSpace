@@ -43,7 +43,7 @@ require([
     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
       app.custom.utils.log('gridTaskMain:initGridTasks');
     }
-
+    // Build custom Grid Tasks
     gridTaskBuilder
       .build(function(gridTasksVm) {
         app.custom.gridTasks = gridTasksVm;

@@ -41,7 +41,9 @@ define([
          */
         build: function build(callback) {
           if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-            app.custom.utils.log('gridTaskBuilder:build');
+            app.custom.utils.log('gridTaskBuilder:build', {
+              callback: callback,
+            });
           }
           /**
            * Get Grid Tasks View Model.

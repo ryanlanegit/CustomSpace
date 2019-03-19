@@ -1,4 +1,4 @@
-/* global $, _, angular, app, define, document, kendo */
+/* global $, _, angular, app, define, document, kendo, session */
 
 /**
  * Work Item Task Utility Function Library
@@ -32,6 +32,30 @@ define([
 
             return templateElm;
           },
+        },
+
+        data: {
+          /**
+           * Parent Work Item Settings Data Source
+           */
+          GetParentWorkItemSettings : new kendo.data.DataSource({
+            serverFiltering: false,
+            transport: {
+              read: {
+                url: '/api/V3/Projection/GetParentWorkItemSettings',
+                dataType: 'json',
+                type: 'GET',
+              },
+            },
+            schema: {
+              /**
+              * Return Non-Array Result an Array of Length 1.
+              */
+              data: function (response) {
+                return [response];
+              },
+            },
+          }),
         },
       },
       /**
@@ -124,7 +148,93 @@ define([
 
           popupNotification.show(options, options.type);
         },
+
+        /**
+         * Query if Work Item is assigned to currently logged in user.
+         */
+         isAssignedToMe: function isAssignedToMe(viewModel) {
+           var assignedUserId = viewModel.AssignedWorkItem.get('BaseId');
+           return (assignedUserId === session.user.Id);
+         },
+
+         api: {
+           /**
+            * Get Parent Work Item Settings
+            * @param {function|object} [callback] Optional callback if not using promise.
+            */
+           GetParentWorkItemSettings : function GetParentWorkItemSettings(callback) {
+             var options = {
+                   fetch: true,
+                 },
+                 dataSourcePromise;
+             switch (typeof callback) {
+             case 'function':
+               dataSourcePromise = wiTaskUtilsVm.data.GetParentWorkItemSettings.read();
+               dataSourcePromise.then(function () {
+                 var data = wiTaskUtilsVm.data.GetParentWorkItemSettings.data();
+                 if (data.length) {
+                   callback(data[0]);
+                 } else {
+                   callback(null);
+                 }
+               });
+               break;
+             case 'object':
+               $.extend(options, callback);
+               if (options.fetch) {
+                 if (typeof options.callback === 'function') {
+                   dataSourcePromise = wiTaskUtilsVm.data.GetParentWorkItemSettings.fetch(function () {
+                     var data = this.data();
+                     if (data.length) {
+                       options.callback(data[0]);
+                     } else {
+                       callback(null);
+                     }
+                   });
+                 } else {
+                   dataSourcePromise = wiTaskUtilsVm.data.GetParentWorkItemSettings.fetch();
+                 }
+               } else {
+                 dataSourcePromise = wiTaskUtilsVm.data.GetParentWorkItemSettings.read();
+               }
+               break;
+             }
+
+             return dataSourcePromise;
+           },
+
+           /**
+            * Get Enumeration Display Name
+            *
+            * @param {string} enumid -  GUID of Enumeration
+            * @param {function|object} [callback] Optional callback if not using promise.
+            * @returns {object} Ajax Promise.
+            */
+           GetEnumDisplayName: function GetEnumDisplayName(enumId, callback) {
+             var options = {
+               url: '/api/V3/Enum/GetEnumDisplayName',
+               dataType: 'json',
+               type: 'GET',
+               cache: true,
+               data: {
+                 Id: enumId,
+               },
+             };
+             switch (typeof callback) {
+             case 'function':
+               $.extend(options, {
+                 success: callback,
+               });
+               break;
+             case 'object':
+               $.extend(options, callback);
+               break;
+             }
+             return $.ajax(options);
+            },
+          },
       };
 
+  app.custom.wiTaskUtils = definition;
   return definition;
 });
