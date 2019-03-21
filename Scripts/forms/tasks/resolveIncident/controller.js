@@ -180,12 +180,6 @@ define([
                   Disabled: !modalWindowViewModel.ResolutionAssignToMeEnabled,
                   Required: false,
                   Checked: true,
-                },
-                letAnalystDecideProperties = {
-                  PropertyName: "resolveChildIncident",
-                  PropertyDisplayName: "ResolveChildIncidentMessage",
-                  Inline: true,
-                  Disabled: false,
                 };
             // Resolution Category Picker
             buildAndRender.enumPicker(modalWindowEle.find('#resolutionCategory'), resolutionProperties, modalWindowViewModel);
