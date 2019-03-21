@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/addInformation/view.html',
 ], function (
-  roTaskUtils,
+  roTaskLib,
   addInformationTemplate
 ) {
   'use strict';
@@ -59,7 +59,7 @@ define([
           }
           var builtInfo = _.template(addInformationTemplate);
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             $(targetElm).append(builtInfo(options));
           });
         }

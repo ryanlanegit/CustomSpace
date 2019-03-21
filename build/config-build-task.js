@@ -1,10 +1,12 @@
 /* global console, module, require */
+/* eslint "no-console": [ "error", { "allow": [ "log", "warn", "error"] } ] */
 require.config({
   baseUrl: '../Scripts',
   paths: {
     'requireLib': '../../Scripts/require',
     'text': '../../Scripts/require/text',
     'CustomSpace': '../../CustomSpace',
+    'Scripts': '../../Scripts',
   },
   stubModules: [
     'text',
@@ -17,6 +19,9 @@ require.config({
   generateSourceMaps: true,
   sourceRoot: '/CustomSpace/Scripts/',
   preserveLicenseComments: false,
+  /**
+   *
+   */
   onModuleBundleComplete: function (data) {
     'use strict';
     console.log('AMD Cleaning File: ' + data.path);

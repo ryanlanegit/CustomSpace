@@ -20,14 +20,16 @@ if (typeof require !== 'undefined') {
 /**
  * Load Custom Request Offering Task Builder
  * @module roTaskMain
- * @see module:roTaskUtils
+ * @see module:roTaskLib
  * @see module:roTaskBuilder
  */
 require([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/customLib',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'CustomSpace/Scripts/serviceCatalog/roTaskBuilder',
 ], function (
-  roTaskUtils,
+  customLib,
+  roTaskLib,
   roTaskBuilder
 ) {
   'use strict';
@@ -49,7 +51,7 @@ require([
             roQuestionElms = roPageRows.filter('.question-container'),
             roDisplayElms = roPageRows.not(roQuestionElms),
             roTaskElms = roDisplayElms.filter(function () {
-              return roTaskUtils.isValidJSON($(this).text());
+              return customLib.isValidJSON($(this).text());
             });
         // Set 50% width for question rows.
         roQuestionElms.children('.col-xs-12').filter('.col-md-4, .col-md-8').removeClass('col-md-4 col-md-8').addClass('col-md-6');

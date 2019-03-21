@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/view.html',
 ], function (
-  roTaskUtils,
+  roTaskLib,
   rowContainerTemplate
 ) {
   'use strict';

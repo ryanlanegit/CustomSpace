@@ -7,14 +7,16 @@
  * @see module:wiTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/forms/wiTaskUtils',
+  'CustomSpace/Scripts/customLib',
+  'CustomSpace/Scripts/forms/wiTaskLib',
   'text!forms/tasks/anchor/view.html',
   'text!CustomSpace/Scripts/forms/tasks/resolveIncident/view.html',
   'forms/fields/enum/controller',
   'CustomSpace/Scripts/forms/fields/longstring/controller',
   'forms/fields/boolean/controller',
 ], function (
-  wiTaskUtils,
+  customLib,
+  wiTaskLib,
   anchorTemplate,
   resolveIncidentTemplate,
   enumPickerController,
@@ -191,31 +193,7 @@ define([
             buildAndRender.textArea(modalWindowEle.find('#resolutionDescription'), resolutionDescriptionProperties, modalWindowViewModel);
             // Assign To Me Checkbox
             buildAndRender.checkbox(modalWindowEle.find('#resolutionAssignToMe'), resolutionAssignToMeProperties, modalWindowViewModel);
-            // Let Analyst Decide To Resolve Child Incidents Checkbox
-            // buildAndRender.checkbox(modalWindowEle.find('#resolutionAssignToMe'), resolutionAssignToMeProperties, modalWindowViewModel);
-            /*wiTaskUtils.api.GetParentWorkItemSettings(function (data) {
-              console.log('parentWorkItemSettings', data);
-            });*/
           }
-
-          /**
-           * Resolve Child Incidents
-           */
-          function resolveChildIncidents(wiViewModel, resolveChildSettings) {
-              var resolutionCategoryId = resolveChildSettings.ChildIncidentResolutionCategorySameAsParent
-                                         ? wiViewModel.ResolutionCategory.Id
-                                         : resolveChildSettings.ChildIncidentResolutionCategory.Id;
-
-              _.each(wiViewModel.ChildWorkItem, function (childWorkItem) {
-                  childWorkItem.set('Status', {
-                      Id: wiViewModel.Status.Id,
-                      Name: wiViewModel.Status.Name,
-                  });
-                  childWorkItem.set('ResolutionCategory', { Id: resolutionCategoryId });
-                  childWorkItem.set('ResolutionDescription', wiViewModel.ResolutionDescription);
-                  childWorkItem.set('ResolvedDate', wiViewModel.ResolvedDate);
-              });
-          };
 
           /**
            * Resolve Incident
@@ -254,22 +232,23 @@ define([
               wiViewModel[actionLogType].unshift(resolvedActionLog);
             }
 
+            // Assign To Me
+            if (modalWindowViewModel.ResolutionAssignToMeEnabled && modalWindowViewModel.ResolutionAssignToMe) {
+              wiViewModel.AssignedWorkItem.set('BaseId', session.user.Id);
+              wiViewModel.AssignedWorkItem.set('DisplayName', session.user.Name);
+            }
+
             // Update Status Indicator
-            wiTaskUtils.api.GetEnumDisplayName(app.constants.workItemStatuses.Incident.Resolved, function (displayName) {
+            customLib.api.Enum.GetEnumDisplayName(app.constants.workItemStatuses.Incident.Resolved, function (displayName) {
               wiViewModel.set('Status', {
                 Id: app.constants.workItemStatuses.Incident.Resolved,
                 Name: displayName,
               });
             });
 
-            if (modalWindowViewModel.ResolutionAssignToMeEnabled && modalWindowViewModel.ResolutionAssignToMe) {
-              wiViewModel.AssignedWorkItem.set('BaseId', session.user.Id);
-              wiViewModel.AssignedWorkItem.set('DisplayName', session.user.Name);
-            }
-
             // Create Resolved Popup Notification
-            wiTaskUtils.createPopupNotification({
-              message: wiTaskUtils.stringFormat('{Id} has been resolved.<br/>Click Save or Apply to complete the process.', wiViewModel),
+            customLib.createPopupNotification({
+              message: customLib.stringFormat('{Id} has been resolved.<br/>Click Save or Apply to complete the process.', wiViewModel),
               type: 'success',
             });
           }
@@ -329,8 +308,8 @@ define([
                     modalWindowControl,
                     modalWindowViewModel;
                 if (currentStatus.Id === app.constants.workItemStatuses.Incident.Resolved) {
-                  wiTaskUtils.createPopupNotification({
-                    message: wiTaskUtils.stringFormat('{Id} is already resolved.', vm.viewModel),
+                  customLib.createPopupNotification({
+                    message: customLib.stringFormat('{Id} is already resolved.', vm.viewModel),
                   });
                   $('#myTab a').filter('[data-toggle][data-cid="Resolution"]').click();
                   return;
@@ -362,7 +341,7 @@ define([
                 modalWindowViewModel = kendo.observable({
                   ResolutionCategory: node.Configs.ResolutionCategory,
                   resolutionCategoryEnumId: app.constants.enumPickerIds.IncidentResolution,
-                  ResolutionAssignToMeEnabled: !wiTaskUtils.isAssignedToMe(vm.viewModel),
+                  ResolutionAssignToMeEnabled: !wiTaskLib.isAssignedToMe(vm.viewModel),
                   ResolutionAssignToMe: true,
                   okEnabled: false,
                   /**

@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   /*
@@ -77,7 +77,7 @@ function (
           }
 
           // Check if angular framework is ready
-          roTaskUtils.waitForAngular(function () {
+          roTaskLib.waitForAngular(function () {
             targetElm = $(targetElm);
             var questionType = targetElm.children('input.question-answer-type').val(),
                 targetId = targetElm.children('input.question-answer-id').val(),
@@ -122,7 +122,7 @@ function (
             return;
           }
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             var targetId = $(targetElm).children('input.question-answer-id').val(),
                 currentParams = app.lib.getQueryParams(),
                 paramKey = options.param.toLowerCase(),

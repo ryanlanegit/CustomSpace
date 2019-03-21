@@ -7,10 +7,12 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/customLib',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  customLib,
+  roTaskLib
 ) {
   'use strict';
 
@@ -85,7 +87,7 @@ function (
         function updateTextAreaField(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
-          roTaskUtils.waitForAngular(function () {
+          roTaskLib.waitForAngular(function () {
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
@@ -105,29 +107,6 @@ function (
 
           if (!options.property && typeof options.properties === 'undefined') {
             return;
-          }
-
-          // Add DataSource For All User Properties
-          if (typeof vm.userObjectPropertiesDataSource === 'undefined') {
-            vm.userObjectPropertiesDataSource = new kendo.data.DataSource({
-                serverFiltering: false,
-                transport: {
-                    read: {
-                        url: "/Search/GetObjectPropertiesByProjection",
-                        data: {
-                            projectionId: roTask.Configs.SystemUserPreferencesProjectionId,
-                            id: session.user.Id,
-                        },
-                        dataType: "json",
-                        type: "GET",
-                    },
-                },/* // For Use With Non-Array Results
-                schema: {
-                  data: function(response) {
-                    return [response];
-                  },
-                },*/
-            });
           }
 
           processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
@@ -168,7 +147,21 @@ function (
               if (session.user.hasOwnProperty(propertyKey)) {
                 updateTextAreaField(targetElm, session.user[propertyKey]);
               } else {
-                vm.userObjectPropertiesDataSource.bind('requestEnd', function responseHandler(event) {
+                var sessionUserDataSource = customLib.api.getDataSource(
+                  'GetObjectPropertiesByProjection.' + session.user.Id,
+                  {
+                    transport: {
+                      read: {
+                        url: '/Search/GetObjectPropertiesByProjection',
+                        data: {
+                          projectionId: roTask.Configs.SystemUserPreferencesProjectionId,
+                          id: session.user.Id,
+                        },
+                      },
+                    },
+                });
+
+                sessionUserDataSource.bind('requestEnd', function responseHandler(event) {
                   var data = event.response;
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     app.custom.utils.log('Session User Data Ready', {
@@ -191,9 +184,9 @@ function (
                       }
                     }
                   }
-                  vm.userObjectPropertiesDataSource.unbind('requestEnd', responseHandler);
+                  sessionUserDataSource.unbind('requestEnd', responseHandler);
                 });
-                initFetchDataSource(vm.userObjectPropertiesDataSource);
+                initFetchDataSource(sessionUserDataSource);
               }
             }
           });

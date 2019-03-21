@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   var roTask = {
@@ -190,7 +190,7 @@ function (
          */
         function recompileAngularElm(targetElm) {
           // Async wait for Angular framework to be ready
-          roTaskUtils.waitForAngular(function () {
+          roTaskLib.waitForAngular(function () {
             var $element = angular.element(targetElm),
                 $scope = $element.scope(),
                 $injector = $element.injector(),
@@ -317,8 +317,8 @@ function (
             group: 'continue',
           };
           options = $.extend({}, defaultOptions, options);
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
-            roTaskUtils.waitForAngular(function () {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
+            roTaskLib.waitForAngular(function () {
               var subTaskElms = $(roTaskElm).nextUntil(targetElm, '.task-container'),
                   $element = angular.element(targetElm),
                   $scope = $element.scope(),

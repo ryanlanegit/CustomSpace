@@ -2,7 +2,7 @@
 
 /**
  * Custom Work Item Form Tasks Utility Function Library
- * @module formTasksUtils
+ * @module formTasksLib
  * @see module:wiTaskMain
  * @see module:wiTaskBuilder
  */
@@ -10,7 +10,7 @@ define(function () {
   'use strict';
 
   /**
-   * @exports formTasksUtils
+   * @exports formTasksLib
    */
   var definition = {
     /**
@@ -22,7 +22,7 @@ define(function () {
      */
     add: function add(types, label, func) {
       if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-        app.custom.utils.log('formTasksUtils:add', {
+        app.custom.utils.log('formTasksLib:add', {
           types: types,
           label: label,
           func: func,
@@ -42,7 +42,7 @@ define(function () {
           $.extend(options, types);
         } else {
           if (!_.isUndefined(app.storage.utils)) {
-            app.custom.utils.log(2, 'formTasksUtils:add', 'Warning! Invalid arguments supplied.');
+            app.custom.utils.log(2, 'formTasksLib:add', 'Warning! Invalid arguments supplied.');
           }
           return app.custom.formTasks.tasks;
         }

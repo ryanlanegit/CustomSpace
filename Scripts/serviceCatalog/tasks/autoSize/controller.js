@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'jquery/autosize.js',
 ], function (
-  roTaskUtils,
+  roTaskLib,
   autosize
 ) {
   'use strict';
@@ -55,9 +55,9 @@ define([
           options.next = options.next || 1;
           options.rows = options.rows || '1';
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetRows = (typeof options.rows === 'string') ? options.rows : options.rows[targetIndex];
-            roTaskUtils.waitForAngular(function () {
+            roTaskLib.waitForAngular(function () {
               var targetInputELm = $(targetElm).find('textarea');
               targetInputELm.addClass('auto-size').attr('rows', targetRows);
               autosize(targetInputELm);

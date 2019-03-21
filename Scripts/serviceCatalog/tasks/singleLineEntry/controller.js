@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   var roTask = {
@@ -78,7 +78,7 @@ function (
         function initROTask() {
           options.next = options.next || 1;
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             targetElm = $(targetElm);
             var textInputId = targetElm.children('input.question-answer-id').val(),
                 targetTextAreaElm = targetElm.find('textArea');

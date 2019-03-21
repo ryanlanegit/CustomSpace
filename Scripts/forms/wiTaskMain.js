@@ -27,10 +27,10 @@ if (typeof require !== 'undefined') {
  * @see module:wiTaskBuilder
  */
 require([
-  'CustomSpace/Scripts/forms/formTasksUtils',
+  'CustomSpace/Scripts/forms/formTasksLib',
   'CustomSpace/Scripts/forms/wiTaskBuilder',
 ], function (
-  formTasksUtils,
+  formTasksLib,
   wiTaskBuilder
 ) {
   'use strict';
@@ -85,7 +85,7 @@ require([
     }
   }
 
-  formTasksUtils.add({
+  formTasksLib.add({
     types: [
       'Incident',
       'ServiceRequest',

@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   var roTask = {
@@ -54,12 +54,12 @@ function (
           options.next = options.next || 1;
           options.selector = options.selector || '[data-role]';
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetOptions = $.extend({}, options),
                 targetSelector = (typeof targetOptions.selector === 'string') ? targetOptions.selector : targetOptions.selector[targetIndex];
             delete targetOptions.next;
             delete targetOptions.selector;
-            roTaskUtils.waitForAngular(function () {
+            roTaskLib.waitForAngular(function () {
               $(targetElm).find(targetSelector).data().handler.setOptions(targetOptions);
             });
           });

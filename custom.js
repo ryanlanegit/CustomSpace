@@ -165,7 +165,7 @@ app.custom.utils = {
     add: function add(types, label, func) {
       'use strict';
       if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-        app.custom.utils.log('formTasksUtils:add', {
+        app.custom.utils.log('custom.formTasks:add', {
           types: types,
           label: label,
           func: func,
@@ -185,7 +185,7 @@ app.custom.utils = {
           $.extend(options, types);
         } else {
           if (!_.isUndefined(app.storage.utils)) {
-            app.custom.utils.log(2, 'formTasksUtils:add', 'Warning! Invalid arguments supplied.');
+            app.custom.utils.log(2, 'custom.formTasks:add', 'Warning! Invalid arguments supplied.');
           }
           return app.custom.formTasks.tasks;
         }

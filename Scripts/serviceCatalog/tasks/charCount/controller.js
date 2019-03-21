@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/charCount/view.html',
 ], function (
-  roTaskUtils,
+  roTaskLib,
   charCountTemplate
 ) {
   'use strict';
@@ -79,7 +79,7 @@ define([
           }
           options = $.extend(defaultOptions, options);
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             var targetTextAreaElm = $(targetElm).find('textarea'),
                 targetOptions = $.extend({}, options, {
                   charMin: $(targetTextAreaElm).siblings('input').attr('minlength') || 0,

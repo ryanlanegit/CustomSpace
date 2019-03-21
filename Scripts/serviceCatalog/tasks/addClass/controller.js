@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   var roTask = {
@@ -57,7 +57,7 @@ function (
             return;
           }
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetCSSClass = (typeof options.cssclass === 'string') ? options.cssclass : options.cssclass[targetIndex],
                 targetSelector;
             if (typeof options.selector === 'undefined') {

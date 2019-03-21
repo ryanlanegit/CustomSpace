@@ -7,10 +7,10 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
 ],
 function (
-  roTaskUtils
+  roTaskLib
 ) {
   'use strict';
   var roTask = {
@@ -54,7 +54,7 @@ function (
           options.next = options.next || 1;
           options.level = options.level || '1';
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetLevel = (typeof options.level === 'string') ? options.level : options.level[targetIndex];
             $(targetElm).children('div').addClass('indent-' + targetLevel);
           });

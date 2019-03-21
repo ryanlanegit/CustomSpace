@@ -6,7 +6,7 @@
  * @see module:roTaskMain
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'CustomSpace/Scripts/serviceCatalog/tasks/addClass/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/addInformation/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/addShowCriteria/controller',
@@ -21,7 +21,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
 ], function (
-  roTaskUtils,
+  roTaskLib,
   addClassController,
   addInformationController,
   addShowCriteriaController,
@@ -150,7 +150,7 @@ define([
 
                 switch (questionType) {
                 case 'Integer':
-                  roTaskUtils.waitForAngular(function () {
+                  roTaskLib.waitForAngular(function () {
                     if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                       app.custom.utils.log('roTaskBuilder:initTask:SetDefaultOptions', {
                         questionType: questionType,

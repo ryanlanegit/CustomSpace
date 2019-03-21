@@ -7,10 +7,12 @@
  * @see module:roTaskBuilder
  */
 define([
-  'CustomSpace/Scripts/serviceCatalog/roTaskUtils',
+  'CustomSpace/Scripts/customLib',
+  'CustomSpace/Scripts/serviceCatalog/roTaskLib',
   'text!CustomSpace/Scripts/serviceCatalog/tasks/summary/view.html',
 ], function (
-  roTaskUtils,
+  customLib,
+  roTaskLib,
   summaryTemplate
 ) {
   'use strict';
@@ -86,7 +88,7 @@ define([
                         questionType = 'int';
                         break;
                       case 'list':
-                        if (roTaskUtils.isValidGUID(questionValue)) {
+                        if (customLib.isValidGUID(questionValue)) {
                           questionType = 'enum';
                         }
                         break;
@@ -198,7 +200,7 @@ define([
           //var target = promptElm.next().find('div.col-xs-12'),
           var builtSummary = _.template(summaryTemplate);
 
-          roTaskUtils.processNext(roTaskElm, options.next, function (targetElm) {
+          roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             $(targetElm).removeClass('col-md-8').addClass('col-md-12');
             $(targetElm).html(builtSummary());
             createSummary($(targetElm).find('div[data-control-bind]'));
