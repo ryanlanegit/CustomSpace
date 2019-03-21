@@ -349,6 +349,32 @@ define([
               return dataSourcePromise;
             },
           },
+
+          Dashboard: {
+            /**
+             * A GET method that executes the provided query id and returns the result in json format.
+             *
+             * @param {string|object} queryId - The query's unique identification id as specified on DataSource table.
+             * @param {function|object} [callback] Optional callback if not using promise.
+             * @returns {object} Ajax Promise.
+             */
+            GetDashboardDataById: function GetDashboardDataById(queryId, callback) {
+              var config = {
+                url: '/api/V3/Dashboard/GetDashboardDataById',
+                data: {},
+              };
+
+              switch (typeof queryId) {
+              case 'string':
+                config.data.queryId = queryId;
+                break;
+              case 'object':
+                config.data = queryId;
+              }
+
+              return customLibVm.api.query(config, callback);
+            },
+          },
         },
       };
 
