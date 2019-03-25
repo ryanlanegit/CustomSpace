@@ -91,7 +91,9 @@ define([
            */
           function initTask() {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-              app.custom.utils.log('pageTaskBuilder:initTask');
+              app.custom.utils.log('pageTaskBuilder:initTask', {
+                pageTaskModules: pageTaskModules,
+              });
             }
             var mainWrapperElm = $('#main_wrapper'),
               htmlWidgetElms = mainWrapperElm.find('div[adf-widget-type="html"]');
