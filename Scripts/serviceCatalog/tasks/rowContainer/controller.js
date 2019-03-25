@@ -71,13 +71,17 @@ define([
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
-          options.next = (options.next <= 2 ) ? options.next : 2;
+          _.defaults(options, {
+            next: 1,
+          });
 
-          if (typeof options.colspan === 'undefined') {
+          // Limit columns to 2.
+          options.next = _.min([options.next, 2]);
+
+          if (!_.has(options, 'colspan')) {
             var columnSpanMap = {
               1: '6',
               2: '3',

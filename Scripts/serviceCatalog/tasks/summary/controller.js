@@ -194,9 +194,13 @@ define([
         }
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
+          _.defaults(options, {
+            next: 1,
+          });
+
           //var target = promptElm.next().find('div.col-xs-12'),
           var builtSummary = _.template(summaryTemplate);
 

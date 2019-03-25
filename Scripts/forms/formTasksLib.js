@@ -41,7 +41,7 @@ define(function () {
         if (typeof types === 'object') {
           $.extend(options, types);
         } else {
-          if (!_.isUndefined(app.storage.utils)) {
+          if (!_.isUndefined(app.custom.utils)) {
             app.custom.utils.log(2, 'formTasksLib:add', 'Warning! Invalid arguments supplied.');
           }
           return app.custom.formTasks.tasks;

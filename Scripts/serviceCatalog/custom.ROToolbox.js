@@ -1,62 +1,63 @@
+/*global $, angular, console, module */
 /* Request Offering Form Customization Toolbox
    Custom Form Controls for the Cireson Portal
    Author: John Doyle - Cireson; Konstantin Slavin-Bo
    Date: June 2nd, 2017
-   
+
    The toolbox contains a number of controls which can be added to Request Offerings in the SCSM Service Catalog.
    The controls are added by adding Display-Only tags to the Request Offering.
-   
+
    The controls included in this release are:
    @AutoComplete: Converts a text input and a linked query result into an autocomplete text input.
    @MultiSelect: Converts a text input and a linked query result into a multi select control.
    @DateRange: Converts two date inputs so that the date selected in the first is the minimum date which can be selected in the second.
    @Placeholder: Uses the provided string or the title of the following text control as a placeholder in that control.
    @AddClass: Adds a specified CSS class to the following control.
-   
+
    Additional properties are added by adding a JSON string to the tag.
    e.g. to specify the minimum length for the autocomplete control, the tag is defined in the RO as @AutoComplete {"minLength":2}
-   
+
    @AutoComplete
    -------------
    This script converts a query results prompt into an autocomplete prompt.
-   
+
    To add this control to a form, you need to add three prompts to the Request Offering.
-   First add a display only prompt with the label @AutoComplete. This control serves as a marker 
-   to indicate that the picker should be added to the form. Next, add an optional text field. The 
+   First add a display only prompt with the label @AutoComplete. This control serves as a marker
+   to indicate that the picker should be added to the form. Next, add an optional text field. The
    label on this field will serve as the hint added beneath the AutoComplete control. Finally, add
    the query results prompt. The label on this prompt will be used as the label for the AutoComplete
    control.
-   Configure the query result and add a criterion which specifies that a property of the item class 
+   Configure the query result and add a criterion which specifies that a property of the item class
    must contain the value of the optional prompt. Select the columns you which to appear in the output.
    The AutoComplete control will concatenate these output fields together like "Field1 - Field2 - Field3".
    Finally specify how the item will be related to the work item.
-   
-   If the custom code detects the presence of the marker on the form. It will hide the existing text and 
+
+   If the custom code detects the presence of the marker on the form. It will hide the existing text and
    grid prompts and replace them with the autocomplete control.
-   
+
    Additional Properties:
      minLength
 	 If specified, the minLength is used to determine how many characters must be added before the control
 	 queries the database for matching results.
-	 
+
    @MultiSelect
    ------------
    The multiselect control is used to handle the data where you want to allow multiple selections to be made.
    This uses the tag @MultiSelect in the request offering. It is setup like the @AutoComplete control.
-   
+
    @ShowHideOR
    ------------
    Updates the default behaviour when combining Show/Hide Criteria on @AutoCompletes's and @MultiSelect's
    from using "AND" between the Criteria, to using "OR" between the Criteria
-   
+
    @Placeholder
    ------------
    Optional property: text
-   
+
    @AddClass
    ---------
    Required property: cssClass
-   
+
    @ShowHideCriteria / @ShowHideCriteria2
    --------------------------------------
    Placed before any item (Except a Query Item), allows adding of an extra set of criteria for the following item,
@@ -64,12 +65,12 @@
 
    There are 2 Passes for these options, the first pass through only processes the @ShowHideCriteria and @ShowHideCriteriaOR
    while the 2nd pass through processes the @ShowHideCriteria2 and @ShowHideCriteriaOR2
-   
+
    @ShowHideCriteriaOR / @ShowHideCriteriaOR2
    ------------------------------------------
    Placed before any item (Except a Query Item), allows adding of an extra set of criteria for the following item
    Criteria on this and the following Item are combined using a OR ('||')
-   
+
    There are 2 Passes for these options, the first pass through only processes the @ShowHideCriteria and @ShowHideCriteriaOR
    while the 2nd pass through processes the @ShowHideCriteria2 and @ShowHideCriteriaOR2
 
@@ -81,7 +82,7 @@
    -------
    This command allows you to specify a HTML template which is applied to the the controls following the tag. The controls are identified by a token in the format tbxCtrl-n, where n is an integer. Angle brackets in the template should be encoded.
    Sample:
-   @Layout {"template":"&lt;div class='col-md-6 col-xs-12 tbxCtrl-1'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-2' style='margin-top:30px;'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-3' style='margin-top:30px;'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-4' style='margin-top:30px;'&gt;&lt;/div&gt;"}   
+   @Layout {"template":"&lt;div class='col-md-6 col-xs-12 tbxCtrl-1'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-2' style='margin-top:30px;'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-3' style='margin-top:30px;'&gt;&lt;/div&gt;&lt;div class='col-md-2 col-xs-4 tbxCtrl-4' style='margin-top:30px;'&gt;&lt;/div&gt;"}
 
    @DatePicker
    -----------
@@ -110,7 +111,7 @@
 				selections
 			Note2: The GUID entered should be the GUID of the TypeProjection to use
 	4. Add another @AutoComplete or @MultiSelect control, that can retrieve whichever class you wish to have and add the extra
-		items to, 
+		items to,
 				NOTE: this can also be an enmpty class if you wish to create the entire list from related items in other @AutoComplete
 				and/or @MultiSelect fields
 	5. before the @AutoComplete or @MultiSelect that you wish to add the data to add the following
@@ -119,7 +120,7 @@
 				be multiple retrievals and additions per page.
 			NOTE2: there is a reserved name called "ALL" if this is used on the AddData then all items retrieved will be added,
 				not just a spoecific named item.
-	  
+
    @QueryList
    ----------
    This tag replaces the data source of a Simple List prompt with a Dashboard query. This allows you to build a list from any data source which could be used as a source for the dashboards.
@@ -135,7 +136,7 @@
 	@SingleLineEntry
 	----------------
 	Prevents the entry of a CR on a text area this entry is placed before
-	
+
 	@AddInformation
 	---------------
 	Adds either information to the page beside the next field, or adds a ? icon next to the field,
@@ -145,17 +146,17 @@
 			@AddInformation {"icon":"&lt;p&gt;Text or formating here&lt;br&gt;even multiple lines&lt;/p&gt"}
 		Information Mode :
 			@AddInformation {"info":"&lt;p&gt;Text or formating here&lt;br&gt;even multiple lines&lt;/p&gt"}
-			
-			
+
+
 	@CharCount
 	----------
 	Adds option for displaying the Minimum characters required and/or maximum characters remaining below a text area (input)
-	
+
 	By default the follow will occur:
 		1 - if there is  a minimum length, then it counts down while more characters are required, and displays this below the field
 		2 - if there is  a maximum length, and there is no minimum length, or the minimum length has already been reached,
 			it counts down while more characters are available, and displays this below the field
-			
+
 	Available Options :
 		showMin : true/false (default : true)
 			enables or disables showing the minimum characters still required
@@ -171,14 +172,15 @@
 			@CharCount{"showMinMax":"true","showMin":"false","showMax":"false","minText":"MINIMUM REMAINING","maxText":"MAX REMAINING"}
 		To show  Minimum only , which no longer displays after the count is reached (default only needs to be over ridden)
 			@CharCount{"showMax":"false"}
-			
+
 	NOTE : If there is no minlength or maxlength defined on the field, then it will not show even if the options are added from this entry
-			
+
 */
 
 var DataMergeResults = [];
 
-function transformRO() {   
+function transformRO() {
+  'use strict';
 	// Process Data Merge Properties
     $("p:contains('@AddDataMergeProperty')").parent().parent().each(function() {
         AddDataMergeProperty("@AddDataMergeProperty", $(this))
@@ -188,7 +190,7 @@ function transformRO() {
     });
 	$("p:contains('@SingleLineEntry')").parent().parent().each(function() {
         forceSingleLineEntry("@SingleLineEntry", $(this))
-    });	
+    });
     $("p:contains('@ConfirmFields')").parent().parent().each(function () {
       confirmFields($(this))
     });
@@ -245,6 +247,7 @@ function transformRO() {
 }
 
 function parseOptions(controlName, control) {
+  'use strict';
     var properties = "{}";
     var regExp = /({[^}]+})/;
     var matches = regExp.exec(control.text());
@@ -255,10 +258,11 @@ function parseOptions(controlName, control) {
 
 // recompile AngularElement if Required and able to
 function recompAngularElement(recompEle) {
+  'use strict';
 	// Get Angular element
-	var el = angular.element(recompEle);
-	$scope = el.scope();
-	$injector = el.injector();
+	var el = angular.element(recompEle),
+	    $scope = el.scope(),
+	    $injector = el.injector();
 	// if it exists, recompile so that ngshow attribute modification work
 	if (typeof injector != 'undefined') {
 		$injector.invoke(function($compile){
@@ -268,6 +272,7 @@ function recompAngularElement(recompEle) {
 }
 
 function addInformation(tag, tagElement) {
+  'use strict';
     var userDefined = parseOptions(tag, tagElement);
 	if (!userDefined.info && !userDefined.icon) {
 		tagElement.remove();
@@ -294,6 +299,7 @@ function addInformation(tag, tagElement) {
 
 // Set up options for the min / max character display
 function charCountDisplay(tag, tagElement) {
+  'use strict';
     var target = tagElement.next();
 	var minText = "Minimum Extra Characters Required";
 	var maxText = "Maximum Characters Remaining";
@@ -303,16 +309,16 @@ function charCountDisplay(tag, tagElement) {
     var userDefined = parseOptions(tag, tagElement);
 	if (typeof userDefined.minText != 'undefined') { minText = userDefined.minText;};
 	if (typeof userDefined.maxText != 'undefined') { maxText = userDefined.maxText;};
-	if (typeof userDefined.showMin != 'undefined') { showMin = userDefined.showMin;};	
+	if (typeof userDefined.showMin != 'undefined') { showMin = userDefined.showMin;};
 	if (typeof userDefined.showMax != 'undefined') { showMax = userDefined.showMax;};
-	if (typeof userDefined.showMinMax != 'undefined') { showMinMax = userDefined.showMinMax;};	
+	if (typeof userDefined.showMinMax != 'undefined') { showMinMax = userDefined.showMinMax;};
 
 	var targetTA = $(target).find('textarea');
 	var charMin = $(targetTA).parent().find('input').attr('minlength');
 	if (typeof charMin == 'undefined') { charMin = 0; }
 	var charMax = $(targetTA).parent().find('input').attr('maxlength');
 	if (typeof charMax == 'undefined') { charMax = 0; }
-	
+
 	$(targetTA).on('paste',(function(e) { var tgtele = $(this); setTimeout( function() { MinMaxChars(tgtele,charMin,charMax, minText,maxText,showMin,showMax,showMinMax); },100) } ));
 	$(targetTA).on('keyup',(function(e) { MinMaxChars($(this),charMin,charMax, minText,maxText,showMin,showMax,showMinMax); } ));
 	tagElement.remove();
@@ -320,6 +326,7 @@ function charCountDisplay(tag, tagElement) {
 
 // Add the Minimum / Maximum requiored text to the page
 function MinMaxChars(tgtele,charMin,charMax, minText,maxText,showMin,showMax,showMinMax) {
+  'use strict';
 	$(tgtele).parent().find('span.charCount').remove()
 	var currentLength = $(tgtele).val().length
 	var minRemainingCharacters = charMin - currentLength
@@ -390,7 +397,7 @@ function buildQueryList(tag, tagElement) {
 	dataSource.fetch(function(){
 		var data = this.data();
 		var keys = Object.keys(data[0]);
-		
+
 		var itemField = (userDefined.Item) ? userDefined.Item : (userDefined.Value) ? userDefined.Value :keys[2];
 		var valueField = (userDefined.Value) ? userDefined.Value : itemField;
 
@@ -435,7 +442,7 @@ function customDatePicker(tag, tagElement) {
 		return;
 	}
 	var formGroup = dateElement.parent().find(".form-group");
-	var inputElement = formGroup.find("input[data-control='dateTimePicker']"); 
+	var inputElement = formGroup.find("input[data-control='dateTimePicker']");
 	function replaceControl() {
 		if (!(inputElement.attr("data-control-applied"))) {
 			window.setTimeout(replaceControl,50);
@@ -576,7 +583,7 @@ function addShowHideCriteria(tag, tagElement, SHCPassNum) {
 	// replace Show/Hide Criteria on item
 	tagElementNext.attr("ng-show", ngshow);
 	tagElementNext.attr("RO_Toolbox_ShowHideDone", 'Updated' + SHCPassNum);
-	
+
 	if (ngshow != "") {
 		// recompile AngularElement if Required and able to
 		recompAngularElement(tagElementNext);
@@ -732,7 +739,7 @@ function createAutoComplete(tag, tagElement) {
     var ngshow1 = targetEle.parent().parent().parent().parent().parent().attr("ng-show");
     var ngshow2 = targetEle.parent().parent().parent().parent().parent().prev().attr("ng-show");
     var ngshow3 = targetEle.parent().parent().parent().parent().parent().prev().prev().attr("ng-show");
-	
+
     // The criteria used to query SCSM for matching items
     var originalCriteria = $('#' + criteriaid).val();
     var criteria = originalCriteria;
@@ -756,7 +763,7 @@ function createAutoComplete(tag, tagElement) {
 
     // Get the columns which have been selected for display. These will be used to retrieve data from the server and will be displayed in the dropdown.
     var columns = $('#' + columnsid).val();
-    // "title(((:)))name(((;)))title(((:)))name"; 
+    // "title(((:)))name(((;)))title(((:)))name";
     var arrColumnNames = [];
     var columnTitles = [];
 
@@ -782,7 +789,7 @@ function createAutoComplete(tag, tagElement) {
 	} else {
 		ngshowhide = "&&";
 	}
-	
+
 	// combine preset Show/Hide Criteria
 	var ngshow = "";
 	if (typeof ngshow1 != 'undefined') { ngshow = createNgShow(ngshow, ngshow1, ngshowhide); }
@@ -804,10 +811,10 @@ function createAutoComplete(tag, tagElement) {
 	if (typeof tagElement.attr('ROToolBoxGetDataName') != 'undefined') { $(MSID).attr('ROToolBoxGetDataName',tagElement.attr('ROToolBoxgetDataName')); };
 	if (typeof tagElement.attr('ROToolBoxGetDataGUID') != 'undefined') { $(MSID).attr('ROToolBoxGetDataGUID',tagElement.attr('ROToolBoxgetDataGUID')); };
 	if (typeof tagElement.attr('ROToolBoxAddData') != 'undefined') { $(MSID).attr('ROToolBoxAddData',tagElement.attr('ROToolBoxAddData')); };
-	
+
     // Monitor input attribute to display custom error msg
     // TODO: Does not re-show error, after first success and then removing value from field
-    var obs = new MutationObserver (function(mutations) {      
+    var obs = new MutationObserver (function(mutations) {
 		var invalidState = queryResults.find('div[data-control-type="checkboxGridByCriteriaOld"]').find('input#' + targetId).attr("aria-invalid");
 		if(typeof invalidState != 'undefined' && $('span#ac' + targetId + '_errorMsg').length < 1) {
 			$('input#ac' + targetId).parent().before('<span class="k-widget k-tooltip k-invalid-msg field-validation-error" id="ac' + targetId + '_errorMsg" role="alert"><span class="k-icon k-warning"></span> This is a required field.</span>');
@@ -817,7 +824,7 @@ function createAutoComplete(tag, tagElement) {
     });
     obs.observe(document.querySelectorAll('div[data-control-type="checkboxGridByCriteriaOld"] input[id="' + targetId + '"]')[0], {attributes: true, attributeFilter: ['aria-invalid'], childList: false, characterData: false, subtree:false});
 
-	
+
     // Process the data returned from the server and may the display columns into one string.
     function preprocessData(json) {
         json.Data = $.map(json.Data, function(user, i) {
@@ -997,7 +1004,7 @@ function createMultiSelect(tag, tagElement) {
     var ngshow1 = targetEle.parent().parent().parent().parent().parent().attr("ng-show");
     var ngshow2 = targetEle.parent().parent().parent().parent().parent().prev().attr("ng-show");
     var ngshow3 = targetEle.parent().parent().parent().parent().parent().prev().prev().attr("ng-show");
-	
+
     // The criteria used to query SCSM for matching items
     var originalCriteria = $('#' + criteriaid).val();
     var criteria = originalCriteria;
@@ -1021,7 +1028,7 @@ function createMultiSelect(tag, tagElement) {
 
     // Get the columns which have been selected for display. These will be used to retrieve data from the server and will be displayed in the dropdown.
     var columns = $('#' + columnsid).val();
-    // "title(((:)))name(((;)))title(((:)))name"; 
+    // "title(((:)))name(((;)))title(((:)))name";
     var arrColumnNames = [];
     var columnTitles = [];
 
@@ -1047,7 +1054,7 @@ function createMultiSelect(tag, tagElement) {
 	} else {
 		ngshowhide = "&&";
 	}
-	
+
 	// combine preset Show/Hide Criteria
 	var ngshow = "";
 	if (typeof ngshow1 != 'undefined') { ngshow = createNgShow(ngshow, ngshow1, ngshowhide); }
@@ -1063,15 +1070,15 @@ function createMultiSelect(tag, tagElement) {
     } else {
 		queryResults.after('<div class="row custom-item-multipicker" style="margin-bottom:15px;"><div class="col-md-6 col-xs-12">' + controlLabel + '<select id="ms' + targetId + '" style="width: 100%;" /></div></div>');
     }
-	
+
 	// Add Data Merge Attributes to Multiselect, so that they can be processed on typing and selection changes
 	var MSID = '#ms' + targetId;
 	if (typeof tagElement.attr('ROToolBoxGetDataName') != 'undefined') { $(MSID).attr('ROToolBoxGetDataName',tagElement.attr('ROToolBoxgetDataName')); };
 	if (typeof tagElement.attr('ROToolBoxGetDataGUID') != 'undefined') { $(MSID).attr('ROToolBoxGetDataGUID',tagElement.attr('ROToolBoxgetDataGUID')); };
 	if (typeof tagElement.attr('ROToolBoxAddData') != 'undefined') { $(MSID).attr('ROToolBoxAddData',tagElement.attr('ROToolBoxAddData')); };
-	
+
     // Monitor input attribute to display custom error msg
-    var obs = new MutationObserver (function(mutations) {      
+    var obs = new MutationObserver (function(mutations) {
 		var invalidState = queryResults.find('div[data-control-type="checkboxGridByCriteriaOld"]').find('input#' + targetId).attr("aria-invalid");
 		if(typeof invalidState != 'undefined' && $('span#ms' + targetId + '_errorMsg').length < 1) {
 			$('ul#ms' + targetId + '_taglist').parent().parent().before('<span class="k-widget k-tooltip k-invalid-msg field-validation-error" id="ms' + targetId + '_errorMsg" role="alert"><span class="k-icon k-warning"></span> This is a required field.</span>');
@@ -1238,7 +1245,7 @@ function tbxDatePicker  (targetEle, settings) {
 	var toFilter = targetEle.attr("data-control-to");
 	// relative overrides fromFilter and toFilter for now
 	var fromRelative = targetEle.attr("data-control-from-relative"); // "days:-5" "days: +5"
-	var toRelative = targetEle.attr("data-control-to-relative"); // 
+	var toRelative = targetEle.attr("data-control-to-relative"); //
 	var setDateByRelative = function (startDate, daysOffset) {
 		var date = new Date(startDate);
 		var str = "{" + daysOffset + "}";
@@ -1248,7 +1255,7 @@ function tbxDatePicker  (targetEle, settings) {
 		} catch (e) {
 			date.setDate(date.getDate() + parseInt(daysOffset));
 		}
-	  
+
 		return date;
 	}
 	if (fromRelative) {
@@ -1265,7 +1272,7 @@ function tbxDatePicker  (targetEle, settings) {
 		picker.min(new Date(1900, 0, 1));
 		picker.max(new Date(2099, 11, 31));
 	}
-	
+
 	var saveValue = function (val) {
 		targetEle.parents(".form-group").removeClass("has-error");
 		if (settings.targetValId) {
@@ -1282,7 +1289,7 @@ function tbxDatePicker  (targetEle, settings) {
 				}
 			}
 			$('#' + settings.targetValId).change();
-		} 
+		}
 	}
 	var getValue = function (target) {
 		return ($('#' + target).val()) ? kendo.toString(new Date($('#' + target).val()), (settings.hasTimePicker)?'g':'d') : null;
@@ -1320,7 +1327,7 @@ function tbxDatePicker  (targetEle, settings) {
 	var preferredCulture = $("meta[name='accept-language']").attr("content");
 
 	var pickerProperties = {
-		//explicitly default picker's culture to user's preferred datetime code/culture 
+		//explicitly default picker's culture to user's preferred datetime code/culture
 		culture: kendo.culture(preferredCulture),
 		change: function () {
 			var value = this.value();

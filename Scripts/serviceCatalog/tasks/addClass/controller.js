@@ -48,12 +48,17 @@ function (
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
+          _.defaults(options, {
+            next: 1,
+          });
 
-          if (typeof options.cssclass === 'undefined') {
+          if (!_.has(options, 'cssclass')) {
+            if (!_.isUndefined(app.custom.utils)) {
+              app.custom.utils.log(2, 'addClassController:initROTask', 'Warning! Invalid arguments provided');
+            }
             return;
           }
 

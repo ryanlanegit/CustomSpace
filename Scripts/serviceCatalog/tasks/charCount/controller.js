@@ -69,15 +69,14 @@ define([
          * Request Offering Task initialization script
          */
         function initROTask() {
-          var defaultOptions = {
+          _.defaults(options, {
             next: 1,
             minText: 'Minimum Extra Characters Required',
             maxText: 'Maximum Characters Remaining',
             showMin: 'true',
             showMax: 'true',
             showMinMax: 'false',
-          }
-          options = $.extend(defaultOptions, options);
+          });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             var targetTextAreaElm = $(targetElm).find('textarea'),

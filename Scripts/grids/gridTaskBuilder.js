@@ -104,7 +104,7 @@ define([
                   if (typeof field === 'object') {
                     $.extend(options, field);
                   } else {
-                    if (!_.isUndefined(app.storage.utils)) {
+                    if (!_.isUndefined(app.custom.utils)) {
                       app.custom.utils.log(2, 'gridTasks:add', 'Warning! Invalid arguments supplied.');
                     }
                     return this;
@@ -118,7 +118,7 @@ define([
                     ['class','style'].indexOf(options.type) === -1 && _.isUndefined(options.name)
                   )
                 ) {
-                  if (!_.isUndefined(app.storage.utils)) {
+                  if (!_.isUndefined(app.custom.utils)) {
                     app.custom.utils.log(2, 'gridTasks:add', 'Warning! Invalid arguments supplied.');
                   }
                   return this;
@@ -208,7 +208,7 @@ define([
                     break;
                   }
                 } else {
-                  if (!_.isUndefined(app.storage.utils)) {
+                  if (!_.isUndefined(app.custom.utils)) {
                     app.custom.utils.log(2, 'gridTasks:add', "Warning! Unable to find field '" + options.field + "'.");
                   }
                 }
@@ -289,7 +289,7 @@ define([
                     existingTask.callback(data);
                   }
                 } else {
-                  if (!_.isUndefined(app.storage.utils)) {
+                  if (!_.isUndefined(app.custom.utils)) {
                     app.custom.utils.log(2, 'gridTasks:callback', 'Unable to find task for callback.');
                   }
                 }

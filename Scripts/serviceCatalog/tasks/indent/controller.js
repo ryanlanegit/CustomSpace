@@ -48,11 +48,13 @@ function (
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
-          options.level = options.level || '1';
+          _.defaults(options, {
+            next: 1,
+            level: '1',
+          });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetLevel = (typeof options.level === 'string') ? options.level : options.level[targetIndex];

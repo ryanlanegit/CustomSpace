@@ -52,9 +52,14 @@ define([
          * Request Offering Task initialization script
          */
         function initROTask() {
-          options.next = options.next || 1;
+          _.defaults(options, {
+            next: 1,
+          });
 
-          if (!options.info && !options.icon) {
+          if (!_.has(options, 'info') && !_.has(options, 'icon')) {
+            if (!_.isUndefined(app.custom.utils)) {
+              app.custom.utils.log(2, 'addInformationController:initROTask', 'Warning! Invalid arguments provided');
+            }
             return;
           }
           var builtInfo = _.template(addInformationTemplate);

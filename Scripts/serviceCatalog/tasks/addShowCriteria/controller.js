@@ -264,9 +264,9 @@ function (
          * @param {String} ngShowAttr - Target elmement's ng-show attribute value.
          */
         function patchCriteriafn($scope, criteriaOptions, ngShowAttr) {
-          if (criteriaOptions.hasOwnProperty('ng-show')) {
+          if (_.has(criteriaOptions, 'ng-show')) {
             var fnName = getfnCallName(ngShowAttr);
-            if ($scope.$parent.hasOwnProperty(fnName)) {
+            if (_.has($scope.$parent, fnName)) {
               var fnDefinition = $scope.$parent[fnName],
                   fnCallArgList = getfnCallArgList(ngShowAttr),
                   fnDefinitionArgList = getfnDefinitionArgList(fnDefinition);
@@ -281,7 +281,7 @@ function (
               }
 
               for (var propName in criteriaOptions['ng-show']) {
-                if (criteriaOptions['ng-show'].hasOwnProperty(propName)) {
+                if (_.has(criteriaOptions['ng-show'], propName)) {
                   var propValue = criteriaOptions['ng-show'][propName],
                       argIndex = fnDefinitionArgList.indexOf(propName);
                   if (argIndex !== -1) {
@@ -308,15 +308,15 @@ function (
         }
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          var defaultOptions = {
+          _.defaults(options, {
             next: 1,
             operator: '||',
             group: 'continue',
-          };
-          options = $.extend({}, defaultOptions, options);
+          });
+
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             roTaskLib.waitForAngular(function () {
               var subTaskElms = $(roTaskElm).nextUntil(targetElm, '.task-container'),
@@ -332,7 +332,7 @@ function (
               criteriaGroupStack.push(currentCriteriaGroup);
               // Do not add criteria if ng-show for task-container is empty or blank
               if (roTaskNGShowAttr) {
-                if (options.hasOwnProperty('ng-show')) {
+                if (_.has(options, 'ng-show')) {
                     roTaskNGShowAttr = patchCriteriafn($scope, options, roTaskNGShowAttr);
                 }
                 // Do not add initial operator if ng-show for target question is empty or blank
@@ -359,12 +359,12 @@ function (
                       criteriaOptions = {},
                       criteriaPropertyName = roTask.Name + '.criteria';
                   if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
-                    $.extend(criteriaOptions, defaultOptions, parsedProperties[criteriaPropertyName]);
+                    $.extend(criteriaOptions, options, parsedProperties[criteriaPropertyName]);
                     currentCriteriaGroup.push(criteriaOptions.operator);
                     // Return true if ng-show for task-container is empty or blank (Always Display)
                     if (!subTaskNGShowAttr) {
                       subTaskNGShowAttr = 'true';
-                    } else if (criteriaOptions.hasOwnProperty('ng-show')) {
+                    } else if (_.has(criteriaOptions, 'ng-show')) {
                       subTaskNGShowAttr = patchCriteriafn($scope, criteriaOptions, subTaskNGShowAttr);
                     }
 

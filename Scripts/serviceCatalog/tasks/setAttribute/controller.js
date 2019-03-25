@@ -48,17 +48,20 @@ function (
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
-          options.selector = options.selector || '[data-role]';
+          _.defaults(options, {
+            next: 1,
+            selector: '[data-role]',
+          });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetOptions = $.extend({}, options),
-                targetSelector = (typeof targetOptions.selector === 'string') ? targetOptions.selector : targetOptions.selectors[targetIndex];
-            delete targetOptions.next;
-            delete targetOptions.selector;
+            var targetOptions = _.omit(options, ['next', 'selector', 'selectors']),
+                targetSelector = options.selector;
+            if (_.has(options, 'selectors') && typeof options.selectors[targetIndex] !== 'undefined') {
+              targetSelector = targetOptions.selectors[targetIndex];
+            }
             $(targetElm).find(targetSelector).attr(targetOptions);
           });
         }

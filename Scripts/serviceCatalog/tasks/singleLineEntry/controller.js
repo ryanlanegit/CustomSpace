@@ -73,10 +73,12 @@ function (
         // #endregion Utility functions
 
         /**
-         * Request Offering Task initialization script
+         * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
+          _.defaults(options, {
+            next: 1,
+          });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm) {
             targetElm = $(targetElm);

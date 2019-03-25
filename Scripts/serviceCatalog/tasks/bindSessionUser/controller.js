@@ -84,17 +84,56 @@ function (
          * @param {Object} targetElm - Target textarea container.
          * @param {String} value - New textarea text value.
          */
-        function updateTextAreaField(targetElm, value) {
+        function updateTextAreaValue(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
           roTaskLib.waitForAngular(function () {
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
-            if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
+            if (_.isEmpty(currentValue)) {
               $(textareaElm).val(value);
               $(textareaElm).trigger('onkeyup');
             }
           });
+        }
+
+        /**
+         * Update field value based on provided Kendo type.
+         *
+         * @param {string} targetType - Target field type.
+         * @param {object} targetElm - Target field container.
+         * @param {object|number|string} value - New field value.
+         */
+        function updateField(targetType, targetElm, value) {
+          switch (targetType) {
+          case 'String':
+            updateTextAreaValue(targetElm, value);
+            break;
+          }
+        }
+
+        /**
+         * Validate if field should be updated.
+         *
+         * @param {string} targetType - Target field type.
+         * @param {object} targetElm - Target field container.
+         * @returns {boolean} If value should be updated.
+         */
+        function validateUpdate(targetType, targetElm) {
+          var bUpdateValue = false,
+              targetInputElm,
+              currentValue;
+          switch (targetType) {
+          case 'String':
+            targetInputElm = $(targetElm).find('textarea');
+            currentValue = $(targetInputElm).val();
+            // Update target field if current value is blank.
+            if (_.isEmpty(currentValue)) {
+              bUpdateValue = true;
+            }
+            break;
+          }
+          return bUpdateValue;
         }
 
         // #endregion Utility functions
@@ -103,9 +142,14 @@ function (
          * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
+          _.defaults(options, {
+            next: 1,
+          });
 
-          if (!options.property && typeof options.properties === 'undefined') {
+          if (!_.has(options, 'property') && !_.has(options, 'properties')) {
+            if (!_.isUndefined(app.custom.utils)) {
+              app.custom.utils.log(2, 'bindSessionController:initROTask', 'Warning! Invalid arguments provided');
+            }
             return;
           }
 
@@ -113,9 +157,7 @@ function (
             // Update Input If HASH exists on Load
             var targetType = $(targetElm).find('input.question-answer-type').val(),
                 targetInputElm,
-                propertyKey = options.property || options.properties[targetIndex],
-                currentValue,
-                bUpdateValue = false;
+                propertyKey = options.property || options.properties[targetIndex];
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('bindSessionController:processNext', {
                 task: roTask,
@@ -125,18 +167,8 @@ function (
                 options: options,
               });
             }
-            switch (targetType) {
-            case 'String':
-              targetInputElm = $(targetElm).find('textarea');
-              currentValue = $(targetInputElm).val();
-              // Set Field to value if current value is blank
-              if (currentValue === null || currentValue.length === 0 || currentValue === ' ') {
-                bUpdateValue = true;
-              }
-              break;
-            }
 
-            if (bUpdateValue) {
+            if (validateUpdate(targetType, targetElm)) {
               // Mapping commonly used Properties to the session.user equivalent
               switch (propertyKey) {
               case 'DisplayName':
@@ -145,43 +177,47 @@ function (
               }
 
               if (session.user.hasOwnProperty(propertyKey)) {
-                updateTextAreaField(targetElm, session.user[propertyKey]);
+                updateField(targetType, targetElm, session.user[propertyKey]);
               } else {
-                var sessionUserDataSource = customLib.api.getDataSource(
-                  'GetObjectPropertiesByProjection.' + session.user.Id,
-                  {
-                    transport: {
-                      read: {
-                        url: '/Search/GetObjectPropertiesByProjection',
-                        data: {
-                          projectionId: roTask.Configs.SystemUserPreferencesProjectionId,
-                          id: session.user.Id,
+                var sessionUserConfig = {
+                      transport: {
+                        read: {
+                          url: '/Search/GetObjectPropertiesByProjection',
+                          data: {
+                            projectionId: roTask.Configs.SystemUserPreferencesProjectionId,
+                            id: session.user.Id,
+                          },
                         },
                       },
                     },
-                });
+                    sessionUserConfigId = 'GetObjectPropertiesByProjection.' + customLib.createHash(sessionUserConfig),
+                    sessionUserDataSource = customLib.api.getDataSource(sessionUserConfigId, sessionUserConfig);
 
                 sessionUserDataSource.bind('requestEnd', function responseHandler(event) {
-                  var data = event.response;
                   if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                    app.custom.utils.log('Session User Data Ready', {
-                      data: data[0],
-                      dataLength: data.length,
+                    app.custom.utils.log('GetObjectPropertiesByProjection:requestEnd', {
+                      id: sessionUserConfigId,
                       propertKey: propertyKey,
+                      response: event.response,
                     });
                   }
-                  if (data.length > 0) {
-                    if (data[0].hasOwnProperty(propertyKey)) {
-                      updateTextAreaField(targetElm, data[0][propertyKey]);
+                  if (!_.isEmpty(event.response)) {
+                    var data = _.first(event.response);
+                    if (_.has(data, propertyKey)) {
+                      updateField(targetType, targetElm, data[propertyKey]);
                     } else {
                       switch (propertyKey) {
                       case 'EmailAddress':
-                        var SMTPFilter = _.findWhere(data[0].Preference, {ChannelName: 'SMTP'});
-                        if (!_.isUndefined(SMTPFilter)) {
-                          updateTextAreaField(targetElm, SMTPFilter.TargetAddress);
+                        var SMTPChannel = _.findWhere(data.Preference, { ChannelName: 'SMTP'});
+                        if (!_.isUndefined(SMTPChannel)) {
+                          updateField(targetType, targetElm, SMTPChannel.TargetAddress);
                         }
                         break;
                       }
+                    }
+                  } else {
+                    if (!_.isUndefined(app.custom.utils)) {
+                      app.custom.utils.log(2, 'GetObjectPropertiesByProjection:requestEnd', 'Warning! Invalid results returned.');
                     }
                   }
                   sessionUserDataSource.unbind('requestEnd', responseHandler);

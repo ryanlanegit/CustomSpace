@@ -116,9 +116,14 @@ function (
          * Request Offering Task initialization script.
          */
         function initROTask() {
-          options.next = options.next || 1;
+          _.defaults(options, {
+            next: 1,
+          });
 
-          if (!options.param) {
+          if (!_.has(options, 'param')) {
+            if (!_.isUndefined(app.custom.utils)) {
+              app.custom.utils.log(2, 'bindHashController:initROTask', 'Warning! Invalid arguments provided');
+            }
             return;
           }
 
@@ -129,7 +134,7 @@ function (
                 onInputChange;
 
             // Update Input If HASH exists on Load
-            if (currentParams && currentParams.hasOwnProperty(paramKey)) {
+            if (currentParams && _.has(currentParams, paramKey)) {
               // Set Field to Fetched Data value
               processParam(targetElm, currentParams[paramKey]);
             }
@@ -166,8 +171,8 @@ function (
                   data: data,
                 });
               }
-              if (data.newQueryParams && data.newQueryParams.hasOwnProperty(paramKey)) {
-                if(data.oldQueryParams && data.oldQueryParams.hasOwnProperty(paramKey)) {
+              if (data.newQueryParams && _.has(data.newQueryParams, paramKey)) {
+                if(data.oldQueryParams && _.has(data.oldQueryParams, paramKey)) {
                   if (data.newQueryParams[paramKey] !== data.oldQueryParams[paramKey]) {
                     processParam(targetElm, data.newQueryParams[paramKey]);
                   }
