@@ -16,7 +16,7 @@ define([
   var pageTaskModules = _.chain(arguments)
         .toArray()
         .filter(function (argument) {
-          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+          return _.has(argument, 'task');
         })
         .value(),
       nodeConfig = {
@@ -57,6 +57,7 @@ define([
            * @param {object} promptElm - Task Container
            * @param {object} options - Number
            */
+          /*
           function buildAndRender(taskName, promptElm, options) {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('pageTaskBuilder:buildAndRender', {
@@ -81,6 +82,7 @@ define([
               }
             }
           }
+          */
 
           // #endregion Utility functions
 

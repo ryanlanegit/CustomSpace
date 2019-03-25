@@ -358,7 +358,7 @@ function (
                       subTaskNGShowAttr = subTaskElm.attr('ng-show'),
                       criteriaOptions = {},
                       criteriaPropertyName = roTask.Name + '.criteria';
-                  if (typeof parsedProperties[criteriaPropertyName] !== 'undefined') {
+                  if (_.has(parsedProperties, criteriaPropertyName)) {
                     $.extend(criteriaOptions, options, parsedProperties[criteriaPropertyName]);
                     currentCriteriaGroup.push(criteriaOptions.operator);
                     // Return true if ng-show for task-container is empty or blank (Always Display)

@@ -156,7 +156,6 @@ function (
           processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             // Update Input If HASH exists on Load
             var targetType = $(targetElm).find('input.question-answer-type').val(),
-                targetInputElm,
                 propertyKey = options.property || options.properties[targetIndex];
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('bindSessionController:processNext', {
@@ -176,7 +175,7 @@ function (
                 break;
               }
 
-              if (session.user.hasOwnProperty(propertyKey)) {
+              if (_.has(session.user, propertyKey)) {
                 updateField(targetType, targetElm, session.user[propertyKey]);
               } else {
                 var sessionUserConfig = {

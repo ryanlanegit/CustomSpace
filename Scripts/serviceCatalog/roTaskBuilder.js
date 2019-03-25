@@ -43,7 +43,7 @@ define([
   var roTaskModules = _.chain(arguments)
         .toArray()
         .filter(function (argument) {
-          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+          return _.has(argument, 'task');
         })
         .value(),
       nodeConfig = {

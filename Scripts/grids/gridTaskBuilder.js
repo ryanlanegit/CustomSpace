@@ -20,7 +20,7 @@ define([
   var gridTaskModules = _.chain(arguments)
         .toArray()
         .filter(function (argument) {
-          return (typeof argument === 'object' && !_.isUndefined(argument.task));
+          return _.has(argument, 'task');
         })
         .value(),
       /**

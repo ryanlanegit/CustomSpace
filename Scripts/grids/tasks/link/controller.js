@@ -48,20 +48,19 @@ define([
          * @returns {string} Kendo template string.
          */
         function initGridTask() {
-          var properties = {
-              field: field,
-              task: task,
-              icon: 'fa-external-link',
-              bClickPropagation: false,
-              className: '',
-              href: '/',
-              target: '_blank',
-              title: '',
-            },
-            builtLink = _.template(listItemLinkTemplate);
+          _.defaults(options, {
+            field: field,
+            task: task,
+            icon: 'fa-external-link',
+            bClickPropagation: false,
+            className: '',
+            href: '/',
+            target: '_blank',
+            title: '',
+          });
+          var builtLink = _.template(listItemLinkTemplate);
 
-          $.extend(properties, options);
-          return builtLink(properties);
+          return builtLink(options);
         }
 
         return initGridTask();

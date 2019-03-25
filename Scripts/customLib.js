@@ -21,14 +21,14 @@ define([
            */
           template: function template (template) {
             var builtTemplate = _.template(template),
-                templateElm = new kendo.View(builtTemplate(), {
+                templateElmView = new kendo.View(builtTemplate(), {
                   wrap: false,
                 });
 
             //send popup element back to caller (appended in the callback)
-            $('body').append(templateElm.render());
+            $('body').append(templateElmView.render());
 
-            return templateElm;
+            return templateElmView;
           },
         },
 
@@ -105,7 +105,7 @@ define([
                   var data = this.data();
                   if (options.asArray) {
                     callback(data);
-                  } else if (data.length) {
+                  } else if (!_.isEmpty(data)) {
                     callback(data[0]);
                   } else {
                     callback(null);
@@ -121,7 +121,7 @@ define([
                   var data = dataSource.data();
                   if (options.asArray) {
                     callback(data);
-                  } else if (data.length) {
+                  } else if (!_.isEmpty(data)) {
                     callback(data[0]);
                   } else {
                     callback(null);
@@ -141,24 +141,21 @@ define([
            * @returns {object} Ajax Promise.
            */
           query: function query(options, callback) {
-            var ajaxOptions = {
+            _.defaults(options, {
               dataType: 'json',
               type: 'GET',
               cache: true,
-            };
-            $.extend(ajaxOptions, options);
+            });
 
             switch (typeof callback) {
             case 'function':
-              $.extend(ajaxOptions, {
-                success: callback,
-              });
+              options.success = callback;
               break;
             case 'object':
-              $.extend(ajaxOptions, callback);
+              $.extend(options, callback);
               break;
             }
-            return $.ajax(ajaxOptions);
+            return $.ajax(options);
           },
         },
       },
@@ -245,7 +242,7 @@ define([
          */
         isValidGUID: function isValidGUID(content) {
           if (app.storage.custom.get('DEBUG_ENABLED')) {
-            app.custom.utils.log('roTaskUtils:isValidGUID', content);
+            app.custom.utils.log('customLib:isValidGUID', content);
           }
           content = content.toString();
           var rx_one = /^(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}$/gi,
@@ -293,7 +290,7 @@ define([
           }
           var popupNotification = customLibVm.notificationView.element.getKendoNotification('kendoNotification'),
               options = {
-                type: type || 'info',
+                type: 'info',
                 message: '',
               };
 
@@ -306,6 +303,10 @@ define([
             break;
           default:
             options.message = message.toString();
+          }
+
+          if (typeof type !== 'undefined') {
+            options.type = type;
           }
 
           if (!_.isUndefined(popupNotification)) {
@@ -361,14 +362,13 @@ define([
              * @returns {object} Ajax Promise.
              */
             GetChildWorkItems: function GetChildWorkItems(parentIds, callback) {
-              var getChildWorkItems = customLibVm.api.query({
-                  url: '/api/v3/workitem/GetChildWorkItems',
-                  type: 'POST',
-                  contentType: 'application/json; charset=utf-8',
-                  data: JSON.stringify(typeof parentIds === 'string' ? [parentIds] : parentIds),
-                },
-                callback
-              );
+              var config = {
+                    url: '/api/v3/workitem/GetChildWorkItems',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(typeof parentIds === 'string' ? [parentIds] : parentIds),
+                  },
+                  getChildWorkItems = customLibVm.api.query(config, callback);
 
               return getChildWorkItems;
             },
@@ -383,14 +383,14 @@ define([
              * @returns {object} Ajax Promise.
              */
             GetEnumDisplayName: function GetEnumDisplayName(enumId, callback) {
-              var getEnumDisplayName = customLibVm.api.query({
-                  url: '/api/V3/Enum/GetEnumDisplayName',
-                  data: {
-                    Id: enumId,
+              var config = {
+                    url: '/api/V3/Enum/GetEnumDisplayName',
+                    data: {
+                      Id: enumId,
+                    },
                   },
-                },
-                callback
-              );
+                  getEnumDisplayName = customLibVm.api.query(config, callback);
+
               return getEnumDisplayName;
             },
           },
@@ -571,12 +571,13 @@ define([
           GetObjectProperties: function GetObjectProperties(id, callback) {
             var config = {
               url: '/Search/GetObjectProperties',
-              data: {},
             };
 
             switch (typeof id) {
             case 'string':
-              config.data.id = id;
+              config.data = {
+                id: id,
+              };
               break;
             case 'object':
               config.data = id;
@@ -614,13 +615,12 @@ define([
             switch (typeof projectionId) {
             case 'object':
               $.extend(true, options, projectionId);
-              delete projectionId.method;
               if (typeof options.config !== 'undefined') {
                 $.extend(true, config, options.config);
               } else if (typeof options.data !== 'undefined') {
                 config.transport.read.data = options.data;
               } else {
-                config.transport.read.data = projectionId;
+                config.transport.read.data = _.omit(projectionId, 'method');
               }
               break;
             case 'string':
@@ -630,7 +630,15 @@ define([
               };
               break;
             default:
-              // Unsupported argument provided.
+              if (!_.isUndefined(app.custom.utils)) {
+                app.custom.utils.log(2, 'customLib:GetObjectPropertiesByProjection',
+                  'Warning! Invalid arguments provided', {
+                    projectionId: projectionId,
+                    id: id,
+                    callback: callback,
+                    method: method,
+                  });
+              }
               return null;
             }
 

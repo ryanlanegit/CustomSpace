@@ -48,17 +48,16 @@ define([
          * @returns {string} Kendo template string.
          */
         function initGridTask() {
-          var properties = {
+          _.defaults(options, {
               field: field,
               task: task,
               icon: 'fa-pencil',
               bClickPropagation: true,
               title: '',
-            },
-            builtTask = _.template(listItemTaskTemplate);
+            });
+          var builtTask = _.template(listItemTaskTemplate);
 
-          $.extend(properties, options);
-          return builtTask(properties);
+          return builtTask(options);
         }
 
         return initGridTask();

@@ -80,14 +80,14 @@ define([
             windowEle: function windowEle(windowTemplate) {
               //build the template for the window
               var builtModal = _.template(windowTemplate),
-                  ele = new kendo.View(builtModal(), {
+                  windowElmView = new kendo.View(builtModal(), {
                     wrap: false,
                   });
               //send hidden window back to caller (appended in the callback)
               if (typeof callback === 'function') {
-                callback(ele.render());
+                callback(windowElmView.render());
               }
-              return ele;
+              return windowElmView;
             },
 
             /**
@@ -97,15 +97,15 @@ define([
               $.extend(true, properties, node);
               //build the anchor and bind viewModel to it
               var builtAnchor = _.template(template),
-                  anchorElm = new kendo.View(builtAnchor(properties), {
+                  anchorElmView = new kendo.View(builtAnchor(properties), {
                     wrap: false,
                     model: anchorViewModel,
                   });
               //send anchor element back to caller (appended in the callback)
               if (typeof callback === 'function') {
-                callback(anchorElm.render());
+                callback(anchorElmView.render());
               }
-              return anchorElm;
+              return anchorElmView;
             },
 
             /**
