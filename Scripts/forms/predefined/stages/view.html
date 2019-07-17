@@ -1,0 +1,28 @@
+﻿<div id="stagesController" data-role="stagesController">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="stagesView" data-bind="visible: showStages">
+        <ul class="timeline" data-template="propertyStagesTemplate" data-bind="source: activityDataSource"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--kendo templates-->
+<script type="text/x-kendo-template" id="viewStagesTemplate">
+  <ul class='timeline' data-template='propertyStagesTemplate' data-bind='source: activityDataSource'></ul>
+</script>
+<script type="text/x-kendo-template" id="propertyStagesTemplate">
+  <li style="width: <%= width %>%" class="<%= state %>">
+    <a style="width:calc(100% - 32px);">
+      //<span><%= key %></span>
+      <span class="label label-info label-heading" style="font-weight: 400; width: auto; height: auto; margin-top: -2px;" id="statusname">
+        <i class="fa fa-<%= statusIcon %> fa-lg"></i>
+      </span>
+      <p style="text-align: left; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" title="<%= title %>">
+        <i class="ci <%= icon %> fa-lg"></i>
+         <%= shortTitle %>
+      </p>
+    </a>
+  </li>
+</script>

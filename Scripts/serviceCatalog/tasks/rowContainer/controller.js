@@ -56,13 +56,22 @@ define([
         /**
          * Processes the next N non-task containers.
          *
+         * @param {object|string} roTaskElm - Source task container element or the target question Id.
          * @param {Integer} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(roTaskElm, next, func) {
-          var lastTargetElm = $(roTaskElm).nextAll().not('.task-container, .row-container').slice(0, next).slice(-1),
-              targetElms = $(roTaskElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm),
-              builtRowContainer = _.template(rowContainerTemplate);
+          var builtRowContainer = _.template(rowContainerTemplate),
+              lastTargetElm,
+              targetElms;
+          if (typeof roTaskElm === 'string') {
+            var targetElm = $('div.page-panel .question-container').find(".question-baseid[value='" + roTaskElm + "']").parent('.question-container');
+            lastTargetElm = $(targetElm).nextAll().addBack().not('.task-container, .row-container').slice(0, next).slice(-1);
+            targetElms = $(targetElm).nextUntil(lastTargetElm, ':not(.row-container)').addBack().add(lastTargetElm);
+          } else {
+            lastTargetElm = $(roTaskElm).nextAll().not('.task-container, .row-container').slice(0, next).slice(-1);
+            targetElms = $(roTaskElm).nextUntil(lastTargetElm, ':not(.row-container)').add(lastTargetElm);
+          }
 
           targetElms.wrapAll(builtRowContainer());
           _.each(targetElms, func);

@@ -1,4 +1,4 @@
-/* global $, _, app, define, kendo */
+/* global $, _, app, define, document, kendo */
 
 /**
  * Custom Request Offering Task Builder
@@ -186,6 +186,30 @@ define([
                 });
               });
             });
+
+            var requestofferingId = document.location.pathname.split(/[/ ]+/).pop().toLowerCase().split(',')[0];
+            //console.log('requestofferingId', requestofferingId);
+            $.ajax({
+              dataType: 'json',
+              url: '/CustomSpace/Scripts/serviceCatalog/views/' + requestofferingId + '.js',
+              data: {},
+            }).done(function (data) {
+                _.each(data.taskList, function (val, key) {
+                    var taskQuestionId = val.id;
+                    _.each(val.task, function (val, key) {
+                      if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                        app.custom.utils.log('roTaskElm.property', {
+                          key: key,
+                          value: val,
+                        });
+                      }
+                      // Ignore tasks with a namespace as they represent additional options/criteria for a previous task
+                      if (key.indexOf('.') === -1) {
+                        buildAndRender(roTasksVm, taskQuestionId, key, val);
+                      }
+                    });
+                });
+            })
 
             if (typeof callback === 'function') {
               callback(roTasksVm);

@@ -63,11 +63,19 @@ function (
         /**
          * Processes the next N non-task containers.
          *
+         * @param {object|string} roTaskElm - Source task container element or the target question Id.
          * @param {number} next - Number of next non-task containers to process.
          * @param {processNextCallback} func - Callback function to process next question or display container.
          */
         function processNext(roTaskElm, next, func) {
-          var targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
+          var targetElms;
+          if (typeof roTaskElm === 'string') {
+            var targetElm = $('div.page-panel .question-container').find(".question-baseid[value='" + roTaskElm + "']").parent('.question-container');
+            targetElms = $(targetElm).nextAll().addBack().not('.task-container').slice(0, next);
+          } else {
+            targetElms = $(roTaskElm).nextAll().not('.task-container').slice(0, next);
+          }
+
           if (app.isSessionStored()) {
             _.each(targetElms, func);
           } else {
@@ -91,8 +99,10 @@ function (
             var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             if (_.isEmpty(currentValue)) {
-              $(textareaElm).val(value);
-              $(textareaElm).trigger('onkeyup');
+              $(textareaElm)
+                .val(value)
+                .trigger('onkeyup')
+                .trigger('keyup')
             }
           });
         }
