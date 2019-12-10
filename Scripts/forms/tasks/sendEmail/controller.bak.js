@@ -1,5 +1,4 @@
-﻿/*global _, $, app, atob, console, define, document, jQuery, kendo, localization, location, navigator, pageForm, session, setTimeout, window, ArrayBuffer, Blob, FormData, Image, Uint8Array, shown */
-/*eslint no-console: ["error", { allow: ["log", "warn", "error"] }] */
+/*global _, $, app, atob, console, define, document, jQuery, kendo, localization, location, navigator, require, session, setTimeout, window, ArrayBuffer, Blob, FormData, Image, Uint8Array */
 
 /**
  * Send Email Task Controller
@@ -7,39 +6,29 @@
  */
 define([
   'text!forms/tasks/anchor/view.html',
-  'text!forms/tasks/sendEmail/mobile_view.html',
-  'text!forms/tasks/sendEmail/view.html',
   'forms/popups/userPickerPopup/controller',
-  'forms/popups/multipleObjectPickerPopup/controller',
   'forms/flyout/fileAttachmentsFlyout/controller',
   'forms/fields/enum/controller',
-  'forms/fields/longstring/controller',
+  'text!forms/tasks/sendEmail/mobile_view.html',
+  'text!forms/tasks/sendEmail/view.html',
 ], function (
   anchor,
-  mobileTemplate,
-  desktopTemplate,
   objectPickerPopup,
-  _objectPickerPopup,
   attachmentPickerFlyout,
   enumPickerControl,
-  txtAreaControl
+  mobileTemplate,
+  desktopTemplate
 ) {
     'use strict';
     //we only need the achor template for this task
     //var anchor = require("text!forms/tasks/anchor/view.html");
-    //var tpl = app.isMobile() ?  require("text!forms/tasks/sendEmail/mobile_view.html") : require("text!forms/tasks/sendEmail/view.html");
+    var tpl = app.isMobile() ?  mobileTemplate : desktopTemplate;
     //var objectPickerPopup = require("forms/popups/userPickerPopup/controller");
-    //var _objectPickerPopup = require("forms/popups/multipleObjectPickerPopup/controller");
     //var attachmentPickerFlyout = require("forms/flyout/fileAttachmentsFlyout/controller");
     //var enumPickerControl = require("forms/fields/enum/controller");
-    //var txtAreaControl = require("forms/fields/longstring/controller");
-    var tpl = app.isMobile() ?  mobileTemplate : desktopTemplate;
 
     var definition = {
         template: tpl,
-        /**
-         * Build Send Email Task
-         */
         build: function (vm, node, callback) {
 
             //build the template for the window
@@ -50,8 +39,7 @@ define([
                 recipientToList: [],
                 recipientCCList: [],
             };
-            var statusModalWindowControl = null;
-            var shown = false;
+
             //add FileAttachment on viewModel if not found
             if (_.isUndefined(vm.viewModel.FileAttachment)) {
                 vm.viewModel.set("FileAttachment", []);
@@ -62,9 +50,6 @@ define([
             view.destroy();//there is some issue with the cloned element if we don't destroy the view
             //this view Model is bound to the anchor element
             var viewModel = kendo.observable({
-                /**
-                 * Send Email Task initialization script
-                 */
                 sendEmail: function () {
                     var cont = view.element; //we have the element in memory so no need use a selector
 
@@ -74,18 +59,12 @@ define([
                             width: 650,
                             height: 740,
                             actions: [],
-                            /**
-                             * Activate Send Email popup
-                             */
                             activate: function () {
                                 getAffectedUserEmail(_vmWindow);
                                 setDefaultWIStatus(_vmWindow);
                             },
                         }).data("kendoWindow");
                     }
-
-
-
 
                     //this view Model is bound to the window element
                     var _vmWindow = new kendo.observable({
@@ -102,17 +81,7 @@ define([
                         enableAddToLog: (session.forceAddToActionLog === "true") ? false : true,
                         okEnabled: true,
                         setAsPrivate: (session.saveMessageAsPrivate === "true") ? true : false,
-                        /**
-                         * OK On Click Event Handler
-                         */
                         okClick: function (e) {
-                            var userPickerTo = cont.find("#userPickerTo").data("kendoMultiSelect"),
-                                userPickerCc = cont.find("#userPickerCc").data("kendoMultiSelect"),
-                                recipientList = {
-                                  recipientToList : userPickerTo.listView._dataItems,
-                                  recipientCCList : userPickerCc.listView._dataItems,
-                                };
-
                             var recipientToEmail = _.without(recipientList["recipientToList"], _.findWhere(recipientList["recipientToList"], {
                                 Email: "",
                             }));
@@ -163,124 +132,12 @@ define([
                                 }
                             }
 
-                            var workItemStatuses = app.constants.workItemStatuses;
-                            var serviceRequestCompleted = workItemStatuses.ServiceRequest.Completed;
-                            var incidentResolved = workItemStatuses.Incident.Resolved;
-
-                            //This will only created if the the Incident is set to resolve or Service Request is set to completed
-                            if (((vm.type.toLowerCase() == "incident" || node.Configs.type == "Incident") && (_vmWindow.Status.id == incidentResolved || _vmWindow.Status.Id == incidentResolved))
-                                || ((vm.type.toLowerCase() == "servicerequest" || node.Configs.type == "ServiceRequest") && (_vmWindow.Status.id == serviceRequestCompleted || _vmWindow.Status.Id == serviceRequestCompleted)))
-                            {
-                                var statusWindow = cont.find("#SendEmailChangeStatusWindow").clone();
-                                var _vm = vm.viewModel;
-                                var implementationNotesProperties, resolutionProperties, dateField;
-
-                                if (vm.type.toLowerCase() == "incident" || node.Configs.type == "Incident")
-                                {
-                                     implementationNotesProperties = {
-                                        PropertyName: "ResolutionDescription",
-                                        PropertyDisplayName: "ResolutionDescription",
-                                        Required: false,
-                                        MaxLength: 4000,
-                                        Rows: 5,
-                                        vm: vm,
-                                    };
-
-                                    resolutionProperties = {
-                                        PropertyName: "ResolutionCategory",
-                                        PropertyDisplayName: "ResolutionCategory",
-                                        Required: false,
-                                        EnumId: "72674491-02cb-1d90-a48f-1b269eb83602",
-                                    };
-
-                                    dateField = "ResolvedDate";
-                                }
-
-                                if (vm.type.toLowerCase() == "servicerequest" || node.Configs.type == "ServiceRequest") {
-                                    implementationNotesProperties = {
-                                        PropertyName: "Notes",
-                                        PropertyDisplayName: "Implementationnotes",
-                                        Required: true,
-                                        MaxLength: 4000,
-                                        Rows: 5,
-                                        vm: vm,
-                                    };
-
-                                    resolutionProperties = {
-                                        PropertyName: "ImplementationResults",
-                                        PropertyDisplayName: "ImplementationResults",
-                                        Required: false,
-                                        EnumId: "4ea37c27-9b24-615a-94da-510539371f4c",
-                                    };
-
-                                    dateField = "CompletedDate";
-                                }
-
-                                var containerDescription = statusWindow.find("#resolutionDescription");
-
-                                txtAreaControl.build(_vm, implementationNotesProperties, function (cbTxtAreaControl) {
-                                    containerDescription.html(cbTxtAreaControl);
-                                    app.controls.apply(containerDescription, {
-                                        localize: true,
-                                        vm: _vm,
-                                        bind: true,
-                                    });
-                                });
-
-                                var containerEnum = statusWindow.find("#resolutionPicker");
-
-                                enumPickerControl.build(_vm, resolutionProperties, function (enumControl) {
-                                    containerEnum.html(enumControl);
-                                    app.controls.apply(containerEnum, {
-                                        localize: true,
-                                        vm: _vm,
-                                        bind: true,
-                                    });
-                                });
-
-                                statusModalWindowControl = statusWindow.kendoCiresonWindow({
-                                    title: localization.Resolution,
-                                    width: 600,
-                                    height: 480,
-                                    actions: [],
-                                    /**
-                                     * Activate trigger when window open animation is complete.
-                                     */
-                                    activate: function () {
-
-                                    },
-                                }).data("kendoWindow");
-
-                                var ths = this;
-                                statusWindow.find("#statusOk").click(function () {
-                                    vm.viewModel[dateField] = new Date().toISOString();
-                                    statusModalWindowControl.close();
-                                    statusWindow.remove();
-
-                                    //send email
-                                    kendo.ui.progress(cont, true);
-                                    sendEmail(ths, cont);
-                                });
-
-                                statusWindow.find("#statusCancel").click(function () {
-                                    statusModalWindowControl.close();
-                                    statusWindow.remove();
-                                });
-
-                                statusModalWindowControl.open();
-                            }
-                            else {
-                                //send email
-                                kendo.ui.progress(cont, true);
-                                sendEmail(this, cont);
-                            }
+                            //send email
+                            kendo.ui.progress(cont, true);
+                            sendEmail(this, cont);
 
                         },
-                        /**
-                         * Cancel Click Event Handler
-                         */
                         cancelClick: function (e) {
-                            console.log('cancelClick', e);
                             if (app.isMobile()) {
                                 win.close();
                             } else {
@@ -299,9 +156,6 @@ define([
                                    });
                             }
                         },
-                        /**
-                         * Email Template Change Event Handler
-                         */
                         emailTemplateChange: function (e) {
                             var filter = {
                                 field: "Id",
@@ -311,8 +165,8 @@ define([
                             tempateDataSource.filter(filter);
 
                             var dView = tempateDataSource.view();
-                            var subject = (dView.length > 0 && dView[0].Subject.replace(/\s/g, '').length > 0) ? "[" + vm.viewModel.Id + "] " + dView[0].Subject : "[" + vm.viewModel.Id + "] " + vm.viewModel.Title;
-                            var content = (dView.length > 0 && dView[0].Content.replace(/\s/g, '').length > 0) ? dView[0].Content : "";
+                            var subject = (dView.length > 0) ? "[" + vm.viewModel.Id + "] " + dView[0].Subject : "[" + vm.viewModel.Id + "] " + vm.viewModel.Title;
+                            var content = (dView.length > 0) ? dView[0].Content : "";
 
                             content = cont.find("#messageEditor").html(content).text();
 
@@ -326,9 +180,6 @@ define([
 
                             tempateDataSource.filter({});
                         },
-                        /**
-                         * Resize Editor Event Handler
-                         */
                         resizeEditor: function (e) {
                             e.preventDefault();
 
@@ -350,61 +201,45 @@ define([
                         fromWorkItemAttachementsId: [],
                         setFirstResponseDate: (_.isNull(vm.viewModel.FirstResponseDate)) ? true : false,
                         enableFirstResponseDate: (_.isNull(vm.viewModel.FirstResponseDate)) ? true : false,
-                        /**
-                         * Open Popup Event Handler
-                         */
                         openPopup: function (e) {
-                            console.log('openPopup', e);
-                            var filter = [{
-                                logic: "and",
-                                filters: [
-                                    { field: "Email", operator: "neq", value: '' },
-                                    { field: "Email", operator: "neq", value: null },
-                                ],
-                            }];
-                            var popupWindow = _objectPickerPopup.getPopup('3567434d-015f-8dcc-f188-0a407f3a2168', null, null, filter, null, true);
+                            var popupWindow = objectPickerPopup.getPopup();
                             popupWindow.setSaveCallback(function (object) {
-                                console.log('setSaveCallback', object);
                                 var recipientType = (e.currentTarget.id === "toField") ? "recipientToList" : "recipientCCList";
 
                                 var picker = (e.currentTarget.id === "toField")
                                     ? cont.find("#userPickerTo").data("kendoMultiSelect")
                                     : cont.find("#userPickerCc").data("kendoMultiSelect");
-                                /*
+
                                 var userEmailObj = _.find(_vmWindow.users, function (item) {
-                                    return item.guid === object.BaseId;
-                                });*/
-                                var userEmailObj = {
-                                    'Email': object.Email,
-                                    'Id': object.Id,
-                                    'Name': object.DisplayName,
-                                };
+                                    return item.guid === object.id;
+                                });
+
+                                var selectedUser = !_.isUndefined(userEmailObj)
+                                    ? { Id: object.id, Name: object.name, Email: userEmailObj.email }
+                                    : { Id: object.id, Name: object.name, Email: "" };
 
                                 var isUserExist = picker.dataSource.data().find(function (element) {
-                                    return element.Id === userEmailObj.Id;
+                                    return element.Id === selectedUser.Id;
                                 });
 
                                 if (!isUserExist) {
                                     var key = (recipientType.toLowerCase().indexOf("to") > -1) ? "TO" : "CC";
-                                    filter[key] = userEmailObj.Name;
-                                    picker.dataSource.add(userEmailObj);
+                                    filter[key] = selectedUser.Name;
+                                    picker.dataSource.add(selectedUser);
                                 }
 
-                                recipientList[recipientType].push(userEmailObj);
+                                recipientList[recipientType].push(selectedUser);
                                 picker.value(_.pluck(recipientList[recipientType], "Id"));
                             });
+                            popupWindow.vm.filterByAnalyst = false;
                             popupWindow.open();
                         },
-                        /**
-                         * View Workitem Files Event Handler
-                         */
                         viewWorkItemFiles: function() {
                             var flyoutWindow = attachmentPickerFlyout.getPopup(vm, "sendEmail");
                             flyoutWindow.setSaveCallback(function(data) {
                                 var selectedFiles = data.selectedFiles || [];
                                 for (var n = 0; n < selectedFiles.length; n++) {
                                     _vmWindow.sendEmailAttachments.push(selectedFiles[n]);
-                                    _vmWindow.fromWorkItemAttachementsId.push(selectedFiles[n].BaseId);
                                 }
                             });
                             flyoutWindow.open();
@@ -442,7 +277,7 @@ define([
                                 $('[data-toggle="tooltip"]').tooltip();
 
                                 //set defaults
-                                if (!_.isUndefined(vm.widget) && vm.widget.remoteManageRecepient && vm.widget.remoteManageRecepient.BaseId != null)
+                                if (vm.widget.remoteManageRecepient && vm.widget.remoteManageRecepient.BaseId != null)
                                     getRemoteManageRecepient();
                                 else
                                     getAffectedUserEmail(_vmWindow);
@@ -499,28 +334,42 @@ define([
                                     return false;
                                 }
                             });
-                        /*
-                        $.get("/api/V3/User/GetUserList",
-                            { fetchAll: true },
+
+                        $.get(
+                            "/api/V3/User/GetUserList",
+                            {
+                                fetchAll: true,
+                            },
                             function (data) {
-                                var names = $.map(data, function (value, i) {
-                                    return { 'id': i, 'name': value.Name, 'guid': value.Id, 'email': value.Email };
-                                });
+                                var names = [],
+                                    items = [];
+                                for (var i = 0; i<data.length; (i = i + 10000)) {
+                                    var subData = data.slice(i, i + 10000);
+                                    items = $.map(subData, function(value, i) {
+                                        return { 'id': i, 'name': value.Name, 'guid': value.Id, 'email': value.Email };
+                                    });
+                                    names = names.concat(items);
+                                }
 
                                 //store user data to viewmodel
                                 _vmWindow.users = names;
                                 cont.modal('show');
-                            });
-                          */
-                          cont.modal('show');
+                        });
                     } else {
                         $.get("/api/V3/User/GetUserList",
-                            { fetchAll: true },
+                            {
+                                fetchAll: true,
+                            },
                             function(data) {
-                                var names = $.map(data,
-                                    function(value, i) {
+                                var names = [],
+                                    items = [];
+                                for (var i = 0; i < data.length; (i = i + 10000)) {
+                                    var subData = data.slice(i, i + 10000);
+                                    items = $.map(subData, function(value, i) {
                                         return { 'id': i, 'name': value.Name, 'guid': value.Id, 'email': value.Email };
                                     });
+                                    names = names.concat(items);
+                                }
 
                                 //store user data to viewmodel
                                 _vmWindow.users = names;
@@ -531,10 +380,6 @@ define([
 
                                 //build uploader
                                 initializeUploader(cont, _vmWindow);
-
-                                //set status defaults
-                                getSendEmailChangeStatusSettings(_vmWindow);
-                                setDefaultWIStatus(_vmWindow);
 
                                 //build status picker
                                 initializeStatusPicker(cont.find("#statusPicker"), _vmWindow);
@@ -548,9 +393,7 @@ define([
                                 cont.show();
 
                                 win.open();
-
-                            });
-
+                        });
                     }
                 },
             });
@@ -562,15 +405,8 @@ define([
                 Target: "sendEmail",
             };
             $.extend(true, properties, node);
-            // Add in Anchor
-            var anchorElm = new kendo.View(link(properties), {
-                wrap: false,
-                model: viewModel,
-                /**
-                * Add In Anchor
-                */
-                init: function (e) { },
-            });
+            //add in anchor
+            var anchorElm = new kendo.View(link(properties), { wrap: false, model: viewModel, init: function (e) { } });
             callback(anchorElm.render());
 
             //more functions
@@ -589,9 +425,6 @@ define([
                 },
             });
 
-            /**
-             * Add To Comment Log Event Handler
-             */
             var addToCommentLog = function (commentMessage,  setAsPrivate) {
                 var newActionLog = {
                     EnteredBy: session.user.Name,
@@ -618,9 +451,6 @@ define([
                 }
             }
 
-            /**
-             * Save Failure Event Handler
-             */
             var saveFailure = function (exceptionMessage) {
                 if (exceptionMessage == localization.RequiredFieldsErrorMessage) {
                     app.lib.message.add(exceptionMessage, "danger");
@@ -631,9 +461,6 @@ define([
                 app.lib.message.show();
             }
 
-            /**
-             * Get Affected User
-             */
             var getAffectedUserEmail = function (_vmWindow) {
                 if (viewModel.RequestedWorkItem && viewModel.RequestedWorkItem.DisplayName != null) {
                     filter['TO'] = vm.viewModel.RequestedWorkItem.DisplayName;
@@ -643,9 +470,6 @@ define([
                     url: "/EmailNotification/GetffectedUserEmail",
                     type: "GET",
                     data: { baseId: affectedUserId },
-                    /**
-                     * Get Affected User Email Success Event Handler
-                     */
                     success: function (data, textStatus, jqXHR) {
                         if (!_.isUndefined(data) && data != "") {
                             var affectedUser = { Id: vm.viewModel.RequestedWorkItem.BaseId, Name: vm.viewModel.RequestedWorkItem.DisplayName, Email: data };
@@ -669,9 +493,6 @@ define([
                 });
             }
 
-            /**
-             * Get Remote Manage Recipient
-             */
             var getRemoteManageRecepient = function () {
                 $(document).ready(function() {
                     var recepient = { Id: vm.widget.remoteManageRecepient.BaseId, Name: vm.widget.remoteManageRecepient.DisplayName, Email: vm.widget.remoteManageRecepient.Email };
@@ -694,13 +515,10 @@ define([
                 });
             }
 
-            /**
-             * Set Default Work Item Status Event Handler
-             */
             var setDefaultWIStatus = function (_vmWindow) {
                 var enumId = _vmWindow.changeStatusSetting.defaultStatusId;
 
-                if (enumId == null || enumId == "") {
+                if (enumId == null) {
                     _vmWindow.Status.set("Id", vm.viewModel.Status.Id);
                     _vmWindow.Status.set("Name", vm.viewModel.Status.Name);
                 } else {
@@ -709,9 +527,6 @@ define([
                         type: "GET",
                         data: { id: enumId },
                         async: false,
-                        /**
-                         * Get Status DisplayName Success Event Handler
-                         */
                         success: function (data, textStatus, jqXHR) {
                             _vmWindow.Status.set("Id", enumId);
                             _vmWindow.Status.set("Name", data);
@@ -720,9 +535,6 @@ define([
                 }
             }
 
-            /**
-             * Validate Email Address Handler
-             */
             var validateEmailAddress = function (arrEmail) {
                 var invalidEmailAddress = null;
                 for (var i in arrEmail) {
@@ -736,16 +548,10 @@ define([
                 return invalidEmailAddress;
             }
 
-            /**
-             * Initialize Uploader
-             */
             var initializeUploader = function (cont, _vmWindow) {
                 _vmWindow.set("sendEmailAttachments", []);
                 _vmWindow.set("filesCount", 0);
 
-                /**
-                 * File Action Event Handler
-                 */
                 var fileAction = function (el) {
 
                     if (el.hasClass("opennewtab")) {
@@ -779,19 +585,31 @@ define([
                             $('.k-window.k-widget').addClass('acivity-popup-window');
                             dialog.data("kendoDialog").open();
                         } else {
-                            if (!_.isNull(dataItem.BaseId)) {
-                                location.href = downloadUrl + dataItem.BaseId;
-                            } else {
-                                if (dataItem.Content.data) {
-                                    var fileName = dataItem.DisplayName;
-                                    var a = document.createElement("a");
-                                    document.body.appendChild(a);
-                                    a.style = "display: none";
+                            if (dataItem.Content.data && !dataItem.DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+                                var blob = new Blob([dataItem.Content.data]);
+                                var url = window.URL.createObjectURL(blob);
+                                var fileName = dataItem.DisplayName;
 
-                                    a.href = "data:application/octet-stream;charset=utf-16le;base64," + dataItem.Content.data;
-                                    a.download = fileName;
-                                    a.click();
-                                    document.body.removeChild(a);
+                                if (navigator.msSaveOrOpenBlob) {
+                                    navigator.msSaveOrOpenBlob(blob, fileName);
+                                    return;
+                                } else if (window.navigator.msSaveBlob) { // for IE browser
+                                    window.navigator.msSaveBlob(blob, fileName);
+                                    return;
+                                }
+
+                                var a = document.createElement("a");
+                                document.body.appendChild(a);
+                                a.style = "display: none";
+
+                                a.href = url;
+                                a.download = fileName;
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                            } else if (dataItem.BaseId) {
+                                if (dataItem.BaseId != null) {
+                                    location.href = downloadUrl + dataItem.BaseId;
                                 }
                             }
                         }
@@ -802,9 +620,6 @@ define([
                     dataSource: _vmWindow.sendEmailAttachments,
                     template: kendo.template(cont.find("#fileTemplate").html()),
                     selectable: "single",
-                    /**
-                     * File Attachment dataBound Event Handler
-                     */
                     dataBound: function (e) {
 
                         cont.find(".custom-click").on("click", function () {
@@ -815,14 +630,80 @@ define([
                             //Remove view image icon if not in mobile.
                             cont.find("a[view-image]").parent().hide();
 
-                            cont.find(".thumbnail-img").on("click", function () {
+                            cont.find(".thumbnail-img img").on("click", function () {
                                 fileAction($(this));
                             });
                         }
+
+                        /*var dialog = $('.fileattachment-img-modal');
+                        var index = this.select().index(),
+                        dataItem = this.dataSource.view()[index];
+
+                        if (dialog.length > 1) {
+                            for (var i = 1; i < dialog.length; i++) {
+                                if ($(dialog[i]).data("kendoDialog"))
+                                    $(dialog[i]).data("kendoDialog").destroy();
+                                dialog.eq(i).remove();
+                            }
+                        }
+
+                        if (dataItem) {
+
+                            var dialogs = $('.acivity-popup-window');
+                            if (dialogs.length > 1) {
+                                for (var i = 1; i < dialogs.length; i++) {
+                                    dialogs.eq(i).remove();
+                                }
+                            }
+
+                            if (dataItem.DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
+                                dialog.kendoDialog({
+                                    modal: true,
+                                    title: dataItem.DisplayName,
+                                    content: "<div class='file-img-container'><img src=\"data:image/png;base64," +
+                                        dataItem.Content.data +
+                                        "\" onerror=\"this.onerror = null; this.src = '/Content/Images/Icons/FileUpload/document.svg';\" alt=\"" +
+                                        dataItem.DisplayName +
+                                        "\" /></div>",
+                                    animation: {
+                                        open: {
+                                            effects: "fade:in"
+                                        }
+                                    }
+                                });
+                                $('.k-window.k-widget').addClass('acivity-popup-window');
+                                dialog.data("kendoDialog").open();
+                            } else {
+                                if (dataItem.Content.data) {
+                                    var blob = new Blob([dataItem.Content.data]);
+                                    var url = window.URL.createObjectURL(blob);
+                                    var fileName = dataItem.DisplayName;
+
+                                    if (navigator.msSaveOrOpenBlob) {
+                                        navigator.msSaveOrOpenBlob(blob, fileName);
+                                        return;
+                                    } else if (window.navigator.msSaveBlob) { // for IE browser
+                                        window.navigator.msSaveBlob(blob, fileName);
+                                        return;
+                                    }
+
+                                    var a = document.createElement("a");
+                                    document.body.appendChild(a);
+                                    a.style = "display: none";
+
+                                    a.href = url;
+                                    a.download = fileName;
+                                    a.click();
+                                    window.URL.revokeObjectURL(url);
+                                    document.body.removeChild(a);
+                                }else if (dataItem.BaseId) {
+                                    var downloadUrl = app.config.rootURL + "FileAttachment/ViewFile/";
+                                    location.href = downloadUrl + dataItem.BaseId;
+                                }
+                            }
+                        }
+                        */
                     },
-                    /**
-                     * File Attachment Remove Event Handler
-                     */
                     remove: function (e) {
                         //console.warn(_vmWindow)
                     },
@@ -835,9 +716,6 @@ define([
                         saveUrl: "/FileAttachment/UploadAttachment/" + vm.viewModel.BaseId + "?className=" + vm.viewModel.ClassName + "&count=" + vm.viewModel.FileAttachment.length,
                         autoUpload: true,
                     },
-                    /**
-                     * Upload Email Attachment Success Event Handler
-                     */
                     success: function (e) {
                         kendo.ui.progress(cont.find(".fileattachment-list"), true);
                         var response = e.response;
@@ -862,9 +740,6 @@ define([
                         }
                         kendo.ui.progress(cont.find(".fileattachment-list"), false);
                     },
-                    /**
-                     * Upload Email Attachment Error Event Handler
-                     */
                     error: function (e) {
                         var err = $.parseJSON(e.XMLHttpRequest.responseText);
                         $.map(e.files, function (file) {
@@ -882,9 +757,6 @@ define([
 
             }
 
-            /**
-             * Initialize User Picker
-             */
             var initializeUserPicker = function (targetEle, viewModel, targetProp) {
                 //skipped initialization if we already have one created
                 if (!_.isUndefined(targetEle.data("kendoMultiSelect"))) { return; }
@@ -902,31 +774,22 @@ define([
                                 url: "/api/V3/User/GetUserListWithEmail",
                                 data: {
                                     filterByAnalyst: false,
-                                    maxNumberOfResults: 1000,
-                                    /**
-                                     * Filter Users
-                                     */
+                                    maxNumberOfResults: 10,
                                     userFilter: function () {
                                         return (filter[targetKey]) ? filter[targetKey] : "";
                                     },
                                 },
                             },
                         },
-                        serverFiltering: true,
-                        filter: [{ field: "Email", operator: "neq", value: "" }],
+                        serverFiltering: true, //,
+                        // filter: [{ field: "Email", operator: "neq", value: "" }]
                     }),
-                    /**
-                     * Filtering Handler
-                     */
                     filtering: function (e) {
                         if (e.filter != undefined) {
                             var key = (e.sender.element[0].id.toLowerCase().indexOf("to") > -1) ? "TO" : "CC";
                             filter[key] = e.filter.value;
                         }
                     },
-                    /**
-                     * Filtering Handler
-                     */
                     open: function () {
                         var filters = this.dataSource.filter();
                         if (filters!=null) {
@@ -936,17 +799,11 @@ define([
                         }
                     },
                     tagTemplate: "<span title='#: data.Email #'>#: data.Name #;</span>",
-                    /**
-                     * Select Event Handler
-                     */
                     select: function (e) {
                         var currentList = recipientList[targetProp];
                         currentList.push(e.dataItem);
                         recipientList[targetProp] = currentList;
                     },
-                    /**
-                     * Deselect Event Handler
-                     */
                     deselect: function (e) {
                         var currentList = recipientList[targetProp];
                         if (e.dataItem.Id) {
@@ -971,16 +828,13 @@ define([
                 });
             }
 
-            /**
-             * Send Email Event Handler
-             */
             var sendEmail = function (_vmWindow, cont) {
                 var bChangeStatus = _vmWindow.changeStatus;
                 var bAddActionLog = _vmWindow.addToLog;
                 var addToLogSkipped = false;
                 var bHasAttachment = (_vmWindow.sendEmailAttachments.length > 0);
                 var strAttachedFileNames = (_vmWindow.sendEmailAttachments.length > 0)
-                    ? _.pluck(_vmWindow.sendEmailAttachments, "DisplayName").join('|') : ""; //multiple filenames, pipe delimited
+                    ? _.pluck(_vmWindow.sendEmailAttachments, "DisplayName").join(',') : ""; //multiple filenames, comma delimited
                 var strMessage = encodeURIComponent(_vmWindow.emailHTMLMessage);
                 var strMessagePlain = _vmWindow.emailTextMessage;
 
@@ -1008,10 +862,6 @@ define([
                     url: "/EmailNotification/SendEmailNotification",
                     type: "POST",
                     data: emailData,
-                    async: false,
-                    /**
-                     * Send Email Notification Success Event Handler
-                     */
                     success: function (data, textStatus, jqXHR) {
                         var bSuccess = data.toLowerCase() == "true" ? true : false;
                         kendo.ui.progress(cont, false);
@@ -1057,14 +907,8 @@ define([
 
                                 //--end additional change checks/processing
 
-                                /**
-                                 * Save changes and show warnings, if any
-                                 */
+                                //save changes and show warnings, if any
                                 var handleSaveSuccess = function () {
-                                    if (vm.widget)
-                                        vm.widget.remoteManageRecepient = null;
-                                    shown = false;
-                                    cont.modal('hide');
                                     vm.save(function () {
                                         app.lib.message.add(localization.ChangesApplied, "success");
                                         switch (vm.type) {
@@ -1110,21 +954,14 @@ define([
                                 message: localization.SendEmailFailedMessage,
                             }));
                             kendo.ui.progress(cont, false);
-                            console.log(jqXHR, textStatus, localization.SendEmailFailedMessage);
                         }
                     },
-                    /**
-                     * Send Email Notification Error Event Handler
-                     */
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR, textStatus, errorThrown);
+                        console.log(jqXHR, textStatus, errorThrown)
                     },
                 });
             }
 
-            /**
-             * Build Editor
-             */
             var buildEditor = function (targetEle, _vmWindow) {
                 var defaultTools = [
                      "bold", "italic", "underline",
@@ -1149,9 +986,6 @@ define([
                 var editor = targetEle.data("kendoEditor");
                 if (!_.isUndefined(editor)) { return; }
                 editor = targetEle.kendoEditor({
-                    /**
-                     * Change Event Handler
-                     */
                     change: function (e) {
                         var content = e.sender.body.innerText || e.sender.body.textContent;
                         _vmWindow.set("emailTextMessage", content);
@@ -1159,15 +993,9 @@ define([
                     tools: app.isMobileDevice() ? mobileTools : defaultTools,
                     stylesheets: ["/Content/Styles/cireson.mentions-in-keditor.min.css"],
                     encoded: true,
-                    /**
-                     * Paste Event Handler
-                     */
                     paste: function (e) {
                     },
                     pasteCleanup: {
-                        /**
-                        * pasteCleanup Handler
-                        */
                         custom: function (html) {
 
                             try {
@@ -1208,9 +1036,6 @@ define([
                     },
                 });
 
-                /**
-                 * Upload Pasted Image Handler
-                 */
                 function uploadPastedImage(file, _vmWindow) {
                     var d = new Date();
                     var timestamp = d.getTime();
@@ -1231,9 +1056,6 @@ define([
                         contentType: false,
                         processData: false,
                         dataType: "json",
-                        /**
-                         * Upload Pasted Image Success Event Handler
-                         */
                         success: function (response) {
                             if (!_.isUndefined(response.FileAttachment)) {
                                 _vmWindow.sendEmailAttachments.push(response.FileAttachment);
@@ -1245,18 +1067,12 @@ define([
                                 _vmWindow.set("emailAttachment", "");
                             }
                         },
-                        /**
-                         * Upload Pasted Image Error Event Handler
-                         */
                         error: function(err) {
                             console.warn(err);
                         },
                     });
                 }
 
-                /**
-                 * Convert image to base64
-                 */
                 function getBase64Image(img) {
                     // Create an empty canvas element
                     var canvas = document.createElement("canvas");
@@ -1273,9 +1089,6 @@ define([
                     return dataURL;
                 }
 
-                /**
-                 * Convert base64 data to blob
-                 */
                 function dataURItoBlob(dataURI) {
                     // convert base64 to raw binary data held in a string
                     // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
@@ -1301,7 +1114,7 @@ define([
 
                 }
 
-                /*
+
                 var at_config = {
                     at: "@",
                     data: _vmWindow.users,
@@ -1356,12 +1169,8 @@ define([
                         picker.value(_.pluck(recipientList["recipientToList"], "Id"));
                     }
                 });
-                */
             }
 
-            /**
-             * Initialize Status Picker
-             */
             var initializeStatusPicker = function (targetEle, viewModel) {
                 var filterIdParam = "";
                 var filterId = viewModel.changeStatusSetting.rootStatusEnumId;
@@ -1379,15 +1188,12 @@ define([
                     PropertyDisplayName: "ChangeStatus",
                     EnumId: viewModel.changeStatusSetting.statusTypeId,
                     FilterIds: filterIdParam,
-                    Disabled: !viewModel.changeStatusSetting.enableChangeStatus || !session.user.Analyst || pageForm.newWI,
+                    Disabled: !viewModel.changeStatusSetting.enableChangeStatus,
                 };
 
                 buildEnumPicker(targetEle, statusProperties, viewModel);
             };
 
-            /**
-             * Initialize Enum Picker
-             */
             var buildEnumPicker = function (container, props, vmModel) {
                 enumPickerControl.build(vmModel, props, function (enumControl) {
                     container.html(enumControl);
@@ -1399,9 +1205,6 @@ define([
                 });
             };
 
-            /**
-             * Apply Change Status
-             */
             var applyChangeStatus = function (cont, vm, _vmWindow) {
                 var selectedWiType = vm.type;
                 var currentStatusId = vm.viewModel.Status.Id;
@@ -1438,9 +1241,6 @@ define([
                 });
             };
 
-            /**
-             * Get Send Email Change Status Settings
-             */
             var getSendEmailChangeStatusSettings = function (viewModel) {
                 switch (vm.type) {
                     case "ServiceRequest":

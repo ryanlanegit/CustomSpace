@@ -1,0 +1,169 @@
+﻿<div id="EmailNotificationWindow" class="cireson-window defined-form task-window hide">
+    <div class="cireson-window--wrapper">
+        <div class="cireson-window--body">
+            <div class="col-md-6 pad10">
+                <div class="editor-label">
+                    <label><%= localization.SendEmailTo %></label>
+                </div>
+                <div class="editor-field">
+                    <div class="k-autocomplete">
+                        <select id="userPickerTo"></select>
+                        <button id="toField" class="searchIcon btn-primary" data-bind="events:{click: openPopup}"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pad10">
+                <div class="editor-label">
+                    <label><%= localization.SendEmailCC %></label>
+                </div>
+                <div class="editor-field">
+                    <div class="k-autocomplete">
+                        <select id="userPickerCc"></select>
+                        <button id="ccField" class="searchIcon btn-primary" data-bind="events:{click: openPopup}"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 pad10">
+                <div class="editor-label">
+                    <label><%= localization.Subject %></label>
+                </div>
+                <div class="editor-field">
+                    <input data-bind="value: emailSubject" class=" k-textbox" type="text">
+                </div>
+            </div>
+            
+            <div class="col-md-12 pad10">
+                <div class="editor-label">
+                    <label><%= localization.SendEmailTemplate %></label>
+                </div>
+                <div class="editor-field" id="templateDiv">
+                    <input data-role="combobox"
+                           data-placeholder="<%= localization.ChooseOne %>"
+                           data-value-primitive="true"
+                           data-text-field="Name"
+                           data-value-field="Id"
+                           data-filter="contains"
+                           data-bind="value: emailTemplateValue, source: emailTemplateDataSource, events:{change:emailTemplateChange }"/>
+                </div>
+            </div>
+
+            <div class="col-md-12 pad10">
+                <div id="mobileStatusPicker" />
+            </div>
+            <div class="col-md-12 pad10">
+                <div class="col-md-6 pad0">
+                    <label><%= localization.Message %></label>
+                </div>
+                <div class="col-md-6 pad0">
+                    <a href="#" data-bind="events: { click: resizeEditor }" role="button" title="Expand Editor" class="pull-right"><i class="fa fa-expand"></i></a>
+                </div>
+                <hr>
+                <div class="editor-field">
+                    <textarea id="messageEditor" class="form-editor hidden" data-bind="value: emailHTMLMessage" />
+                </div>
+            </div>
+            <div class="col-md-6 pad10">
+                <div id="statusPicker" />
+                <div class="checkbox">
+                    <input id="IsAddToLog" type="checkbox" data-bind="checked: addToLog, enabled: enableAddToLog" />
+                    <label for="IsAddToLog" class="control-label ">
+                        <%= localization.SendEmailAddToLog %>
+                    </label>
+                </div>
+                <div class="checkbox col-md-12 margin-l30" data-bind="visible: addToLog">
+                    <input id="setAsPrivate" type="checkbox" data-bind="checked: setAsPrivate" />
+                    <label for="setAsPrivate" class="control-label col-md-10">
+                        <%= localization.SetAsPrivate %>
+                        <i class="fa fa-info-circle info-icon text-primary" data-toggle="tooltip" title="<%= localization.SaveMessageAsPrivateTooltip %>"></i>
+                    </label>
+                </div>
+                <div data-bind="visible: showChangeStatus" class="checkbox">
+                    <input id="SetFirstResponseDate" type="checkbox" data-bind="checked: setFirstResponseDate, enabled:enableFirstResponseDate" />
+                    <label for="SetFirstResponseDate" class="control-label"><%= localization.SetFirstResponseDate %></label>
+                </div>
+            </div>
+            <div class="col-md-6 pad10">
+                <label><%= localization.SendEmailAttachment %></label>
+                <div class="form-group">
+                    <div class="drop-zone-element">
+                        <div class="text-wrapper">
+                            <span class="drag-image-text">
+                                <a class="browse-file"><b><%= localization.Browse %></b></a>
+                                <span data-bind="visible: filesCount > 0"><span class="lowercase"> <%= localization.Or %> </span><a data-bind="events: { click: viewWorkItemFiles }"><b><%= localization.BrowseWorkItemFiles %></b></a></span>
+                            </span>
+                            <div style="display:none"><input name="files" id="email-attachment" type="file" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="fileattachment-list"></div>
+                    <div class="fileattachment-img-modal"></div>
+                    <script type="text/x-kendo-template" id="fileTemplate">
+                        <div class="thumbnail-file">
+                            <div class="cursor-pointer thumbnail-img">
+                                # if (DisplayName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) { #
+                                <img src="data:image/png;base64,#= Content.data #" onerror="this.onerror = null; this.src = '/Content/Images/Icons/FileUpload/document.svg';" alt="#: DisplayName # image" />
+                                # } else{ #
+                                <img class="default-icon" src="/Content/Images/Icons/FileUpload/document.svg" onerror="this.onerror = null; this.src = '/Content/Images/Icons/FileUpload/document.svg'">
+                                # } #
+                            </div>
+                            <div class="thumbnail-caption">
+                                <span>#: DisplayName #</span>
+                                <!--<div class="overlay transparent">
+                                    <span class="pull-right">
+                                        <a class="k-delete-button" href="\\#" title="<%= localization.Remove %>"><i class="fa fa-trash"></i></a>
+                                    </span>
+                                </div>-->
+                                <div class="overlay">
+                                    # if (DisplayName.match(/\.(jpg|jpeg|png|gif)$/)) { #
+                                    <span class="label">
+                                        <a class="icon custom-click view" view-image title="View Image">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </span>
+                                    <span class="label">
+                                        <a class="icon custom-click opennewtab" title="Open in New Tab">
+                                            <i class="fa fa-external-link"></i>
+                                        </a>
+                                    </span>
+                                    # } #
+                                    # if (BaseId!=null) { #
+                                    <span class="label">
+                                        <a class="icon custom-click download" title="Download">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                    </span>
+                                    # } #
+                                    <span class="label">
+                                        <a class="k-delete-button icon" href="\\#" title="<%= localization.Remove %>"><i class="fa fa-trash"></i></a>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </script>
+                </div>
+                <!--<input data-bind="value: emailAttachment" class="k-textbox" type="text" readonly="readonly">
+                <span data-bind="text: attachmentErrorMessage" class="send-email-attachment-error"></span>
+                <div>
+                    <input type="file" name="files" id="fileUploader" />
+                    <div class="k-widget k-upload">
+                        <input type="button" value="<%= localization.Remove %>" class="k-button" />
+                    </div>
+                </div>-->
+            </div>
+        </div>
+        <div class="window-buttons cireson-window--footer">
+            <button id="emailOk" data-role="button"
+                    class="btn btn-primary"
+                    data-bind="enabled: okEnabled, events: { click: okClick }">
+                <%= localization.OK %>
+            </button>
+            <button data-role="button"
+                    class="btn btn-default"
+                    data-bind="events: { click: cancelClick }">
+                <%= localization.Cancel %>
+            </button>
+        </div>
+    </div>
+</div>
