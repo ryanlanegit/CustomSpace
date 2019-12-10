@@ -18,13 +18,22 @@
       "id":"302dcc44-782f-479f-80de-c992b217e44b",
       "task":{
         "SingleLineEntry":{
-
+          "next":"2"
+        }
+      }
+    },
+    {
+      "_comment":"SanMar Email Address",
+      "id":"d784beab-e001-4818-99c4-cd8a34226883",
+      "task":{
+        "Indent":{
+          "next":"3"
         }
       }
     },
     {
       "_comment":"Keep Email",
-      "id":"90b8cc26-597a-409b-9f9a-8dfe16fb1ad0",
+      "id":"",
       "task":{
         "Indent":{
 
@@ -33,7 +42,7 @@
     },
     {
       "_comment":"How Long To Keep Email",
-      "id":"b124c9de-22b9-4d5c-b915-085ccb4ddfb9",
+      "id":"",
       "task":{
         "Indent":{
           "level":"2"
@@ -44,9 +53,6 @@
       "_comment":"Reroute Email To",
       "id":"fdf20447-9d53-494e-8fbd-470505213c89",
       "task":{
-        "Indent":{
-
-        },
         "SingleLineEntry":{
 
         }
@@ -85,14 +91,13 @@
 
         },
         "Indent":{
-          "level":"2",
-          "next":"2"
+
         }
       }
     },
     {
       "_comment":"Other Option For Phone Extension",
-      "id":"2f10ce4d-f503-457a-9821-5fa5167826f1",
+      "id":"",
       "task":{
         "AutoSize":{
 
@@ -110,15 +115,6 @@
       }
     },
     {
-      "_comment":"Keep Computer Data for 30 Days",
-      "id":"0ce0c2aa-3fbf-47dd-b9b6-3f363970a750",
-      "task":{
-        "Indent":{
-          "next":"3"
-        }
-      }
-    },
-    {
       "_comment":"Office Or Cubicle Number",
       "id":"eea4910e-4442-4fe8-9876-5cbf2eb78987",
       "task":{
@@ -127,10 +123,6 @@
         },
         "SetAttribute":{
           "maxlength":"10"
-        },
-        "Indent":{
-          "level":"2",
-          "next":"4"
         }
       }
     },
@@ -148,14 +140,6 @@
       "id":"eeffad72-0c54-4d43-aafc-7b0c683c0b9c",
       "task":{
         "AutoSize":{
-
-        }
-      }
-    },
-    {
-      "_comment":"",
-      "task":{
-        "Summary":{
 
         }
       }
