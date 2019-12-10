@@ -28,10 +28,11 @@
 
 /*
 	Grid Resize Handle Fix
-*/
+/
 .k-grid-header .k-resize-handle, .k-grid>.k-resize-handle {
     top: inherit !important;
 }
+*/
 
 /*
   Page Bar Remove Indentation
