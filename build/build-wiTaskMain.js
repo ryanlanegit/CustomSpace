@@ -20,7 +20,7 @@
     console.log('AMD Cleaning File: ' + data.path);
     var fs = module.require('fs'),
         // AMDClean Module from https://github.com/gfranko/amdclean
-        amdclean = module.require('amdclean'),
+        amdclean = module.require('./amdclean'),
         inputFile = data.path,
         inputSourceMap = inputFile + '.map',
         sourceMapContents = fs.readFileSync(inputSourceMap, 'utf8'),
