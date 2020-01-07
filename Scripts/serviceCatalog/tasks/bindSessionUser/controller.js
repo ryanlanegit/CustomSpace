@@ -16,10 +16,7 @@ function (
 ) {
   'use strict';
 
-  var initFetchDataSource = _.once(function (dataSource) {
-      dataSource.fetch();
-    }),
-    roTask = {
+  var roTask = {
       Name: 'bindSessionUser',
       Type: 'RequestOffering',
       Label: 'Bind Session User Properties',
@@ -28,6 +25,9 @@ function (
       },
       Access: true,
     },
+    initFetchDataSource = _.once(function (dataSource) {
+        dataSource.fetch();
+    }),
 
     /**
      * @exports bindSessionController
