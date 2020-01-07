@@ -55,13 +55,16 @@ define([
           _.defaults(options, {
             next: 1,
             rows: '1',
+            maxrows: '4',
           });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var targetRows = (typeof options.rows === 'string') ? options.rows : options.rows[targetIndex];
             roTaskLib.waitForAngular(function () {
               var targetInputELm = $(targetElm).find('textarea');
-              targetInputELm.addClass('auto-size').attr('rows', targetRows);
+              targetInputELm
+                .addClass('auto-size max-rows-' + options.maxrows)
+                .attr('rows', targetRows);
               autosize(targetInputELm);
             });
           });

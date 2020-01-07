@@ -60,6 +60,7 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   font-style: normal;
   font-weight: normal;
   text-decoration: inherit;
+  line-height: 20px;
   color: #008fd6;
   position: absolute;
   margin: 5px 0 0 -10px;
@@ -68,7 +69,7 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
 /*
   Normalize Text Areas To Match Other Input
 */
-.question-container textarea {
+.question-container textarea, .k-multiselect.k-header {
   overflow: auto;
   box-sizing: border-box;
   -webkit-appearance: textfield;
@@ -80,33 +81,152 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   max-height: 122px;
 }
 
+/*
+  Normalize Query Picker
+*/
+.defined-form .k-widget.k-multiselect.k-header {
+  padding: 0px;
+}
+.multi-query-textfield__multiselect-field .icon-addon {
+  top: 25%;
+}
+
+.multi-query-textfield__multiselect-field .k-multiselect-wrap,
+.multi-query-textfield__multiselect-field .k-multiselect-wrap .k-input {
+  line-height: 30px;
+  height: inherit;
+}
+
 .question-container panel {
   margin-top: 20px;
 }
 
 /*
-Reset Auto-Sized Text Areas
+  Reset Auto-Sized Text Areas
 */
 .question-container textarea.auto-size {
   height: auto;
 }
 
+.question-container textarea.auto-size.max-rows-4 {
+  max-height: 122px;
+}
+
+.question-container textarea.auto-size.max-rows-6 {
+  max-height: 183px;
+}
+
+.question-container textarea.auto-size.max-rows-8 {
+  max-height: 244px;
+}
+
+.question-container textarea.auto-size.max-rows-none {
+  max-height: none;
+}
+
 /*
-Hide roTask Container By Default
+  Update Grid Checkbox styling
+*/
+.k-grid-checkbox-header {
+  width: 30px;
+}
+
+.k-grid-checkbox-header label {
+  margin-bottom: 4px !important;
+  padding-left: 0px;
+  text-transform: none;
+  margin-left: 6px;
+}
+
+.k-grid-checkbox label {
+  margin-bottom: 4px !important;
+  padding-left: 0px;
+  text-transform: none;
+}
+
+.k-grid-checkbox .checkbox-label:before,
+.k-grid-checkbox label:before,
+.k-grid-checkbox-header .checkbox-label:before,
+.k-grid-checkbox-header label:before {
+  box-sizing: border-box;
+  position: absolute;
+  display: inline-block;
+  content: "";
+  width: 22px;
+  height: 22px;
+  left: 0;
+  top: -1px;
+  border: 1px solid #a3b7c1;
+  border-radius: 3px;
+  background-color: #fff;
+  transition: border .15s,color .15s;
+  color: #fff;
+  content: "";
+  font-family: FontAwesome;
+  font-size: 16px;
+  /*margin-left: 8px;*/
+}
+
+.k-grid-checkbox-header input[type=checkbox]:checked~.checkbox-label:before,
+.k-grid-checkbox-header input[type=checkbox]:checked+label:before,
+.k-grid-checkbox input[type=checkbox]:checked~.checkbox-label:before,
+.k-grid-checkbox input[type=checkbox]:checked+label:before,
+.k-state-selected .k-grid-checkbox .checkbox-label:before,
+.k-state-selected .k-grid-checkbox label:before {
+  color: #fff;
+  content: "\f00c";
+  font-family: FontAwesome;
+  font-size: 16px;
+  /*margin-left: 8px;*/
+}
+
+.k-grid-checkbox input[type=checkbox]:checked+label:before,
+.k-grid-checkbox input[type=checkbox]:checked~.checkbox-label:before,
+.k-grid-checkbox-header input[type=checkbox]:checked+label:before,
+.k-grid-checkbox-header input[type=checkbox]:checked~.checkbox-label:before,
+.k-state-selected .k-grid-checkbox label:before,
+.k-state-selected .k-grid-checkbox .k-checkbox-label:before {
+  background-color: #008ed6;
+  border-color: #008ed6;
+}
+
+.k-grid-checkbox-header input[type=checkbox]:checked+label:after,
+.k-grid-checkbox-header input[type=checkbox]:checked~.checkbox-label:after,
+.k-state-selected .k-grid-checkbox label:before,
+.k-state-selected .k-grid-checkbox .k-checkbox-label:before,
+.k-state-selected .k-grid-checkbox label:after,
+.k-state-selected .k-grid-checkbox .k-checkbox-label:after {
+  color: #fff;
+}
+
+/*
+.k-grid-checkbox .k-checkbox:checked+.k-checkbox-label:before,
+.k-grid-checkbox-header .k-checkbox:checked+.k-checkbox-label:before {
+  content: "";
+}
+*/
+
+.k-grid-checkbox input[type=checkbox],
+.k-grid-checkbox-header input[type=checkbox] {
+  display: none;
+}
+
+/*
+  Hide roTask Container By Default
 */
 .task-container {
   display: none;
 }
 
 /*
-Show roTask Row Container By Default
+ Show roTask Row Container By Default
 */
 .task-container.row-container {
   display: block;
 }
 
 /*
-Hide roTask Container Content By Default
+ Hide roTask Container Content By Default
 */
 .task-container .task-container-content {
   display: none;
