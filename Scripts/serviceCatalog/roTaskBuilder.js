@@ -14,7 +14,9 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/bindHash/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/bindSessionUser/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/charCount/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/enumGrid/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/enumList/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/enumMultiSelect/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/indent/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
@@ -30,7 +32,9 @@ define([
   bindHashController,
   bindSessionUserController,
   charCountController,
+  enumGridController,
   enumListController,
+  enumMultiSelectController,
   indentController,
   rowContainerController,
   setAttributeController,
@@ -189,7 +193,8 @@ define([
               });
             });
 
-            var requestofferingId = document.location.pathname.split(/[/ ]+/).pop().toLowerCase().split(',')[0];
+            //var requestofferingId = document.location.pathname.split(/[/ ]+/).pop().toLowerCase().split(',')[0];
+            var requestofferingId = $('#requestOfferingCont').find('input[id="request-offering-id"]').val();
             //console.log('requestofferingId', requestofferingId);
             $.ajax({
               dataType: 'json',
