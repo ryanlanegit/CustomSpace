@@ -59,13 +59,19 @@
       }
     },
     {
-      "_comment":"How Long To Keep Recorded Calls",
-      "id":"a8f84fb4-3c9a-4858-a832-952eda2f4541",
+      "_comment":"Keep Recorded Calls",
+      "id":"1d0f122d-63d6-45c4-b028-81952ef3952d",
       "task":{
         "AddInformation":{
           "cssclass":"col-md-6 col-xs-12",
           "info":"<p>• Envision automatically removes unlocked calls after 30 days.</p><p>• Please lock any important calls if you wish to keep them longer than 30 days.</p>"
-        },
+        }
+      }
+    },
+    {
+      "_comment":"How Long To Keep Recorded Calls",
+      "id":"a8f84fb4-3c9a-4858-a832-952eda2f4541",
+      "task":{
         "Indent":{
 
         }
