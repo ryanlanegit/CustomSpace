@@ -11,6 +11,30 @@ define([
 ) {
   'use strict';
 
+  /**
+   * Adapted from Underscore 1.9.1
+   * https://underscorejs.org/
+   */
+  var shallowProperty = function(key) {
+    return function(obj) {
+      return obj == null ? void 0 : obj[key];
+    };
+  };
+
+  /**
+   * Adapted from Underscore 1.9.1
+   * https://underscorejs.org/
+   */
+  var deepGet = function(obj, path) {
+    var length = path.length,
+        result = {};
+    for (var i = 0; i < length; i++) {
+      if (obj == null) return void 0;
+      result[path[i]] = obj[path[i]];
+    }
+    return length ? result : void 0;
+  };
+
   var customLibVm = {
         buildAndRender: {
           /**
@@ -655,6 +679,21 @@ define([
 
             return dataSourcePromise;
           },
+        },
+
+        /**
+         * Adapted from Underscore 1.9.1
+         * https://underscorejs.org/
+         * Creates a function that, when passed an object, will traverse that object’s
+         * properties down the given `path`, specified as an array of keys or indexes.
+         */
+        property: function(path) {
+          if (!_.isArray(path)) {
+            return shallowProperty(path);
+          }
+          return function(obj) {
+            return deepGet(obj, path);
+          };
         },
       };
 

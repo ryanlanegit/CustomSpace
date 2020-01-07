@@ -6,8 +6,10 @@
  */
 define([
   'CustomSpace/Scripts/forms/tasks/resolveIncident/controller',
+  'CustomSpace/Scripts/forms/tasks/userInputGrid/controller',
 ], function (
-  resolveIncidentController
+  resolveIncidentController,
+  userInputGridController
 ) {
   'use strict';
   var taskModules = _.chain(arguments)
