@@ -127,8 +127,14 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
 /*
   Update Grid Checkbox styling
 */
+/*
 .k-grid-checkbox-header {
   width: 30px;
+}*/
+
+.k-enum-grid {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .k-grid-checkbox-header label {
@@ -209,6 +215,11 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
 .k-grid-checkbox input[type=checkbox],
 .k-grid-checkbox-header input[type=checkbox] {
   display: none;
+}
+
+
+.defined-form .form-group .k-dropdown-wrap.k-state-border-down {
+  padding-bottom: 1px;
 }
 
 /*

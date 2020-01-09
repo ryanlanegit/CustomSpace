@@ -107,7 +107,7 @@ define([
                         });
                       }
                       var userSchema = this,
-                          userInputRawXml = response['User Input'].replace(/(\r\n|\n|\r)/gm,'&#13;&#10;'),
+                          userInputRawXml = _.isNull(response['User Input']) ? '' : response['User Input'].replace(/(\r\n|\n|\r)/gm,'&#13;&#10;'),
                           userInputXml = $.parseXML(userInputRawXml),
                           userInputData = $(userInputXml).find('UserInput').map(function(index){
                             var answerObj = {},
@@ -162,7 +162,9 @@ define([
             updateUserInputGrid(userInputsGridElm, userInputGridDataSource);
           }
 
-          initFormTask();
+          if (!_.isNull(pageForm.viewModel.UserInput)) {
+            initFormTask();
+          }
         },
       };
 
