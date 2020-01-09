@@ -35,6 +35,24 @@ define([
     return length ? result : void 0;
   };
 
+  /**
+   * Updating val to introduce manual change event
+   * https://stackoverflow.com/a/23635867
+   */
+  var originalVal = $.fn.val;
+  $.fn.val = function() {
+    var prev;
+    if (arguments.length > 0) {
+      prev = originalVal.apply(this, []);
+    }
+    var result = originalVal.apply(this, arguments);
+    if (arguments.length > 0 && prev !== originalVal.apply(this, [])) {
+      //$(this).change();  // OR with custom event $(this).trigger('value-changed')
+      this.trigger('manual-change');
+    }
+    return result;
+  };
+
   var customLibVm = {
         buildAndRender: {
           /**
