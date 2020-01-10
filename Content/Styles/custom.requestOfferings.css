@@ -137,6 +137,18 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   margin-bottom: 0px;
 }
 
+.k-enum-grid .k-dirty {
+  display: none;
+}
+
+.k-enum-grid .k-hide-unselected div {
+  visibility: hidden;
+}
+
+.k-enum-grid .k-state-selected .k-hide-unselected div {
+  visibility: visible;
+}
+
 .k-grid-checkbox-header label {
   margin-bottom: 4px !important;
   padding-left: 0px;

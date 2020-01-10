@@ -96,12 +96,27 @@ define([
                 var row = $(this),
                     dataItem = grid.dataItem(row),
                     dropdownElm = row.find('.dropDownTemplate');
-                dropdownElm.kendoDropDownList({
-                  value: dataItem.Name,
-                  dataSource: column.dataSource,
-                  dataTextField: 'Name',
-                  dataValueField: 'Name',
-                });
+                if (_.isUndefined(dataItem.get(column.field))) {
+                  dataItem[column.field] = column.defaultValue;
+                }
+                dropdownElm
+                  .attr('data-default-value', dataItem.get(column.field))
+                  .kendoDropDownList({
+                    value: dataItem.get(column.field),
+                    dataSource: column.dataSource,
+                    dataTextField: 'Name',
+                    dataValueField: 'Name',
+                    /**
+                     *  DropDownList Change Handler
+                     */
+                    change: function (e) {
+                      /*if (_.isUndefined(dataItem.selected) || dataItem.selected === false ) {
+                        dataItem.selected = true;
+                      }*/
+                      dataItem.set(column.field, e.sender.value());
+                      dropdownElm.attr('data-default-value', e.sender.value());
+                    },
+                  });
 
                 dropdownElm.closest('.k-dropdown').on('click', function (e) {
                   e.stopPropagation();
@@ -181,15 +196,16 @@ define([
             change: function(e) {
               if (_.isUndefined(this.changePrevented) || !this.changePrevented) {
                 var selectedRowElms = this.select().toArray(),
-                    selectedValues = [],
-                    sortedValues = [],
-                    sourceValues = _.pluck(this.dataSource.data(), 'Name'),
+                    selectedDataItems = [],
+                    sourceDataItems = this.dataSource.data(),
+                    sortedDataItems = [],
+                    formattedResult = '',
                     dataItems = this.dataItems();
                 if (true) {// (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                   app.custom.utils.log('enumGridController:change', {
                     event: e,
                     selectedRowElms: selectedRowElms,
-                    sourceValues: sourceValues,
+                    sourceDataItems: sourceDataItems,
                   });
                 }
 
@@ -234,18 +250,30 @@ define([
 
                 // Get currently Selected rows after Change event handler
                 selectedRowElms = this.select();
-                // Get selected values from the Selected rows
+                // Get selected uid values from the Selected rows
                 for (var i = 0; i < selectedRowElms.length; i++) {
                   var dataItem = this.dataItem(selectedRowElms[i]);
-                  selectedValues.push(dataItem.Name);
+                  selectedDataItems.push(dataItem);
                 }
-                // Sort selected values to match original dataset and convert to String
-                sortedValues = _.intersection(sourceValues, selectedValues).join('\n');
+
+                if (selectedDataItems.length > 0) {
+                  var formattedResults = [];
+                  // Sort selected uids to match original dataset
+                  sortedDataItems = _.intersection(sourceDataItems, selectedDataItems)//.join('\n');
+
+                  for (var i = 0; i < sortedDataItems.length; i++) {
+                    var dataItem = sortedDataItems[i];
+                    formattedResults.push(customLib.stringFormat(options.schema.template, dataItem));
+                  }
+
+                  formattedResult = formattedResults.join('\n');
+                }
+
 
                 // Set Footer summary
-                $('#' + footerId).html(selectedValues.length + '/' + dataItems.length);
+                //$('#' + footerId).html(selectedUIDs.length + '/' + dataItems.length);
                 // Update Original Field value
-                updateTextAreaValue(targetElm, sortedValues);
+                updateTextAreaValue(targetElm, formattedResult);
               }
             },
           }
@@ -406,6 +434,7 @@ define([
               dataSource: dataSource,
               title: title,
               valueField: valueField,
+              options: options,
             });
           }
           roTaskLib.waitForAngular(function () {
@@ -424,6 +453,9 @@ define([
             height: 175, // 4 Rows
             //parentId: '7030beac-cbda-9acf-9c51-6832d91650f2', // Locations
             parentId: '6dc39c57-60fd-4c69-e439-01f41037bee2', // Departments
+            schema: {
+              template: '{Name}',
+            },
           });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
