@@ -77,24 +77,39 @@ define([
          * https://docs.telerik.com/kendo-ui/knowledge-base/hide-scrollbar-when-not-needed
          */
         function onDataBound(e) {
-          var grid = e.sender,
-              rows = grid.items(),
-              gridWrapper = e.sender.wrapper,
-              gridDataTable = e.sender.table,
-              gridDataArea = gridDataTable.closest('.k-grid-content');
+          var gridWidget = e.sender,
+              rowElms = gridWidget.items();
 
-          // Toggle scrollbar
+          /* Toggle scrollbar
+          var gridDataTable = gridWidget.table,
+              gridDataArea = gridDataTable.closest('.k-grid-content');
           gridWrapper.toggleClass('no-scrollbar', gridDataTable[0].offsetHeight < gridDataArea[0].offsetHeight);
+          */
+          // Resize if grid has a set height but content height has not been set
+          if (
+            !_.isUndefined(gridWidget.element.attr('style')) &&
+            gridWidget.element.attr('style').indexOf('height') !== -1 &&
+            (
+              _.isUndefined(gridWidget.content.attr('style')) ||
+              (
+                !_.isUndefined(gridWidget.content.attr('style')) &&
+                gridWidget.content.attr('style').indexOf('height') === -1
+              )
+            )
+          ) {
+            gridWidget.resize();
+          }
+
           // Remove Cireson Padding-Right from header
-          gridWrapper.children('.k-grid-header').css('padding-right', 'inherit')
+          gridWidget.wrapper.children('.k-grid-header').css('padding-right', 'inherit')
 
           // Add DropDownLists
-          for (var i = 0; i < grid.columns.length; i++) {
-            var column = grid.columns[i];
+          for (var i = 0; i < gridWidget.columns.length; i++) {
+            var column = gridWidget.columns[i];
             if (!_.isUndefined(column.dataSource)) {
-              rows.each(function() {
+              rowElms.each(function() {
                 var row = $(this),
-                    dataItem = grid.dataItem(row),
+                    dataItem = gridWidget.dataItem(row),
                     dropdownElm = row.find('.dropDownTemplate');
                 if (_.isUndefined(dataItem.get(column.field))) {
                   dataItem[column.field] = column.defaultValue;
@@ -128,6 +143,50 @@ define([
         }
 
         /**
+         * - Set Select All Checkbox checked status and title text
+         * - Set DataItems select values
+         */
+       function onCheckboxChange(gridWidget, headerId) {
+         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+           app.custom.utils.log('enumGridController:onCheckboxChange', {
+             gridWidget: gridWidget,
+             headerId: headerId,
+           });
+         }
+         var dataItems = gridWidget.dataItems(),
+             selectedIds = _.map(gridWidget.select(), function (value) {
+               return value.getAttribute('data-uid');
+             }),
+             selectedIdsLength = selectedIds.length,
+             allRowsSelected = (selectedIdsLength === dataItems.length);
+
+         // Reset All DataItems Selected status to False
+         for (var i = 0; i < dataItems.length; i++) {
+           if (selectedIds.length > 0) {
+             var selectedIndex = _.indexOf(selectedIds, dataItems[i].uid);
+             dataItems[i].selected = selectedIndex !== -1;
+             if (selectedIndex !== -1) {
+               selectedIds.splice(selectedIndex, 1);
+             }
+           } else {
+             dataItems[i].selected = false;
+           }
+         }
+
+         // Set header checkbox (un)checked if all items are selected
+         var checkboxElm = gridWidget.thead.find('#' + headerId),
+             checkboxLabelElm =  gridWidget.thead.find('label[for="' + headerId + '"]');
+
+         checkboxElm.prop('checked', allRowsSelected);
+         checkboxLabelElm.prop('title', allRowsSelected ? 'Unselect All' : 'Select All');
+
+         // Reset Kendo Grid Validation if 0 rows are selected.
+         if (selectedIdsLength === 0) {
+           updateTextAreaValue(gridWidget.element.parent(), '');
+         }
+       }
+
+        /**
          * Update Dropdown List DataSource.
          *
          * @param {Object} targetElm - Target dropdown container.
@@ -154,6 +213,8 @@ define([
 
           // Hide Input Field
           targetInputELm.hide();
+          // Set Input text to '' to register Kendo Validator events
+          updateTextAreaValue(targetElm, '');
           // Append Checkbox Grid Input
           targetInputELm.after(targetGridElm);
           var kendoGridViewModel = {
@@ -274,6 +335,7 @@ define([
                 //$('#' + footerId).html(selectedUIDs.length + '/' + dataItems.length);
                 // Update Original Field value
                 updateTextAreaValue(targetElm, formattedResult);
+                onCheckboxChange(targetKendoGrid, headerId);
               }
             },
           }
@@ -290,27 +352,6 @@ define([
                   model: options.model,
                 });
               }
-              /*
-              for (var i = 0; i < options.model.columns.length; i++) {
-                var column = options.model.columns[i],
-                    columnKeys = Object.keys(column);
-
-                for (var j = 0; j < columnKeys.length; j++) {
-                  var key = columnKeys[j];
-                  switch (key) {
-                    case 'sortable':
-                      switch (column[key].toLowerCase()) {
-                        case 'true':
-                          column[key] = true;
-                          break;
-                        case 'false':
-                          column[key] = false;
-                          break;
-                      }
-                      break;
-                  }
-                }
-              }*/
 
               kendoGridViewModel.columns = kendoGridViewModel.columns.concat(options.model.columns);
             }
@@ -331,6 +372,28 @@ define([
             ctrlKey: false,
             enterKey: false,
           };
+
+          /**
+           * Add Show/Hide watcher to:
+           * - Set Select All Checkbox checked status and title text
+           * - Set DataItems Selection
+           */
+         if (!_.isNull(targetElm.getAttribute('ng-show'))) {
+           var $scope = angular.element(targetElm).scope(),
+               ngShowAttr = targetElm.getAttribute('ng-show');
+            $scope.$watch(ngShowAttr, function (value){
+              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  app.custom.utils.log('enumGridController:onHide', {
+                  this: this,
+                  targetElm: targetElm,
+                  ngShowAttr: ngShowAttr,
+                  value: value,
+                });
+              }
+
+              onCheckboxChange(targetKendoGrid, headerId);
+            });
+          }
 
           /**
            * Select ALl checkbox click handler
@@ -354,38 +417,6 @@ define([
             targetKendoGrid.selectEvent.selectAll = false;
             e.stopPropagation();
             return false;
-          });
-
-          /**
-           * Update Select All checkbox checked status and title text
-           */
-          targetInputELm.on('manual-change', function(e) {
-            if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                app.custom.utils.log('enumGridController:manual-change', {
-                event: e,
-                this: this,
-              });
-            }
-            var dataItems = targetKendoGrid.dataItems(),
-                selectedRowElms = targetKendoGrid.select();
-
-            // Reset All DataItems Selected status to False
-            for (var i = 0; i < dataItems.length; i++) {
-              dataItems[i].selected = false;
-            }
-            // Set Selected DataItems Selectedstatus to True
-            for (var i = 0; i < selectedRowElms.length; i++) {
-              var dataItem = targetKendoGrid.dataItem(selectedRowElms[i]);
-              dataItem.selected = true;
-            }
-
-            // Set header checkbox (un)checked if all items are selected
-            var checkboxElm = targetKendoGrid.thead.find('#' + headerId),
-                checkboxLabelElm =  targetKendoGrid.thead.find('label[for="' + headerId + '"]'),
-                allRowsSelected = (selectedRowElms.length === dataItems.length);
-
-            checkboxElm.prop('checked', allRowsSelected);
-            checkboxLabelElm.prop('title', allRowsSelected ? 'Unselect All' : 'Select All');
           });
 
           targetKendoGrid.table

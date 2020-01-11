@@ -39,6 +39,7 @@ define([
    * Updating val to introduce manual change event
    * https://stackoverflow.com/a/23635867
    */
+  /*
   var originalVal = $.fn.val;
   $.fn.val = function() {
     var prev;
@@ -52,6 +53,7 @@ define([
     }
     return result;
   };
+  */
 
   var customLibVm = {
         buildAndRender: {
