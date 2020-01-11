@@ -100,6 +100,7 @@ define([
                 var angularInputElm = angular.element('#' + valueTargetId),
                     angularScope = angularInputElm.scope();
                 angularScope.$apply(function() {*/
+                  hiddenInputElm.attr('data-default-value', defaultItem.Text);
                   dropdownListControl.value(defaultItem.Text);
                   dropdownListControl.trigger('change');
                   //dropdownListControl.change();
@@ -141,9 +142,28 @@ define([
                       contentType: 'application/json; charset=utf-8',
                     },
                     sort: (options.sort) ? {
-                        field: options.sort,
-                        dir: 'asc',
-                      } : {},
+                      field: options.sort,
+                      dir: 'asc',
+                    } : {},
+                  },
+                  schema: {
+                    /**
+                     * Adapt Enum List
+                     */
+                    data: function (response) {
+                      console.log('enumList', {
+                        response: response,
+                      });
+                      var blankDataItem = {
+                        Id: app.lib.newGUID(),
+                        Text: '',
+                        Name: '',
+                      }
+                      response.unshift(blankDataItem);
+                      return response;
+                    },
+                    //total: "Total",
+                    //errors: "Errors"
                   },
                 },
                 enumListConfigId = 'GetListForRequestOffering.' + customLib.createHash(enumListConfig),
