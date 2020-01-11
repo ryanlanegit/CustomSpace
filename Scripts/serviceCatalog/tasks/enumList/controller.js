@@ -151,14 +151,11 @@ define([
                      * Adapt Enum List
                      */
                     data: function (response) {
-                      console.log('enumList', {
-                        response: response,
-                      });
                       var blankDataItem = {
                         Id: app.lib.newGUID(),
                         Text: '',
                         Name: '',
-                      }
+                      };
                       response.unshift(blankDataItem);
                       return response;
                     },
