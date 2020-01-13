@@ -72,6 +72,25 @@ define([
         }
 
         /**
+         * Resize if grid has a set height but content height has not been set
+         */
+        function autoResizeGridWidget(gridWidget) {
+          if (
+            !_.isUndefined(gridWidget.element.attr('style')) &&
+            gridWidget.element.attr('style').indexOf('height') !== -1 &&
+            (
+              _.isUndefined(gridWidget.content.attr('style')) ||
+              (
+                !_.isUndefined(gridWidget.content.attr('style')) &&
+                gridWidget.content.attr('style').indexOf('height') === -1
+              )
+            )
+          ) {
+            gridWidget.resize();
+          }
+        }
+
+        /**
          *  Add Click Anywhere To (Un)Select Checkbox
          * Toggle Scrollbar based on Grid height
          * https://docs.telerik.com/kendo-ui/knowledge-base/hide-scrollbar-when-not-needed
@@ -86,19 +105,7 @@ define([
           gridWrapper.toggleClass('no-scrollbar', gridDataTable[0].offsetHeight < gridDataArea[0].offsetHeight);
           */
           // Resize if grid has a set height but content height has not been set
-          if (
-            !_.isUndefined(gridWidget.element.attr('style')) &&
-            gridWidget.element.attr('style').indexOf('height') !== -1 &&
-            (
-              _.isUndefined(gridWidget.content.attr('style')) ||
-              (
-                !_.isUndefined(gridWidget.content.attr('style')) &&
-                gridWidget.content.attr('style').indexOf('height') === -1
-              )
-            )
-          ) {
-            gridWidget.resize();
-          }
+          autoResizeGridWidget(gridWidget);
 
           // Remove Cireson Padding-Right from header
           gridWidget.wrapper.children('.k-grid-header').css('padding-right', 'inherit')
@@ -392,6 +399,10 @@ define([
               }
 
               onCheckboxChange(targetKendoGrid, headerId);
+              if (value === true) {
+                // Resize if grid has a set height but content height has not been set
+                autoResizeGridWidget(targetKendoGrid);
+              }
             });
           }
 
