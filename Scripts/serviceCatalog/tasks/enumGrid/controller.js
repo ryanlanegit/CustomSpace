@@ -401,7 +401,9 @@ define([
               onCheckboxChange(targetKendoGrid, headerId);
               if (value === true) {
                 // Resize if grid has a set height but content height has not been set
-                autoResizeGridWidget(targetKendoGrid);
+                _.defer(function(){
+                  autoResizeGridWidget(targetKendoGrid);
+                });
               }
             });
           }
