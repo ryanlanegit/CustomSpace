@@ -484,6 +484,8 @@ define([
                 updateGridWidgetDataItems(gridWidget);
                 onCheckboxChange(gridWidget, headerId);
                 if (value === true) {
+                  // Set TextArea value to reset Angular validation
+                  updateTextAreaValue(targetElm, gridWidget);
                   // Resize if grid has a set height but content height has not been set
                   _.defer(function(){
                     autoResizeGridWidget(gridWidget);
