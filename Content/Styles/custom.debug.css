@@ -1,13 +1,10 @@
-/*
-  Show roTask Container During Debug
-*/
-.task-container {
-  display: block;
-}
-
-/*
-  Hide roTask Container Content By Default
-*/
-.task-container .task-container-content {
+/**
+ * Show roTask Container during Debug
+ * Show roTask Container Content during Debug
+ * Show enumGrid related TextArea input during Debug
+ */
+.task-container,
+.task-container .task-container-content,
+.k-enum-grid-input {
   display: block;
 }
