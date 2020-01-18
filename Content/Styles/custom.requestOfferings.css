@@ -137,15 +137,22 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   margin-bottom: 0px;
 }
 
+/**
+ * Hide enumGrid related TextArea input by default
+ */
+.k-enum-grid-input {
+  display: none;
+}
+
 .k-enum-grid .k-dirty {
   display: none;
 }
 
-.k-enum-grid .k-hide-unselected div {
+.k-hide-unselected {
   visibility: hidden;
 }
 
-.k-enum-grid .k-state-selected .k-hide-unselected div {
+.k-state-selected .k-hide-unselected {
   visibility: visible;
 }
 
@@ -234,10 +241,12 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   padding-bottom: 1px;
 }
 
-/*
-  Hide roTask Container By Default
-*/
-.task-container {
+/**
+ * Hide roTask Container by default
+ * Hide roTask Container Content by default
+ */
+.task-container,
+.task-container .task-container-content {
   display: none;
 }
 
@@ -246,11 +255,4 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
 */
 .task-container.row-container {
   display: block;
-}
-
-/*
- Hide roTask Container Content By Default
-*/
-.task-container .task-container-content {
-  display: none;
 }
