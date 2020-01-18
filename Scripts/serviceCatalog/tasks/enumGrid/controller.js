@@ -417,11 +417,14 @@ define([
 
             if(!gridWidget.selectEvent.ctrlKey && !gridWidget.selectEvent.shiftKey) {
               if (selectedItems.length === 1) {
-                var selectedDataItem = gridWidget.dataItem(selectedItems);
-                // disable selection if currently selected
-                if (!_.isUndefined(selectedDataItem.selected) && selectedDataItem.selected) {
-                  selectedItems.removeClass('k-state-selected');
-                  selectedDataItem.selected = false;
+                // Do not attempt to disable if active is not a gridcell
+                if (gridWidget.current().attr('role') === 'gridcell') {
+                  var selectedDataItem = gridWidget.dataItem(selectedItems);
+                  // disable selection if currently selected
+                  if (!_.isUndefined(selectedDataItem.selected) && selectedDataItem.selected) {
+                    selectedItems.removeClass('k-state-selected');
+                    selectedDataItem.selected = false;
+                  }
                 }
               }
             }
