@@ -54,19 +54,24 @@ define([
          * Update textarea field value.
          *
          * @param {Object} targetElm - Target textarea container.
-         * @param {String} value - New textarea text value.
+         * @param {String|Object} value
+         * - (String) New textarea text value.
+         * - (Object) GridWidget to format text value from.
          */
         function updateTextAreaValue(targetElm, value) {
           var textareaElm = $(targetElm).find('textarea');
           // Check if angular framework is ready
           roTaskLib.waitForAngular(function () {
-            var currentValue = $(textareaElm).val();
+            //var currentValue = $(textareaElm).val();
             // Set Field to value if current value is still blank
             //if (_.isEmpty(currentValue)) {
-              $(textareaElm)
-                .val(value)
-                .trigger('onkeyup')
-                .trigger('keyup')
+            if (typeof value === 'object' || value instanceof Object) {
+              value = getFormattedText(value);
+            }
+            $(textareaElm)
+              .val(value)
+              .trigger('onkeyup')
+              .trigger('keyup')
             //}
           });
         }
@@ -99,6 +104,14 @@ define([
           var gridWidget = e.sender,
               rowElms = gridWidget.items();
 
+          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+            app.custom.utils.log('enumGridController:onDataBound', {
+              event: e,
+              gridWidget: gridWidget,
+              rowElms: rowElms,
+            });
+          }
+
           /* Toggle scrollbar
           var gridDataTable = gridWidget.table,
               gridDataArea = gridDataTable.closest('.k-grid-content');
@@ -111,8 +124,7 @@ define([
           gridWidget.wrapper.children('.k-grid-header').css('padding-right', 'inherit')
 
           // Add DropDownLists
-          for (var i = 0; i < gridWidget.columns.length; i++) {
-            var column = gridWidget.columns[i];
+          _.each(gridWidget.columns, function(column) {
             if (!_.isUndefined(column.dataSource)) {
               rowElms.each(function() {
                 var row = $(this),
@@ -129,14 +141,19 @@ define([
                     dataTextField: 'Name',
                     dataValueField: 'Name',
                     /**
-                     *  DropDownList Change Handler
+                     * DropDownList Change Handler
+                     * - Update DataItem object without triggering onDataBound event.
+                     * - Manually trigger change event.
+                     * @param {Object} e - Kendo DropDownList Change event object.
                      */
                     change: function (e) {
-                      /*if (_.isUndefined(dataItem.selected) || dataItem.selected === false ) {
-                        dataItem.selected = true;
-                      }*/
-                      dataItem.set(column.field, e.sender.value());
+                      gridWidget.onChangeIgnoreSelect = true;
+                      gridWidget.onChangeUpdateTextArea = true;
+                      dataItem[column.field] = e.sender.value();
                       dropdownElm.attr('data-default-value', e.sender.value());
+                      gridWidget.trigger('change');
+                      gridWidget.onChangeIgnoreSelect = false;
+                      gridWidget.onChangeUpdateTextArea = false;
                     },
                   });
 
@@ -146,51 +163,111 @@ define([
                 });
               });
             }
-          }
+          });
+
+          updateGridWidgetDataItems(gridWidget);
+          updateTextAreaValue(gridWidget.element.parent(), gridWidget);
         }
 
         /**
          * - Set Select All Checkbox checked status and title text
-         * - Set DataItems select values
          */
-       function onCheckboxChange(gridWidget, headerId) {
+        function onCheckboxChange(gridWidget, headerId) {
+          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+            app.custom.utils.log('enumGridController:onCheckboxChange', {
+              gridWidget: gridWidget,
+              headerId: headerId,
+            });
+          }
+          var dataItems = gridWidget.dataItems(),
+              everyDataItemSelected = _.every(dataItems, function (dataItem) { return dataItem.selected }),
+              checkboxElm = gridWidget.thead.find('#' + headerId),
+              checkboxLabelElm =  gridWidget.thead.find('label[for="' + headerId + '"]');
+
+          checkboxElm.prop('checked', everyDataItemSelected);
+          checkboxLabelElm.prop('title', everyDataItemSelected ? 'Unselect All' : 'Select All');
+
+          // Reset Kendo Grid Validation if 0 rows are selected.
+          /*if (selectedDataItems.length === 0) {
+          updateTextAreaValue(gridWidget.element.parent(), '');
+          }*/
+        }
+
+       /**
+        * Update the selected value of DataItems based on their selected status
+        */
+       function updateGridWidgetDataItems(gridWidget) {
          if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-           app.custom.utils.log('enumGridController:onCheckboxChange', {
+           app.custom.utils.log('enumGridController:updateGridWidgetDataItems', {
              gridWidget: gridWidget,
-             headerId: headerId,
            });
          }
          var dataItems = gridWidget.dataItems(),
-             selectedIds = _.map(gridWidget.select(), function (value) {
-               return value.getAttribute('data-uid');
-             }),
-             selectedIdsLength = selectedIds.length,
-             allRowsSelected = (selectedIdsLength === dataItems.length);
-
-         // Reset All DataItems Selected status to False
-         for (var i = 0; i < dataItems.length; i++) {
+             selectedIds = _.map(gridWidget.select(), function (selectedElm) {
+               return selectedElm.getAttribute('data-uid');
+             });
+         // Set all dataitems selected value to match current Selected status
+         _.each(dataItems, function(dataItem) {
            if (selectedIds.length > 0) {
-             var selectedIndex = _.indexOf(selectedIds, dataItems[i].uid);
-             dataItems[i].selected = selectedIndex !== -1;
+             var selectedIndex = _.indexOf(selectedIds, dataItem.uid);
+             dataItem.selected = selectedIndex !== -1;
              if (selectedIndex !== -1) {
                selectedIds.splice(selectedIndex, 1);
              }
            } else {
-             dataItems[i].selected = false;
+             dataItem.selected = false;
            }
+         });
+       }
+
+       /**
+        *
+        */
+       function getFormattedText(gridWidget) {
+         var formattedResult = '',
+             dataItems = gridWidget.dataItems(),
+             sourceDataItems = gridWidget.dataSource.data(),
+             outputDataItems = [];
+         switch (options.schema.output) {
+           case 'all':
+             outputDataItems = dataItems;
+             break;
+           case 'selected':
+           default:
+             // Get currently Selected rows after Change event handler and then
+             // get selected uid values from the Selected rows
+             _.each(gridWidget.select(), function(selectedRowElm) {
+                 var dataItem = gridWidget.dataItem(selectedRowElm);
+                 outputDataItems.push(dataItem);
+             });
+             break;
          }
 
-         // Set header checkbox (un)checked if all items are selected
-         var checkboxElm = gridWidget.thead.find('#' + headerId),
-             checkboxLabelElm =  gridWidget.thead.find('label[for="' + headerId + '"]');
+         if (outputDataItems.length > 0) {
+           var formattedResults = [],
+               compiled = _.template(options.schema.template);
 
-         checkboxElm.prop('checked', allRowsSelected);
-         checkboxLabelElm.prop('title', allRowsSelected ? 'Unselect All' : 'Select All');
+           _.chain(sourceDataItems)
+            // Sort selected uids to match original dataset
+            .intersection(outputDataItems)
+            // Push compiled template result to formatted results array
+            .each(function(dataItem) {
+               formattedResults.push(compiled(dataItem));
+             });
 
-         // Reset Kendo Grid Validation if 0 rows are selected.
-         if (selectedIdsLength === 0) {
-           updateTextAreaValue(gridWidget.element.parent(), '');
+           formattedResult = formattedResults.join('\n');
          }
+
+         if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+           app.custom.utils.log('enumGridController:getFormattedText', {
+             gridWidget: gridWidget,
+             dataItems: dataItems,
+             sourceDataItems: sourceDataItems,
+             outputDataItems: outputDataItems,
+             formattedResult: formattedResult,
+           });
+         }
+         return formattedResult;
        }
 
         /**
@@ -219,7 +296,7 @@ define([
               });
 
           // Hide Input Field
-          targetInputELm.hide();
+          targetInputELm.addClass('k-enum-grid-input');
           // Set Input text to '' to register Kendo Validator events
           updateTextAreaValue(targetElm, '');
           // Append Checkbox Grid Input
@@ -230,7 +307,6 @@ define([
             navigatable: true,
             selectable: 'multiple, row',
             sortable: true,
-            //selectable: 'multiple,row',
             persistSelection: true,
             columns: [{
               sortable: {
@@ -262,87 +338,35 @@ define([
              * Grid Change Handler
              */
             change: function(e) {
-              if (_.isUndefined(this.changePrevented) || !this.changePrevented) {
+              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                app.custom.utils.log('enumGridController:change:begin', {
+                  event: e,
+                  this: this,
+                  onChangeIgnoreSelect: this.onChangeIgnoreSelect,
+                  onChangeUpdateTextArea: this.onChangeUpdateTextArea,
+                });
+              }
+              if (_.isUndefined(this.onChangeIgnoreSelect) || !this.onChangeIgnoreSelect) {
                 var selectedRowElms = this.select().toArray(),
-                    selectedDataItems = [],
-                    sourceDataItems = this.dataSource.data(),
-                    sortedDataItems = [],
-                    formattedResult = '',
                     dataItems = this.dataItems();
-                if (true) {// (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
-                  app.custom.utils.log('enumGridController:change', {
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+                  app.custom.utils.log('enumGridController:change:process', {
                     event: e,
                     selectedRowElms: selectedRowElms,
-                    sourceDataItems: sourceDataItems,
+                    dataItems: dataItems,
                   });
                 }
-
-                /**
-                 * Bypass custom selection behavior on:
-                 * - manual events (select all or keyboard enter)
-                 * - init selection
-                 * - selection after hiding/showing
-                 */
-                if (!this.selectEvent.selectAll && !this.selectEvent.enterKey && targetInputELm.val() !== '') {
-                  var selectedUIDs = _.chain(dataItems)
-                        .where({selected: true})
-                        .pluck('uid')
-                        .value(),
-                      gridRowElms = this.items(),
-                      activeGridRowElms = [],
-                      selectedGridRowElms = _.filter(gridRowElms, function (gridRowElm) {
-                        return _.contains(selectedUIDs, gridRowElm.getAttribute('data-uid'));
-                      }),
-                      selectedRowElm = $(this.current()).closest('tr'),
-                      selectedDataItem = this.dataItem(selectedRowElm);
-
-                  this.changePrevented = true;
-                  if(!this.selectEvent.ctrlKey && !this.selectEvent.shiftKey) {
-                    if (selectedRowElms.length === 1 && !_.isUndefined(selectedDataItem.selected) && selectedDataItem.selected) {
-                      // toggle selection
-                      if (!_.isUndefined(selectedDataItem.selected) && selectedDataItem.selected) {
-                        targetKendoGrid.clearSelection();
-                        activeGridRowElms = _.without(selectedGridRowElms, selectedRowElm.get(0));
-                        targetKendoGrid.select(activeGridRowElms);
-                      }
-                    } else {
-                      activeGridRowElms = _.difference(selectedGridRowElms, selectedRowElms);
-                      targetKendoGrid.select(activeGridRowElms);
-                    }
-                  } else if (this.selectEvent.shiftKey) {
-                    activeGridRowElms = _.difference(selectedGridRowElms, selectedRowElms);
-                    targetKendoGrid.select(activeGridRowElms);
-                  }
-                  this.changePrevented = false;
-                }
-
-                // Get currently Selected rows after Change event handler
-                selectedRowElms = this.select();
-                // Get selected uid values from the Selected rows
-                for (var i = 0; i < selectedRowElms.length; i++) {
-                  var dataItem = this.dataItem(selectedRowElms[i]);
-                  selectedDataItems.push(dataItem);
-                }
-
-                if (selectedDataItems.length > 0) {
-                  var formattedResults = [];
-                  // Sort selected uids to match original dataset
-                  sortedDataItems = _.intersection(sourceDataItems, selectedDataItems)//.join('\n');
-
-                  for (var i = 0; i < sortedDataItems.length; i++) {
-                    var dataItem = sortedDataItems[i];
-                    formattedResults.push(customLib.stringFormat(options.schema.template, dataItem));
-                  }
-
-                  formattedResult = formattedResults.join('\n');
-                }
-
+                // Update GridWidget Data Items
+                updateGridWidgetDataItems(this);
+                // Update Checkbox and Select Status
+                onCheckboxChange(this, headerId);
 
                 // Set Footer summary
                 //$('#' + footerId).html(selectedUIDs.length + '/' + dataItems.length);
                 // Update Original Field value
-                updateTextAreaValue(targetElm, formattedResult);
-                onCheckboxChange(targetKendoGrid, headerId);
+                updateTextAreaValue(targetElm, this);
+              } else if (!_.isUndefined(this.onChangeUpdateTextArea) && this.onChangeUpdateTextArea) {
+                updateTextAreaValue(targetElm, this);
               }
             },
           }
@@ -368,11 +392,11 @@ define([
               kendoGridViewModel: kendoGridViewModel,
             });
           }
-          var targetKendoGrid = targetGridElm.kendoGrid(kendoGridViewModel).data('kendoGrid');
+          var gridWidget = targetGridElm.kendoGrid(kendoGridViewModel).data('kendoGrid');
           /**
            * Set default click events for use with the Click handlers and Change event
            */
-          targetKendoGrid.selectEvent = {
+          gridWidget.selectEvent = {
             selectAll: false,
             shiftKey: false,
             altKey: false,
@@ -381,37 +405,95 @@ define([
           };
 
           /**
+           * Bypass custom selection behavior on:
+           * - manual events (select all or keyboard enter)
+           * - init selection
+           * - selection after hiding/showing
+           */
+          function onSelectableChange(e) {
+            var dataItems = gridWidget.dataItems(),
+                items = gridWidget.items(),
+                selectedItems = gridWidget.select();
+
+            if(!gridWidget.selectEvent.ctrlKey && !gridWidget.selectEvent.shiftKey) {
+              if (selectedItems.length === 1) {
+                var selectedDataItem = gridWidget.dataItem(selectedItems);
+                // disable selection if currently selected
+                if (!_.isUndefined(selectedDataItem.selected) && selectedDataItem.selected) {
+                  selectedItems.removeClass('k-state-selected');
+                  selectedDataItem.selected = false;
+                }
+              }
+            }
+            if(!gridWidget.selectEvent.ctrlKey) {
+              var persistentSelectedIds = _.chain(dataItems)
+                    .where({selected: true})
+                    .pluck('uid')
+                    .value();
+              // Filter Selected Rows from persistent selection list
+              selectedItems.each(function() {
+                  var dataItem = gridWidget.dataItem(this),
+                      selectedIndex = _.indexOf(persistentSelectedIds, dataItem.uid);
+                  //dataItem.selected = true; //selectedIndex !== -1;
+                  if (selectedIndex !== -1) {
+                    persistentSelectedIds.splice(selectedIndex, 1);
+                  }
+              })
+
+              // Create collection from remaining persistent selections
+              var persistentItems = $([]);
+              items.each(function () {
+                if (persistentSelectedIds.length === 0) {
+                  return false;
+                }
+                var itemId = this.getAttribute('data-uid'),
+                    selectedIndex = _.indexOf(persistentSelectedIds, itemId);
+                //dataItem.selected = selectedIndex !== -1;
+                if (selectedIndex !== -1) {
+                  persistentItems.push(this);
+                  persistentSelectedIds.splice(selectedIndex, 1);
+                }
+              });
+              persistentItems.addClass('k-state-selected');
+            }
+          }
+          gridWidget.selectable._events['change'].unshift(onSelectableChange);
+
+          /**
            * Add Show/Hide watcher to:
            * - Set Select All Checkbox checked status and title text
            * - Set DataItems Selection
            */
          if (!_.isNull(targetElm.getAttribute('ng-show'))) {
-           var $scope = angular.element(targetElm).scope(),
-               ngShowAttr = targetElm.getAttribute('ng-show');
-            $scope.$watch(ngShowAttr, function (value){
-              if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
+           roTaskLib.waitForAngular(function () {
+             var $scope = angular.element(targetElm).scope(),
+                 ngShowAttr = targetElm.getAttribute('ng-show');
+              $scope.$watch(ngShowAttr, function (value){
+                if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                   app.custom.utils.log('enumGridController:onHide', {
-                  this: this,
-                  targetElm: targetElm,
-                  ngShowAttr: ngShowAttr,
-                  value: value,
-                });
-              }
+                    this: this,
+                    targetElm: targetElm,
+                    ngShowAttr: ngShowAttr,
+                    value: value,
+                  });
+                }
 
-              onCheckboxChange(targetKendoGrid, headerId);
-              if (value === true) {
-                // Resize if grid has a set height but content height has not been set
-                _.defer(function(){
-                  autoResizeGridWidget(targetKendoGrid);
-                });
-              }
+                updateGridWidgetDataItems(gridWidget);
+                onCheckboxChange(gridWidget, headerId);
+                if (value === true) {
+                  // Resize if grid has a set height but content height has not been set
+                  _.defer(function(){
+                    autoResizeGridWidget(gridWidget);
+                  });
+                }
+              });
             });
           }
 
           /**
            * Select ALl checkbox click handler
            */
-          targetKendoGrid.thead.find('.k-grid-checkbox-header .k-checkbox-label').on('click', function (e) {
+          gridWidget.thead.find('.k-grid-checkbox-header .k-checkbox-label').on('click', function (e) {
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
               app.custom.utils.log('enumGridController:click', {
                 e: e,
@@ -420,52 +502,59 @@ define([
               });
             }
 
-            targetKendoGrid.selectEvent.selectAll = true;
+            gridWidget.selectEvent.selectAll = true;
             if ($('#' + $(this).prop('for')).prop('checked')) {
-              targetKendoGrid.clearSelection();
+              gridWidget.clearSelection();
             } else {
-              var gridRowElms = targetKendoGrid.items();
-              targetKendoGrid.select(gridRowElms);
+              var gridRowElms = gridWidget.items();
+              gridWidget.select(gridRowElms);
             }
-            targetKendoGrid.selectEvent.selectAll = false;
+            gridWidget.selectEvent.selectAll = false;
             e.stopPropagation();
             return false;
           });
 
-          targetKendoGrid.table
+
+          gridWidget.table
+            /**
+             * Click and Drag key modifier listener
+             */
             .on('click mousedown', 'td', function (e) {
               if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                 app.custom.utils.log('enumGridController:click', e);
               }
-              _.extend(targetKendoGrid.selectEvent, {
+              _.extend(gridWidget.selectEvent, {
                 shiftKey: e.shiftKey,
                 altKey: e.altKey,
                 ctrlKey: e.ctrlKey,
               });
             })
+            /**
+             * Keyboard navigation listener
+             */
             .on('keydown', function (e) {
               //console.log('keydown!', e, this);
               if (e.keyCode === 13) {//} && e.shiftKey) {
                 if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
                     app.custom.utils.log('enumGridController:keydown', {
-                    targetKendoGrid: targetKendoGrid,
-                    currentSelection: targetKendoGrid.current(),
-                    currentRow: $(targetKendoGrid.current()).closest('tr'),
+                    gridWidget: gridWidget,
+                    currentSelection: gridWidget.current(),
+                    currentRow: $(gridWidget.current()).closest('tr'),
                   });
                 }
-                var currentRow = $(targetKendoGrid.current()).closest('tr'),
-                    selectedRows = targetKendoGrid.select();
-                targetKendoGrid.selectEvent.enterKey = true;
+                var currentRow = $(gridWidget.current()).closest('tr'),
+                    selectedRows = gridWidget.select();
+                gridWidget.selectEvent.enterKey = true;
                 if (currentRow.hasClass('k-state-selected')) {
                   // toggle selection
-                  targetKendoGrid.clearSelection();
+                  gridWidget.clearSelection();
                   var activeRowElms = _.without(selectedRows, currentRow.get(0))
-                  targetKendoGrid.select(activeRowElms);
+                  gridWidget.select(activeRowElms);
                 } else {
                   // select row
-                  targetKendoGrid.select(currentRow);
+                  gridWidget.select(currentRow);
                 }
-                targetKendoGrid.selectEvent.enterKey = false;
+                gridWidget.selectEvent.enterKey = false;
               }
             });
           //$('#' + headerId).change();
@@ -498,7 +587,8 @@ define([
             //parentId: '7030beac-cbda-9acf-9c51-6832d91650f2', // Locations
             parentId: '6dc39c57-60fd-4c69-e439-01f41037bee2', // Departments
             schema: {
-              template: '{Name}',
+              template: '<%= Name %>',
+              output: 'selected', // selected, all
             },
           });
 
@@ -526,32 +616,33 @@ define([
                 enumGridDataSource = customLib.api.getDataSource(enumGridConfigId, enumGridConfig);
 
             if (!_.isUndefined(options.model) && !_.isUndefined(options.model.columns)) {
-              for (var i = 0; i < options.model.columns.length; i++) {
-                var columnOptions = options.model.columns[i],
-                    columnParentId = columnOptions.parentId,
-                    columnConfig = {
-                      transport: {
-                        read: {
-                          url: '/api/v3/Enum/GetListForRequestOffering?parentId='+columnParentId+'&itemFilter=',
-                          dataType: 'json',
-                          contentType: 'application/json; charset=utf-8',
+              _.each(options.model.columns, function(columnOptions) {
+                if (!_.isUndefined(columnOptions.parentId)) {
+                  var columnParentId = columnOptions.parentId,
+                      columnConfig = {
+                        transport: {
+                          read: {
+                            url: '/api/v3/Enum/GetListForRequestOffering?parentId='+columnParentId+'&itemFilter=',
+                            dataType: 'json',
+                            contentType: 'application/json; charset=utf-8',
+                          },
+                          sort: (options.sort) ? {
+                              field: options.sort,
+                              dir: 'asc',
+                            } : {},
                         },
-                        sort: (options.sort) ? {
-                            field: options.sort,
-                            dir: 'asc',
-                          } : {},
-                      },
-                      schema: {
-                        model: {
-                          id: 'Name',
+                        schema: {
+                          model: {
+                            id: 'Name',
+                          },
                         },
                       },
-                    },
-                    columnConfigId = 'GetListForRequestOffering.' + customLib.createHash(columnConfig),
-                    columnDataSource = customLib.api.getDataSource(columnConfigId, columnConfig);
+                      columnConfigId = 'GetListForRequestOffering.' + customLib.createHash(columnConfig),
+                      columnDataSource = customLib.api.getDataSource(columnConfigId, columnConfig);
 
-                columnOptions.dataSource = columnDataSource;
-              }
+                  columnOptions.dataSource = columnDataSource;
+                }
+              });
             }
 
             if (!_.isUndefined(app.storage.custom) && app.storage.custom.get('DEBUG_ENABLED')) {
