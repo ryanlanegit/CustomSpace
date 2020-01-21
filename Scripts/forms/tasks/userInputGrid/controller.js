@@ -66,7 +66,7 @@ define([
                 }, {
                   field: 'Answer',
                   attributes: {
-                    style: 'white-space:pre',
+                    style: 'white-space:pre-wrap',
                   },
                   encoded: false,
                 }],
