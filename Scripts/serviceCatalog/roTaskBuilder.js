@@ -20,6 +20,7 @@ define([
   'CustomSpace/Scripts/serviceCatalog/tasks/indent/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/rowContainer/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setAttribute/controller',
+  'CustomSpace/Scripts/serviceCatalog/tasks/setLabel/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/setOptions/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/singleLineEntry/controller',
   'CustomSpace/Scripts/serviceCatalog/tasks/summary/controller',
