@@ -169,6 +169,16 @@ span.k-datepicker .k-select, span.k-datepicker .k-select+.k-select {
   text-transform: none;
 }
 
+.k-grid-checkbox.k-grid-radio .checkbox-label:before,
+.k-grid-checkbox.k-grid-radio label:before {
+  border-radius: 50%;
+}
+
+.k-grid-checkbox-header.k-grid-radio .checkbox-label,
+.k-grid-checkbox-header.k-grid-radio label {
+  visibility: hidden;
+}
+
 .k-grid-checkbox .checkbox-label:before,
 .k-grid-checkbox label:before,
 .k-grid-checkbox-header .checkbox-label:before,

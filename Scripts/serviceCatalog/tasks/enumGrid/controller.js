@@ -305,7 +305,7 @@ define([
             dataSource: dataSource,
             dataBound: onDataBound,
             navigatable: true,
-            selectable: 'multiple, row',
+            selectable: options.selectable,
             sortable: true,
             persistSelection: true,
             columns: [{
@@ -323,10 +323,10 @@ define([
                 },
               },
               attributes: {
-                class: 'k-grid-checkbox',
+                class: 'k-grid-checkbox' + ((options.selectable === 'multiple, row') ? '' : ' k-grid-radio'),
               },
               headerAttributes: {
-                class: 'k-grid-checkbox-header',
+                class: 'k-grid-checkbox-header' + ((options.selectable === 'multiple, row') ? '' : ' k-grid-radio'),
               },
               field: valueField,
               title: title,
@@ -428,7 +428,7 @@ define([
                 }
               }
             }
-            if(!gridWidget.selectEvent.ctrlKey) {
+            if(!gridWidget.selectEvent.ctrlKey && gridWidget.options.selectable === 'multiple, row') {
               var persistentSelectedIds = _.chain(dataItems)
                     .where({selected: true})
                     .pluck('uid')
@@ -591,6 +591,7 @@ define([
             height: 175, // 4 Rows
             //parentId: '7030beac-cbda-9acf-9c51-6832d91650f2', // Locations
             parentId: '6dc39c57-60fd-4c69-e439-01f41037bee2', // Departments
+            selectable: 'multiple, row',
             schema: {
               template: '<%= Name %>',
               output: 'selected', // selected, all
