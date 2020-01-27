@@ -55,17 +55,22 @@ function (
             next: 1,
           });
 
+          /*
           if (!_.has(options, 'label')) {
             if (!_.isUndefined(app.custom.utils)) {
               app.custom.utils.log(2, 'setLabelController:initROTask', 'Warning! Invalid arguments provided');
             }
             return;
           }
+          */
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
             var labelDomElm = $(targetElm).find('.control-label').get(0);
             // Set label text value while ignoring child objects
-            labelDomElm.childNodes[0].nodeValue = '\n' + options.label + '\n';
+            if (_.has(options, 'label')) {
+              var label = _.isArray(options.label) ? options.label[targetIndex] : options.label;
+              labelDomElm.childNodes[0].nodeValue = '\n' + label + '\n';
+            }
             // Set optional attributes for label
             if (_.has(options, 'attributes')) {
               var attributes = _.isArray(options.attributes) ? options.attributes[targetIndex] : options.attributes;
