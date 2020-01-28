@@ -139,6 +139,10 @@
                             {
                                 "name": "Activities",
                                 "type": "activities"
+                            },
+                            {
+                                "name": "UserInput",
+                                "type": "userInput"
                             }
                         ]
                     }
