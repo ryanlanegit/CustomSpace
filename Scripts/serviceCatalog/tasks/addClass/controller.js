@@ -63,12 +63,12 @@ function (
           }
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetCSSClass = (typeof options.cssclass === 'string') ? options.cssclass : options.cssclass[targetIndex],
+            var targetCSSClass = _.isArray(options.cssclass) ? options.cssclass[targetIndex] : options.cssclass,
                 targetSelector;
-            if (typeof options.selector === 'undefined') {
+            if (_.isUndefined(options.selector)) {
               $(targetElm).addClass(targetCSSClass);
             } else {
-              targetSelector = (typeof options.selector === 'string') ? options.selector : options.selector[targetIndex];
+              targetSelector = _.isArray(options.selector) ? options.selector[targetIndex] : options.selector;
               $(targetElm).find(targetSelector).addClass(targetCSSClass);
             }
           });

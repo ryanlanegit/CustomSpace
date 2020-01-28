@@ -59,12 +59,13 @@ define([
           });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetRows = (typeof options.rows === 'string') ? options.rows : options.rows[targetIndex];
+            var rows = _.isArray(options.rows) ? options.rows[targetIndex] : options.rows,
+                maxRows = _.isArray(options.maxrows) ? options.maxrows[targetIndex] : options.maxrows;
             roTaskLib.waitForAngular(function () {
               var targetInputELm = $(targetElm).find('textarea');
               targetInputELm
-                .addClass('auto-size max-rows-' + options.maxrows)
-                .attr('rows', targetRows);
+                .addClass('auto-size max-rows-' + maxRows)
+                .attr('rows', rows);
               autosize(targetInputELm);
             });
           });

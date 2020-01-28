@@ -99,7 +99,7 @@ define([
           }
 
           processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetColSpan = (typeof options.colspan === 'string') ? options.colspan : options.colspan[targetIndex];
+            var targetColSpan = _.isArray(options.colspan) ? options.colspan[targetIndex] : options.colspan;
             targetElm = $(targetElm);
             // Remove row class and column classes
             if (targetElm.hasClass('task-container')) {

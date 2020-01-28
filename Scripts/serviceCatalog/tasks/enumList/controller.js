@@ -133,7 +133,7 @@ define([
           });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetParentId = (typeof options.parentId === 'string') ? options.parentId : options.parentId[targetIndex],
+            var targetParentId = _.isArray(options.parentId) ? options.parentId[targetIndex] : options.parentId,
                 enumListConfig = {
                   transport: {
                     read: {

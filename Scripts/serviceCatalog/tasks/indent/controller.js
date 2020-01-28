@@ -57,7 +57,7 @@ function (
           });
 
           roTaskLib.processNext(roTaskElm, options.next, function (targetElm, targetIndex) {
-            var targetLevel = (typeof options.level === 'string') ? options.level : options.level[targetIndex];
+            var targetLevel = _.isArray(options.level) ? options.level[targetIndex] : options.level;
             $(targetElm).children('div').addClass('indent-' + targetLevel);
           });
         }
